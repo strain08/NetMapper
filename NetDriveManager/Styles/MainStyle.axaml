@@ -1,0 +1,33 @@
+<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+  <Design.PreviewWith>
+    <Border Padding="20">
+      <!-- Add Controls for Previewer Here -->
+		<Button Height="20" Classes="btnMain"></Button>
+    </Border>
+  </Design.PreviewWith>
+	<!-- TEXTBLOCK -->
+	<Style Selector="TextBlock.textMain">
+		<Setter	Property="FontSize"	Value="14" />
+		<Setter Property="FontWeight" Value="Bold" />
+	</Style>
+	<Style Selector="TextBlock.textDetail">
+		<Setter Property="Foreground" Value="DarkGray" />
+		<Setter	Property="FontSize"	Value="12" />
+	</Style>
+	<!-- BUTTON -->
+	<Style Selector="Button.btnMain">
+		<Style.Resources>
+			<LinearGradientBrush x:Key="ButtonBrush" EndPoint="0%,0%" StartPoint="0%,100%">
+				<GradientStop Color="#202527" Offset="0" />
+				<GradientStop Color="#363e42" Offset="1" />
+			</LinearGradientBrush>
+		</Style.Resources>
+		<Setter	Property="FontSize"	Value="14" />
+		<Setter	Property="Width" Value="30" />
+		<Setter	Property="HorizontalContentAlignment"	Value="Center" />
+		<Setter	Property="VerticalContentAlignment"	Value="Center" />
+		<Setter Property="Background" Value="{DynamicResource ButtonBrush}"/>
+	</Style>
+  
+</Styles>

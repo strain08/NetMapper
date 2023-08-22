@@ -1,7 +1,7 @@
 ﻿// See https://aka.ms/new-console-template for more information
 
 
-using Microsoft.WindowsAPICodePack.Net;
+
 using NetworkDriveConsole;
 using System.Net.NetworkInformation;
 
@@ -9,56 +9,33 @@ using System.Security.Principal;
 using System.Xml.Schema;
 
 
-WmiLogicalDiskOperations c = new();
-//System.Threading.Thread.Sleep(10000);
-
-var networksConnected = NetworkListManager.GetNetworks(NetworkConnectivityLevels.Connected);
-var ifcs = NetworkInterface.GetAllNetworkInterfaces();
-
-
-string sAdapter = string.Empty;
-
-//foreach (NetworkInterface i in ifcs)
-//{
-//    Console.WriteLine(i.Name + " " + i.Id);
-//}
-
-var networksDisconnected = NetworkListManager.GetNetworks(NetworkConnectivityLevels.Disconnected);
-Console.WriteLine("Connected networks:");
-
-foreach (Network network in networksConnected)
+void ShellObjects1()
 {
-    //Name property corresponds to the name I originally asked about
-    Console.WriteLine("[" + network.Name + "]");
-
-    Console.WriteLine("\t[NetworkConnections]");
-    foreach (NetworkConnection conn in network.Connections)
-    {
-        //Print network interface's GUID
-        Console.WriteLine("\t\t" + conn.AdapterId.ToString());
-        string sAdapterFormatted = "{" + conn.AdapterId.ToString().ToUpper() + "}";
-        sAdapter = ifcs.First(o => o.Id.ToUpper().Equals(sAdapterFormatted)).Name;
-        Console.WriteLine("\t\t adapter name:" + sAdapter);
-    }
-}
-Console.WriteLine("Disconnected networks:");
-foreach (Network network in networksDisconnected)
-{
-    //Name property corresponds to the name I originally asked about
-    Console.WriteLine("[" + network.Name + "]");
-
-    Console.WriteLine("\t[NetworkConnections]");
-    foreach (NetworkConnection conn in network.Connections)
-    {
-        //Print network interface's GUID
-        Console.WriteLine("\t\t" + conn.AdapterId.ToString());
-        
-        sAdapter = ifcs.First(o => o.Id.ToUpper().Equals( conn.AdapterId.ToString().ToUpper()) ).Name;
-        Console.WriteLine("\t\t adapter name" + sAdapter);
-
-    }
+    string ThisPC = "::{20D04FE0-3AEA-1069-A2D8-08002B30309D}";
+    var folder = ShellFolder.FromParsingName(ThisPC) as ShellFolder;
+    foreach (var child in folder)
+        Console.WriteLine($"{child.Name} = {child.ParsingName}");
 }
 
+static void ShellObjects2()
+{
+    var shellAppType = Type.GetTypeFromProgID("Shell.Application");
+    object shell = Activator.CreateInstance(shellAppType);
+    var ThisPC = (Folder)shellAppType.InvokeMember("NameSpace", BindingFlags.InvokeMethod, null, shell, new object[] { 0x11 });
+    foreach (FolderItem child in ThisPC.Items())
+        Console.WriteLine($"{child.Name} = {child.Path}");
+}
+
+static void Main(string[] args)
+{
+    Console.WriteLine("WindowsAPICodePack");
+    ShellObjects1();
+    Console.WriteLine();
+
+    Console.WriteLine("Shell32");
+    ShellObjects2();
+    Console.WriteLine();
+}
 
 Console.ReadLine();
 

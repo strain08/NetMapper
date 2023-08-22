@@ -1,0 +1,33 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"   
+        x:Class="NetDriveManager.Views.MainWindow"		
+        Icon="/Assets/avalonia-logo.ico"
+        Title="Network Drive Monitor"
+		TransparencyLevelHint="AcrylicBlur"
+		Background="#1f1f1f"
+		WindowStartupLocation="CenterScreen"
+		ExtendClientAreaToDecorationsHint="True"		
+        >
+	<Border 
+		Padding="4,4,4,4" 
+		BorderBrush="Gray" 
+		BorderThickness="1">
+		<Grid>
+			<Grid.RowDefinitions>
+				<RowDefinition Height="40"></RowDefinition>
+				<RowDefinition></RowDefinition>
+			</Grid.RowDefinitions>
+			<TextBlock
+				Text="NetDrives"
+				FontSize="14"
+				Padding="0,0,0,0"
+				IsHitTestVisible="False"/>
+			
+			<ContentControl 
+				Grid.Row="1" 
+				Content="{Binding Content}">				
+			</ContentControl>
+			
+		</Grid>
+	</Border>
+</Window>
