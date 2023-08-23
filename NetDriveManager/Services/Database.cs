@@ -1,45 +1,50 @@
 ﻿using NetDriveManager.Models;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
+using System.IO;
+using System.Text.Json;
 
 namespace NetDriveManager.Services
 {
     public class Database
     {
-        public List<NDModel> GetDrives => _drivesDb;
+        public static List<NDModel> DrivesDb { get; set; } = new List<NDModel>();
 
-        private List<NDModel> _drivesDb = new();
+        public static string jsonSettingsFile {get; set;} = string.Empty;
 
-        // CTOR
-        public Database()
-        {   
-            if (ReadFromFile())
+        // READ
+        public static bool ReadFromFile()
+        {
+            try
             {
-                
+                var jsonString = File.ReadAllText(jsonSettingsFile);
+                DrivesDb = JsonSerializer.Deserialize<List<NDModel>>(jsonString);
             }
-            else
+            catch
             {
                 WriteToFile();
             }
+            return true;
+
         }
-
-       
-
-        public bool ReadFromFile()
+        // WRITE
+        public static bool WriteToFile()
         {
-            // TODO deserialize _drivesDb from json file
-            _drivesDb.Add(new NDModel() { DriveLetter = "X:", Provider = "\\\\XOXO\\mir1" });
-            _drivesDb.Add(new NDModel() { DriveLetter = "Y:", Provider = "\\\\XOXO\\mir2" });
+
+            var jsonString = JsonSerializer.Serialize(DrivesDb, DrivesDb.GetType());
+
+            File.WriteAllText(jsonSettingsFile, jsonString);
+
+
 
             return true;
         }
-        public bool WriteToFile()
+        // UPDATE
+        public static void UpdateDb(List<NDModel> updatedList)
         {
-            // TODO serialize _drivesDb to json file
-            return true;
+            
+            DrivesDb=new (updatedList);
+            WriteToFile();
         }
-
-
 
     }
 }

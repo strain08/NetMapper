@@ -17,16 +17,16 @@ namespace NetDriveManager.ViewModels
         [ObservableProperty]
         DriveListViewModel list;
 
-        public MainWindowViewModel(Database db)
+        public MainWindowViewModel()
         {
-            VMServices.DriveListViewModel = new DriveListViewModel(db);
-
+            VMServices.DriveListViewModel = new DriveListViewModel();
             Content = List = VMServices.DriveListViewModel;
-
             //Thread t = new Thread(() => { NetworkDriveManager.IsMachineOnline("ddd"); });
             //t.Start();
             //string s = string.Empty;
         }
+
+        
 
     }
 }

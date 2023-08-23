@@ -19,9 +19,9 @@ namespace NetDriveManager.ViewModels
         
         
         // CTOR
-        public DriveListViewModel(Database db)
+        public DriveListViewModel()
         {            
-            NetDrivesList = NDManager.NetDriveList = new ObservableCollection<NDModel>(db.GetDrives);
+            NetDrivesList = NDManager.NetDriveList = new ObservableCollection<NDModel>(Database.DrivesDb);
         }
        
         // COMMS

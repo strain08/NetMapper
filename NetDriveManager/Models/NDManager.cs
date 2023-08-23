@@ -1,18 +1,14 @@
-﻿using Avalonia.Controls;
-using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Management;
-using System.Net.NetworkInformation;
-using System.Text;
-using System.Threading.Tasks;
-using System.DirectoryServices;
+using NetDriveManager.Services;
+
 
 namespace NetDriveManager.Models
 {
+
     public static class NDManager
     {
         public static ObservableCollection<NDModel> NetDriveList { get; set; } = new ();
@@ -20,12 +16,14 @@ namespace NetDriveManager.Models
         public static void AddDrive(NDModel model)
         {
             NetDriveList.Add(model);
+            Database.UpdateDb(new List<NDModel>(NetDriveList));
         }
 
         public static void RemoveDrive(NDModel model) 
         {
             var i = NetDriveList.IndexOf(model);
-            NetDriveList.RemoveAt(i); 
+            NetDriveList.RemoveAt(i);
+            Database.UpdateDb(new List<NDModel>(NetDriveList));
         }
 
         public static void Clear() 

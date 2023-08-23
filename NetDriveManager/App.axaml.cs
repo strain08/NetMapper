@@ -25,11 +25,12 @@ namespace NetDriveManager
                 // Without this line you will get duplicate validations from both Avalonia and CT
                 BindingPlugins.DataValidators.RemoveAt(0);
 
-                var db = new Database();
+                Database.jsonSettingsFile = "NetDriveSettings.json";
+                Database.ReadFromFile();
 
                 desktop.MainWindow = new MainWindow
                 {
-                    DataContext = VMServices.MainWindowViewModel = new MainWindowViewModel(db),
+                    DataContext = VMServices.MainWindowViewModel = new MainWindowViewModel(),
                 };
             }
 
