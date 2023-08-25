@@ -4,6 +4,7 @@ using NetDriveManager.Services;
 using NetDriveManager.Services.Helpers;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 
 namespace NetDriveManager.ViewModels
 {
@@ -46,7 +47,7 @@ namespace NetDriveManager.ViewModels
 
         public DriveDetailViewModel(bool isEditing)
         {
-            var dl = new List<char>(NDUtil.GetAvailableDriveLetters());
+            var dl = new List<char>(Utility.GetAvailableDriveLetters());
             foreach (var item in dl)
             {
                 DriveLettersList.Add(item.ToString());
@@ -66,6 +67,7 @@ namespace NetDriveManager.ViewModels
 
         public void Ok()
         {
+            Debug.WriteLine(DisplayItem.Hostname);
             DisplayItem.DriveLetter = selectedLetter + ":";
             if (IsEditing)
             {
@@ -78,7 +80,6 @@ namespace NetDriveManager.ViewModels
                 NDManager.AddDrive(DisplayItem!);
                 VMServices.MainWindowViewModel!.Content = VMServices.MainWindowViewModel.List;
             }
-
         }
 
         public void Cancel()

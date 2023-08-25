@@ -1,5 +1,6 @@
-﻿using Avalonia.Controls.Chrome;
-using CommunityToolkit.Mvvm.ComponentModel;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+
+using System.Text.RegularExpressions;
 
 namespace NetDriveManager.Models
 {
@@ -11,13 +12,36 @@ namespace NetDriveManager.Models
             DriveLetter = copyModel.DriveLetter;
         }
         public NDModel() { }
-
-        public string Provider { get; set; }
-        //[ObservableProperty]
-        //string? provider;
-
+        
         [ObservableProperty]
         string? driveLetter;
+
+        public string Provider { get; set; }
+        
+        public string? Hostname
+        {
+            get
+            {
+                if (string.IsNullOrEmpty(Provider))
+                {
+                    return null;
+                }
+                else
+                {
+                    // Return SERVER from \\SERVER\share\etc
+                    string pattern = @"\\\\(.*?)\\";
+                    Match m = Regex.Match(Provider, pattern);
+                    if (m.Success)
+                    {
+                        return m.Groups[1].Value;
+                    }
+                }
+                return null;
+            }
+        }
+
+        //[ObservableProperty]
+        //string? provider;
 
         //[ObservableProperty]
         //string? name;
@@ -25,12 +49,8 @@ namespace NetDriveManager.Models
         //[ObservableProperty]
         //string? caption;
 
-
-
         //[ObservableProperty]
         //string? volumeName;
-
-
 
         //[ObservableProperty]
         //string? deviceID;
@@ -46,8 +66,9 @@ namespace NetDriveManager.Models
 
         //[ObservableProperty]
         //string? volumeSerialNumber;
+        
 
-        private string? _hostName;        
+
 
     }
 }

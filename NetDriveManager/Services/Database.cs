@@ -34,8 +34,6 @@ namespace NetDriveManager.Services
 
             File.WriteAllText(jsonSettingsFile, jsonString);
 
-
-
             return true;
         }
         // UPDATE

@@ -25,8 +25,5 @@ namespace NetDriveManager.ViewModels
             //t.Start();
             //string s = string.Empty;
         }
-
-        
-
     }
 }

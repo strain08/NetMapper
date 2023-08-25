@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Management;
 using System.IO;
+using System.Diagnostics;
 
 namespace NetDriveManager.Services.Helpers
 {
     public class WmiEventHandler
     {
+        // Detects when drive connected or disconnected from Windows
 
         // CTOR
         public WmiEventHandler()
@@ -40,12 +42,12 @@ namespace NetDriveManager.Services.Helpers
                 // Drive connected
                 using var logicalDisk = (ManagementBaseObject)e.NewEvent["TargetInstance"];
 
-                Console.WriteLine("Drive type is {0}",
+                Debug.WriteLine("Drive type is {0}",
                                   logicalDisk.Properties["DriveType"].Value);
                 foreach (PropertyData pd in logicalDisk.Properties)
                 {
-                    Console.WriteLine(pd.Name + "\n" + pd.Value + "\n" + pd.Qualifiers);
-                    Console.WriteLine();
+                    Debug.WriteLine(pd.Name + "\n" + pd.Value + "\n" + pd.Qualifiers);
+                    
                 }
 
             }
@@ -57,7 +59,7 @@ namespace NetDriveManager.Services.Helpers
 
                 if (Convert.ToInt32(logicalDisk.Properties["DriveType"].Value) == (int)DriveType.Network)
                 {
-                    Console.WriteLine("Network drive");
+                    Debug.WriteLine("Network drive");
                 }
             }
         }
