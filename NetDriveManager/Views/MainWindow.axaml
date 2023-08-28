@@ -8,6 +8,7 @@
 		WindowStartupLocation="CenterScreen"
 		ExtendClientAreaToDecorationsHint="True"		
         >
+	
 	<Border 
 		Padding="4,4,4,4" 
 		BorderBrush="Gray" 

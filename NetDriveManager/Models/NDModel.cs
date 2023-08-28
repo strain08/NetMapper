@@ -1,11 +1,13 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
-
+using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
 
 namespace NetDriveManager.Models
 {
     public partial class NDModel : ObservableObject
     {
+        // CTOR
+
         public NDModel(NDModel copyModel)
         {
             Provider = copyModel.Provider;
@@ -13,11 +15,12 @@ namespace NetDriveManager.Models
         }
         public NDModel() { }
         
-        [ObservableProperty]
-        string? driveLetter;
+        // PUBLIC PROP
+        public string? DriveLetter { get; set; }
 
-        public string Provider { get; set; }
+        public string? Provider { get; set; }
         
+        [JsonIgnore]
         public string? Hostname
         {
             get
@@ -39,36 +42,20 @@ namespace NetDriveManager.Models
                 return null;
             }
         }
-
-        //[ObservableProperty]
-        //string? provider;
-
-        //[ObservableProperty]
-        //string? name;
-
-        //[ObservableProperty]
-        //string? caption;
-
-        //[ObservableProperty]
-        //string? volumeName;
-
-        //[ObservableProperty]
-        //string? deviceID;
-
-        //[ObservableProperty]
-        //string? fileSystem;
-
-        //[ObservableProperty]
-        //string? freeSpace;
-
-        //[ObservableProperty]
-        //string? size;
-
-        //[ObservableProperty]
-        //string? volumeSerialNumber;
         
+        [JsonIgnore]
+        public string ConnectionState { get; set; } = "Default Connection State" ;
 
-
+        [JsonIgnore]
+        public string ConnectionColor { get; set; } = "Red";
+        //string? name;
+        //string? caption;
+        //string? volumeName;
+        //string? deviceID;
+        //string? fileSystem;
+        //string? freeSpace;
+        //string? size;
+        //string? volumeSerialNumber;
 
     }
 }

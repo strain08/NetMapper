@@ -6,6 +6,10 @@ using NetDriveManager.Services;
 using NetDriveManager.Services.Helpers;
 using System.Diagnostics;
 using System.Threading;
+using Avalonia;
+using NetDriveManager;
+using Splat;
+using System;
 
 namespace NetDriveManager.ViewModels
 {
@@ -16,14 +20,14 @@ namespace NetDriveManager.ViewModels
 
         [ObservableProperty]
         DriveListViewModel list;
-
+        
+        
         public MainWindowViewModel()
         {
             VMServices.DriveListViewModel = new DriveListViewModel();
             Content = List = VMServices.DriveListViewModel;
-            //Thread t = new Thread(() => { NetworkDriveManager.IsMachineOnline("ddd"); });
-            //t.Start();
-            //string s = string.Empty;
+            
+            
         }
     }
 }

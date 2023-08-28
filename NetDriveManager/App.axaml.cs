@@ -8,6 +8,10 @@ using NetDriveManager.Services;
 using NetDriveManager.Services.Helpers;
 using NetDriveManager.ViewModels;
 using NetDriveManager.Views;
+using Splat;
+using System;
+using System.Diagnostics;
+using System.Linq;
 
 namespace NetDriveManager
 {
@@ -15,6 +19,7 @@ namespace NetDriveManager
     {
         public override void Initialize()
         {
+            
             AvaloniaXamlLoader.Load(this);
         }
 
@@ -25,24 +30,18 @@ namespace NetDriveManager
                 // Line below is needed to remove Avalonia data validation.
                 // Without this line you will get duplicate validations from both Avalonia and CT
                 BindingPlugins.DataValidators.RemoveAt(0);
-
-                Database.jsonSettingsFile = "NetDriveSettings.json";
-                Database.ReadFromFile();
-                
-                
-
+              
+                Bootstrapper.Register(Locator.CurrentMutable, Locator.Current);
+               
                 desktop.MainWindow = new MainWindow
                 {
                     DataContext = VMServices.MainWindowViewModel = new MainWindowViewModel(),
                 };
             }
-            
+
             base.OnFrameworkInitializationCompleted();
         }
-        
-        public override void RegisterServices()
-        {
-            base.RegisterServices();
-        }
+       
+
     }
 }

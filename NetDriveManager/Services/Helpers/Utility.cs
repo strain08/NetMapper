@@ -30,7 +30,8 @@ namespace NetDriveManager.Services.Helpers
             //Checks if the last character is \ as this causes error on mapping a drive.
             if (sNetworkPath.Substring(sNetworkPath.Length - 1, 1) == @"\")
             {
-                sNetworkPath = sNetworkPath.Substring(0, sNetworkPath.Length - 1);
+                // sNetworkPath.Substring(0, sNetworkPath.Length - 1);
+                sNetworkPath = sNetworkPath[..^1];
             }
 
             NETRESOURCE oNetworkResource = new NETRESOURCE()
@@ -147,7 +148,7 @@ namespace NetDriveManager.Services.Helpers
             {
                 var searcher = new ManagementObjectSearcher("root\\CIMV2", $"SELECT * FROM Win32_LogicalDisk WHERE DriveType={(int)DriveType.Network}");
 
-                foreach (ManagementObject queryObj in searcher.Get())
+                foreach (ManagementObject queryObj in searcher.Get().Cast<ManagementObject>())
                 {
                     var nd = new NDModel();
                     nd.DriveLetter = (string)queryObj["Caption"];

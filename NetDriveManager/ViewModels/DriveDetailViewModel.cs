@@ -2,9 +2,8 @@
 using NetDriveManager.Models;
 using NetDriveManager.Services;
 using NetDriveManager.Services.Helpers;
+using Splat;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Diagnostics;
 
 namespace NetDriveManager.ViewModels
 {
@@ -15,15 +14,16 @@ namespace NetDriveManager.ViewModels
         NDModel
             displayItem;
 
-        public List<string> 
-            DriveLettersList { get; set; } = new();
+        public List<string>
+            DriveLettersList
+        { get; set; } = new();
 
         [ObservableProperty]
-        string? 
+        string?
             selectedLetter;
 
         [ObservableProperty]
-        string? 
+        string?
             operationTitle;
 
         private bool IsEditing
@@ -45,41 +45,51 @@ namespace NetDriveManager.ViewModels
 
         private bool isEditing;
 
-        public DriveDetailViewModel(bool isEditing)
+        private readonly NDManager? _ndmanager;      
+
+       
+        public DriveDetailViewModel(NDModel? selectedItem = null)
+        {
+            _ndmanager = Locator.Current.GetService<NDManager>() ?? throw new KeyNotFoundException();
+            LoadDriveLetters();
+
+            if (selectedItem == null)
+            {
+                IsEditing = false;                
+                DisplayItem = new();
+            }
+            else
+            {
+                IsEditing = true;                
+                // decoupled copy of selected item
+                DisplayItem = new NDModel(selectedItem);
+                // extract just drive letter from X:
+                SelectedLetter = DisplayItem.DriveLetter[0].ToString();
+            }
+        }
+
+        private void LoadDriveLetters()
         {
             var dl = new List<char>(Utility.GetAvailableDriveLetters());
             foreach (var item in dl)
             {
                 DriveLettersList.Add(item.ToString());
             }
-            
-            IsEditing = isEditing;
-            if (isEditing)
-            {
-                DisplayItem = new NDModel(VMServices.DriveListViewModel!.SelectedItem!);
-                SelectedLetter = DisplayItem.DriveLetter.Substring(0,1);
-            }
-            else
-            {
-                DisplayItem = new();
-            }
         }
-
         public void Ok()
         {
-            Debug.WriteLine(DisplayItem.Hostname);
-            DisplayItem.DriveLetter = selectedLetter + ":";
+
+            DisplayItem.DriveLetter = SelectedLetter + ":";
             if (IsEditing)
             {
-                
-                NDManager.EditDrive(VMServices.DriveListViewModel!.SelectedItem!, DisplayItem!);
-                VMServices.MainWindowViewModel!.Content = VMServices.MainWindowViewModel.List;
+                _ndmanager.EditDrive(VMServices.DriveListViewModel!.SelectedItem!, DisplayItem!);
             }
             else
             {
-                NDManager.AddDrive(DisplayItem!);
-                VMServices.MainWindowViewModel!.Content = VMServices.MainWindowViewModel.List;
+                _ndmanager.AddDrive(DisplayItem!);
             }
+            VMServices.DriveListViewModel.SelectedItem = DisplayItem;
+            VMServices.MainWindowViewModel!.Content = VMServices.MainWindowViewModel.List;
         }
 
         public void Cancel()
