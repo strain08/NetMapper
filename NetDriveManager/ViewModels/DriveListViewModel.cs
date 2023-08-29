@@ -19,7 +19,7 @@ namespace NetDriveManager.ViewModels
             selectedItem;
 
         private readonly NDManager _ndmanager;
-        private readonly NetMonitor _netMonitor;
+        //private readonly NetMonitor _netMonitor;
 
         // CTOR
         public DriveListViewModel()
@@ -27,8 +27,6 @@ namespace NetDriveManager.ViewModels
             if (Avalonia.Controls.Design.IsDesignMode) return;
 
             _ndmanager = Locator.Current.GetService<NDManager>() ?? throw new KeyNotFoundException("Error getting service " + typeof(NDManager));
-            
-
             NetDrivesList = _ndmanager.NetDriveList;
         }
 
