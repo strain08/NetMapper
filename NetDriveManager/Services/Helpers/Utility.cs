@@ -40,7 +40,6 @@ namespace NetDriveManager.Services.Helpers
                 sLocalName = sDriveLetter + ":",
                 sRemoteName = sNetworkPath
             };
-
             return WNetAddConnection2(ref oNetworkResource, null, null, 0);
         }
 
@@ -139,8 +138,18 @@ namespace NetDriveManager.Services.Helpers
             
             return availableLetters;
         }
-        
-        public static List<NDModel>? 
+
+        public static string GetPathForLetter(string letter)
+        {
+            var mappedList = GetMappedDrives();
+            foreach (NDModel item in mappedList)
+            {
+                if (item.DriveLetter[0] == letter[0]) return item.NetworkPath;
+            }
+            return string.Empty;
+        }
+
+        public static List<NDModel> 
             GetMappedDrives()
         {
             var mappedDrives = new List<NDModel>();
@@ -152,7 +161,7 @@ namespace NetDriveManager.Services.Helpers
                 {
                     var nd = new NDModel();
                     nd.DriveLetter = (string)queryObj["Caption"];
-                    nd.Provider = (string)queryObj["ProviderName"];
+                    nd.NetworkPath = (string)queryObj["ProviderName"];
                     mappedDrives.Add(nd);
 
                     //nd.DeviceID = (string)queryObj["DeviceID"];
@@ -173,7 +182,7 @@ namespace NetDriveManager.Services.Helpers
             catch (ManagementException e)
             {
                 Debug.WriteLine("An error occurred while querying for WMI data: " + e.Message);
-                return null;
+                return mappedDrives;
             }
         }
     }

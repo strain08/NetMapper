@@ -14,9 +14,12 @@ namespace NetDriveManager.Services
             // singleton list manager for mappings
             s.RegisterConstant<NDManager>(
                 new NDManager(r.GetService<IStorage>()));
-            s.RegisterConstant<ConnManager>(
-                new ConnManager(r.GetService<NDManager>()));
-
+            s.RegisterLazySingleton<NetMonitor>(() => new NetMonitor());
+            s.RegisterConstant<ConnManager>(new ConnManager(
+                r.GetService<NDManager>(),
+                r.GetService<NetMonitor>()
+                ));
+            
         }
     }
 }

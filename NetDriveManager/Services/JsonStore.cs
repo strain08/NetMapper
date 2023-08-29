@@ -12,7 +12,7 @@ namespace NetDriveManager.Services
 
         private string? jsonSettingsFile;
         
-        private List<NDModel>? DrivesDb { get; set; }
+        private List<NDModel> DrivesDb { get; set; } = new();
         
         // CTOR
         

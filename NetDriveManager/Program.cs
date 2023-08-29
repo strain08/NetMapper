@@ -18,7 +18,6 @@ namespace NetDriveManager
             => AppBuilder.Configure<App>()
                 .UsePlatformDetect()
                 .LogToTrace()
-            .WithInterFont()
-            .UseReactiveUI();    
+            .WithInterFont().UseReactiveUI();    
     }
 }

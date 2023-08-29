@@ -1,17 +1,11 @@
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
-using Avalonia.Data.Core;
 using Avalonia.Data.Core.Plugins;
 using Avalonia.Markup.Xaml;
-using NetDriveManager.Models;
 using NetDriveManager.Services;
-using NetDriveManager.Services.Helpers;
 using NetDriveManager.ViewModels;
 using NetDriveManager.Views;
 using Splat;
-using System;
-using System.Diagnostics;
-using System.Linq;
 
 namespace NetDriveManager
 {
@@ -41,6 +35,7 @@ namespace NetDriveManager
 
             base.OnFrameworkInitializationCompleted();
         }
+        
        
 
     }

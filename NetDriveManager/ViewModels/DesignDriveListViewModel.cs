@@ -8,9 +8,9 @@ namespace NetDriveManager.ViewModels
         {
             NetDrivesList = new()
             {
-                new NDModel { DriveLetter = "X:", Provider = @"\\XOXO\mir1", ConnectionState="Test" },
-                new NDModel { DriveLetter = "Y:", Provider = @"\\XOXO\mir2" },
-                new NDModel { DriveLetter = "Z:", Provider = @"\\XOXO\mir2\share" }
+                new NDModel { DriveLetter = "X:", NetworkPath = @"\\XOXO\mir1", ConnectionState="Test" },
+                new NDModel { DriveLetter = "Y:", NetworkPath = @"\\XOXO\mir2" },
+                new NDModel { DriveLetter = "Z:", NetworkPath = @"\\XOXO\mir2\share" }
             };
 
 

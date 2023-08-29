@@ -41,7 +41,7 @@
 					<TextBlock
 						Classes="textDetail"
 						Margin="4"
-						Text="{Binding Provider}"/>
+						Text="{Binding NetworkPath}"/>
 					<TextBlock 
 						Classes="textDetail"
 						Foreground="{Binding ConnectionColor}"						

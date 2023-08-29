@@ -10,44 +10,46 @@ namespace NetDriveManager.Models
 
         public NDModel(NDModel copyModel)
         {
-            Provider = copyModel.Provider;
+            NetworkPath = copyModel.NetworkPath;
             DriveLetter = copyModel.DriveLetter;
         }
         public NDModel() { }
         
         // PUBLIC PROP
-        public string? DriveLetter { get; set; }
+        public string DriveLetter { get; set; } = string.Empty;
 
-        public string? Provider { get; set; }
-        
+        public string NetworkPath { get; set; } = string.Empty;
+
         [JsonIgnore]
-        public string? Hostname
+        public string Hostname
         {
             get
             {
-                if (string.IsNullOrEmpty(Provider))
+                if (string.IsNullOrEmpty(NetworkPath))
                 {
-                    return null;
+                    return string.Empty;
                 }
                 else
                 {
                     // Return SERVER from \\SERVER\share\etc
                     string pattern = @"\\\\(.*?)\\";
-                    Match m = Regex.Match(Provider, pattern);
+                    Match m = Regex.Match(NetworkPath, pattern);
                     if (m.Success)
                     {
                         return m.Groups[1].Value;
                     }
                 }
-                return null;
+                return string.Empty;
             }
         }
         
         [JsonIgnore]
-        public string ConnectionState { get; set; } = "Default Connection State" ;
+        [ObservableProperty]
+        string connectionState = "Default Connection State" ;
 
         [JsonIgnore]
-        public string ConnectionColor { get; set; } = "Red";
+        [ObservableProperty]
+        string connectionColor = "White";
         //string? name;
         //string? caption;
         //string? volumeName;
