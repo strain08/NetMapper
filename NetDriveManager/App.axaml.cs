@@ -6,6 +6,9 @@ using NetDriveManager.Services;
 using NetDriveManager.ViewModels;
 using NetDriveManager.Views;
 using Splat;
+using System.Diagnostics;
+using System;
+using Avalonia.Controls;
 
 namespace NetDriveManager
 {
@@ -35,8 +38,8 @@ namespace NetDriveManager
 
             base.OnFrameworkInitializationCompleted();
         }
-        
        
+
 
     }
 }

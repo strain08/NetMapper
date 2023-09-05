@@ -2,39 +2,38 @@
 using System.Diagnostics;
 using System.Net.NetworkInformation;
 
-namespace NetDriveManager.Services
+namespace NetDriveManager.Services.Monitoring
 {
-    public class NetMonitor
-    {
-        public event EventHandler<EventArgs>? ConnectionOnline;
-        public event EventHandler<EventArgs>? ConnectionClosed;
+    public delegate void ConnectionOnline();
+    public delegate void ConnectionOffline();
 
-        public NetMonitor()
+    public class NetworkAvailabilityMon
+    {
+       public ConnectionOffline? OnConnectionOffline;
+       public ConnectionOnline? OnConnectionOnline;
+
+        public NetworkAvailabilityMon()
         {
             NetworkChange.NetworkAvailabilityChanged += NetworkAvailabilityChanged;
         }
         private void NetworkAvailabilityChanged(object? sender, NetworkAvailabilityEventArgs e)
         {
+            if (OnConnectionOnline == null) return; 
+            if (OnConnectionOffline == null) return;
+            
             if (e.IsAvailable)
             {
                 OnConnectionOnline();
             }
             else
             {
-                OnConnectionClosed();
+                OnConnectionOffline();
             }
         }
-        ~NetMonitor()
+        ~NetworkAvailabilityMon()
         {
             NetworkChange.NetworkAvailabilityChanged -= NetworkAvailabilityChanged;
         }
-        protected virtual void OnConnectionOnline()
-        {
-            ConnectionOnline?.Invoke(this, new EventArgs());
-        }
-        protected virtual void OnConnectionClosed()
-        {
-            ConnectionClosed?.Invoke(this, new EventArgs());
-        }
+        
     }
 }

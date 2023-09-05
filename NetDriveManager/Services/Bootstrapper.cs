@@ -1,4 +1,5 @@
 ﻿using NetDriveManager.Interfaces;
+using NetDriveManager.Services.Monitoring;
 using Splat;
 
 namespace NetDriveManager.Services
@@ -9,17 +10,16 @@ namespace NetDriveManager.Services
         {
 
             // transient data storage
-            s.Register<IStorage>(
-                () => new JsonStore("NetDriveSettings.json"));
+            s.Register
+                <IStorage>(() => new JsonStore("NetDriveSettings.json"));
             // singleton list manager for mappings
-            s.RegisterConstant<NDManager>(
-                new NDManager(r.GetService<IStorage>()));
-            s.RegisterLazySingleton<NetMonitor>(() => new NetMonitor());
-            s.RegisterConstant<ConnManager>(new ConnManager(
-                r.GetService<NDManager>(),
-                r.GetService<NetMonitor>()
-                ));
-            
+            s.RegisterConstant
+                <DriveListManager>(new DriveListManager(r.GetService<IStorage>()));
+            s.RegisterLazySingleton
+                <NetworkAvailabilityMon>(() => new NetworkAvailabilityMon());
+            s.RegisterConstant
+                <ConnectionEventHandler>(new ConnectionEventHandler(r.GetService<DriveListManager>(), r.GetService<NetworkAvailabilityMon>()));
+
         }
     }
 }

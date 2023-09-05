@@ -11,7 +11,7 @@ namespace NetDriveManager.ViewModels
     {
 
         [ObservableProperty]
-        NDModel
+        MappingModel
             displayItem;
 
         public List<string>
@@ -45,12 +45,12 @@ namespace NetDriveManager.ViewModels
 
         private bool isEditing;
 
-        private readonly NDManager? _ndmanager;      
+        private readonly DriveListManager? _ndmanager;
 
-       
-        public DriveDetailViewModel(NDModel? selectedItem = null)
+        // CTOR
+        public DriveDetailViewModel(MappingModel? selectedItem = null)
         {
-            _ndmanager = Locator.Current.GetService<NDManager>() ?? throw new KeyNotFoundException();
+            _ndmanager = Locator.Current.GetService<DriveListManager>() ?? throw new KeyNotFoundException();
             LoadDriveLetters();
 
             if (selectedItem == null)
@@ -62,7 +62,9 @@ namespace NetDriveManager.ViewModels
             {
                 IsEditing = true;                
                 // decoupled copy of selected item
-                DisplayItem = new NDModel(selectedItem);
+                DisplayItem = new MappingModel(selectedItem);
+
+                DriveLettersList.Add(selectedItem.DriveLetter[0].ToString());
                 // extract just drive letter from X:
                 SelectedLetter = DisplayItem.DriveLetter[0].ToString();
             }

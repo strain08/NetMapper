@@ -21,7 +21,7 @@ public partial class DriveListView : UserControl
     private void OnDoubleClick(object source, TappedEventArgs args)
     {
         var lb = source as ListBox;
-        var si = lb!.SelectedItem as NDModel;        
+        var si = lb!.SelectedItem as MappingModel;        
         
         // Navigate to DetailView
         VMServices.MainWindowViewModel!.Content = new DriveDetailViewModel(si);

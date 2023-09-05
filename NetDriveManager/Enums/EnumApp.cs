@@ -4,12 +4,15 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace NetDriveManager.Services.Helpers
+namespace NetDriveManager.Enums
 {
-    enum ConnectionState
+    public enum ConnectionState
     {
+        Undefined,
+        Degraded,
         Connected,
         Disconnected,
-        Connecting
+        Connecting,
+        Disconnecting
     }
 }

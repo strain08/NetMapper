@@ -25,10 +25,7 @@ namespace NetDriveManager.ViewModels
         public MainWindowViewModel()
         {
             VMServices.DriveListViewModel = new DriveListViewModel();
-            Content = List = VMServices.DriveListViewModel;
-            var t = new MyToastService();
-            t.ToastCanNotRemoveDrive("X:");
-            
+            Content = List = VMServices.DriveListViewModel;            
         }
     }
 }

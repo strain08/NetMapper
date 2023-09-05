@@ -1,4 +1,5 @@
-﻿using NetDriveManager.Models;
+﻿using NetDriveManager.Enums;
+using NetDriveManager.Models;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -142,24 +143,24 @@ namespace NetDriveManager.Services.Helpers
         public static string GetPathForLetter(string letter)
         {
             var mappedList = GetMappedDrives();
-            foreach (NDModel item in mappedList)
+            foreach (MappingModel item in mappedList)
             {
                 if (item.DriveLetter[0] == letter[0]) return item.NetworkPath;
             }
             return string.Empty;
         }
 
-        public static List<NDModel> 
+        public static List<MappingModel> 
             GetMappedDrives()
         {
-            var mappedDrives = new List<NDModel>();
+            var mappedDrives = new List<MappingModel>();
             try
             {
                 var searcher = new ManagementObjectSearcher("root\\CIMV2", $"SELECT * FROM Win32_LogicalDisk WHERE DriveType={(int)DriveType.Network}");
 
                 foreach (ManagementObject queryObj in searcher.Get().Cast<ManagementObject>())
                 {
-                    var nd = new NDModel();
+                    var nd = new MappingModel();
                     nd.DriveLetter = (string)queryObj["Caption"];
                     nd.NetworkPath = (string)queryObj["ProviderName"];
                     mappedDrives.Add(nd);

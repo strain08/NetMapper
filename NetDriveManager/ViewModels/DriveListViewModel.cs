@@ -4,21 +4,22 @@ using NetDriveManager.Services;
 using Splat;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 
 namespace NetDriveManager.ViewModels
 {
     public partial class DriveListViewModel : ViewModelBase
     {
         // PROP
-        public ObservableCollection<NDModel>
+        public ObservableCollection<MappingModel>
             NetDrivesList
         { get; set; }
 
         [ObservableProperty]
-        NDModel?
+        MappingModel?
             selectedItem;
 
-        private readonly NDManager _ndmanager;
+        private readonly DriveListManager _ndmanager;
         //private readonly NetMonitor _netMonitor;
 
         // CTOR
@@ -26,11 +27,15 @@ namespace NetDriveManager.ViewModels
         {
             if (Avalonia.Controls.Design.IsDesignMode) return;
 
-            _ndmanager = Locator.Current.GetService<NDManager>() ?? throw new KeyNotFoundException("Error getting service " + typeof(NDManager));
+            _ndmanager = Locator.Current.GetService<DriveListManager>() ?? throw new KeyNotFoundException("Error getting service " + typeof(DriveListManager));
             NetDrivesList = _ndmanager.NetDriveList;
         }
 
         // COMMS
+        public void DisconnectCommand()
+        {
+            Debug.WriteLine("Viwe model:" + SelectedItem.DriveLetter);
+        }
 
         public void RemoveItem()
         {

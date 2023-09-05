@@ -2,7 +2,7 @@
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 
-namespace NetDriveManager.Services.Helpers
+namespace NetDriveManager.Enums
 {
     [StructLayout(LayoutKind.Sequential)]
     struct NETRESOURCE
@@ -243,7 +243,7 @@ namespace NetDriveManager.Services.Helpers
 
     internal class LocDescriptionAttribute : Attribute
     {
-        public LocDescriptionAttribute(string a) 
+        public LocDescriptionAttribute(string a)
         {
             Debug.Print(a);
         }

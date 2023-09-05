@@ -7,7 +7,7 @@ namespace NetDriveManager.Services
 {    
     public class RemoveDriveEventArgs : EventArgs
     {
-        public NDModel Model { get; set; } = new NDModel();
+        public MappingModel Model { get; set; } = new MappingModel();
     }
 
     public class MyToastService
@@ -20,7 +20,7 @@ namespace NetDriveManager.Services
         // retry
         public event EventHandler<RemoveDriveEventArgs>? 
             RetryRemoveDrive;
-        protected virtual void OnRetryRemoveDrive(NDModel model)
+        protected virtual void OnRetryRemoveDrive(MappingModel model)
         {
             RetryRemoveDrive?.Invoke(this, new RemoveDriveEventArgs() { Model = model });
         }
@@ -28,7 +28,7 @@ namespace NetDriveManager.Services
         // force
         public event EventHandler<RemoveDriveEventArgs>? 
             ForceRemoveDrive;
-        protected virtual void OnForceRemoveDrive(NDModel model)
+        protected virtual void OnForceRemoveDrive(MappingModel model)
         {
             ForceRemoveDrive?.Invoke(this, new RemoveDriveEventArgs() { Model = model });
         }
@@ -36,7 +36,7 @@ namespace NetDriveManager.Services
         // do nothing
         public event EventHandler<RemoveDriveEventArgs>? 
             DoNothing;
-        protected virtual void OnDoNothing(NDModel model)
+        protected virtual void OnDoNothing(MappingModel model)
         {
             DoNothing?.Invoke(this, new RemoveDriveEventArgs() { Model = model });
         }

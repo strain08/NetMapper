@@ -4,8 +4,8 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vm="using:NetDriveManager.ViewModels"
 			 mc:Ignorable="d" 
-			 d:DesignWidth="250" 
-			 d:DesignHeight="450"		
+			 d:DesignWidth="350" 
+			 d:DesignHeight="350"		
 			 x:DataType="vm:DriveListViewModel"
              x:Class="NetDriveManager.Views.DriveListView">
 	<Design.DataContext>
@@ -33,21 +33,44 @@
 		Background="Transparent">
 		<ListBox.ItemTemplate>
 			<DataTemplate>
-				<StackPanel Background="Transparent">
+				<DockPanel>
+					<Panel DockPanel.Dock="Right">
+						<Button 
+							Command="{Binding DisconnectCommand}"
+							Content="Detach"
+							IsVisible="{Binding DisconnectCommandVisible}"
+							FontSize="10"/>
+					</Panel>
+					<Panel DockPanel.Dock="Right">
+						<Button
+							Content="Attach"
+							FontSize="10"
+							IsVisible="{Binding ConnectCommandVisible}"
+							Command="{Binding ConnectCommand}"
+							/>  
+					</Panel>
+				<StackPanel 
+					Background="Transparent"
+					>
 					<TextBlock
+						VerticalAlignment="Top"
 						Classes="textMain"
-						Margin="4,4,0,0"
+						Margin="0,0,0,0"
 						Text="{Binding DriveLetter}"/>
+					
 					<TextBlock
 						Classes="textDetail"
-						Margin="4"
+						Margin="0"
 						Text="{Binding NetworkPath}"/>
 					<TextBlock 
 						Classes="textDetail"
-						Foreground="{Binding ConnectionColor}"						
-						Text="{Binding ConnectionState}"
+						Foreground="{Binding StatusColor}"						
+						Text="{Binding ConnectionStatusMessage}"
 						/>
+					
 				</StackPanel>
+					
+				</DockPanel>
 			</DataTemplate>
 		</ListBox.ItemTemplate>
 	</ListBox>

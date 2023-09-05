@@ -69,7 +69,7 @@
 					Text="Network path"/>
 				<TextBox
 					Classes="detail"					
-					Text="{Binding DisplayItem.Provider}"
+					Text="{Binding DisplayItem.NetworkPath}"
 					Watermark="\\SERVER\share"/>				
 			</StackPanel>			
 			<!-- PERSISTENT -->

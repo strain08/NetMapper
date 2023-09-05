@@ -1,12 +1,21 @@
-﻿using System.Management;
+﻿using System;
+using System.Management;
+using System.IO;
+using System.Diagnostics;
 
-namespace NetworkDriveConsole
+namespace NetDriveManager.Services.Monitoring
 {
-    public class WmiLogicalDiskOperations
-    {
+    public delegate void DriveConnected(string driveLetter);
+    public delegate void DriveDisconnected(string driveLetter);
 
+    public class DriveAddRemoveMon
+    {
+        // Detects when drive added or removed
+
+        public DriveConnected? DriveConnectedDelegate;
+        public DriveDisconnected? DriveDisconnectedDelegate;
         // CTOR
-        public WmiLogicalDiskOperations()
+        public DriveAddRemoveMon()
         {
 
             WqlEventQuery wqlEventQuery;
@@ -20,30 +29,29 @@ namespace NetworkDriveConsole
                 WithinInterval = new TimeSpan(0, 0, 5),
                 Condition = @"TargetInstance ISA 'Win32_LogicalDisk' "
             };
-            
+
             var w = new ManagementEventWatcher(scope, wqlEventQuery);
             w.EventArrived += new EventArrivedEventHandler(w_EventArrived);
             w.Start();
-
-
         }
-
 
         private void w_EventArrived(object sender, EventArrivedEventArgs e)
         {
-            var baseObject = (ManagementBaseObject)e.NewEvent;
+            if (DriveConnectedDelegate == null) return;
+            if (DriveDisconnectedDelegate == null) return;
+
+            var baseObject = e.NewEvent;
 
             if (baseObject.ClassPath.ClassName.Equals(WmiClass.INSTANCE_CREATION))
             {
                 // Drive connected
                 using var logicalDisk = (ManagementBaseObject)e.NewEvent["TargetInstance"];
 
-                Console.WriteLine("Drive type is {0}",
-                                  logicalDisk.Properties["DriveType"].Value);
-                foreach (PropertyData pd in logicalDisk.Properties)
+                if (Convert.ToInt32(logicalDisk.Properties["DriveType"].Value) == (int)DriveType.Network)
                 {
-                    Console.WriteLine(pd.Name + "\n" + pd.Value + "\n" + pd.Qualifiers);
-                    Console.WriteLine();
+                    Debug.WriteLine($"Network drive {logicalDisk.Properties["Name"].Value} added.");
+                    
+                    DriveConnectedDelegate((string)logicalDisk.Properties["Name"].Value);
                 }
 
             }
@@ -53,9 +61,10 @@ namespace NetworkDriveConsole
 
                 var logicalDisk = (ManagementBaseObject)e.NewEvent["TargetInstance"];
 
-                if (Convert.ToInt32(logicalDisk.Properties["DriveType"].Value) == (int)DriveType.NETWORK_DRIVE)
+                if (Convert.ToInt32(logicalDisk.Properties["DriveType"].Value) == (int)DriveType.Network)
                 {
-                    Console.WriteLine("Network drive");
+                    Debug.WriteLine($"Network drive {logicalDisk.Properties["Name"].Value} removed");
+                    DriveDisconnectedDelegate((string)logicalDisk.Properties["Name"].Value);
                 }
             }
         }
@@ -67,9 +76,5 @@ namespace NetworkDriveConsole
         public static readonly string INSTANCE_CREATION = "__InstanceCreationEvent";
         public static readonly string INSTANCE_DELETION = "__InstanceDeletionEvent";
     }
-    public enum DriveType
-    {
-        PHYSICAL_DRIVE = 2,
-        NETWORK_DRIVE = 4
-    }
+
 }
