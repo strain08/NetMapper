@@ -5,15 +5,15 @@ using System.Diagnostics;
 
 namespace NetDriveManager.Services.Monitoring
 {
-    public delegate void DriveConnected(string driveLetter);
-    public delegate void DriveDisconnected(string driveLetter);
+    public delegate void DriveConnectedDelegate(string driveLetter);
+    public delegate void DriveDisconnectedDelegate(string driveLetter);
 
     public class DriveAddRemoveMon
     {
         // Detects when drive added or removed
 
-        public DriveConnected? DriveConnectedDelegate;
-        public DriveDisconnected? DriveDisconnectedDelegate;
+        public DriveConnectedDelegate? OnDriveConnected;
+        public DriveDisconnectedDelegate? OnDriveDisconnected;
         // CTOR
         public DriveAddRemoveMon()
         {
@@ -37,8 +37,8 @@ namespace NetDriveManager.Services.Monitoring
 
         private void w_EventArrived(object sender, EventArrivedEventArgs e)
         {
-            if (DriveConnectedDelegate == null) return;
-            if (DriveDisconnectedDelegate == null) return;
+            if (OnDriveConnected == null) return;
+            if (OnDriveDisconnected == null) return;
 
             var baseObject = e.NewEvent;
 
@@ -51,7 +51,7 @@ namespace NetDriveManager.Services.Monitoring
                 {
                     Debug.WriteLine($"Network drive {logicalDisk.Properties["Name"].Value} added.");
                     
-                    DriveConnectedDelegate((string)logicalDisk.Properties["Name"].Value);
+                    OnDriveConnected((string)logicalDisk.Properties["Name"].Value);
                 }
 
             }
@@ -64,7 +64,7 @@ namespace NetDriveManager.Services.Monitoring
                 if (Convert.ToInt32(logicalDisk.Properties["DriveType"].Value) == (int)DriveType.Network)
                 {
                     Debug.WriteLine($"Network drive {logicalDisk.Properties["Name"].Value} removed");
-                    DriveDisconnectedDelegate((string)logicalDisk.Properties["Name"].Value);
+                    OnDriveDisconnected((string)logicalDisk.Properties["Name"].Value);
                 }
             }
         }

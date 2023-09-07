@@ -2,7 +2,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:vm="using:NetDriveManager.ViewModels"
+             xmlns:vm="using:NetDriveManager.ViewModels"			 
 			 mc:Ignorable="d" 
 			 d:DesignWidth="350" 
 			 d:DesignHeight="350"		
@@ -35,11 +35,14 @@
 			<DataTemplate>
 				<DockPanel>
 					<Panel DockPanel.Dock="Right">
+						<!-- Command parameter contains MappingModel-->
 						<Button 
-							Command="{Binding DisconnectCommand}"
+							Command="{Binding $parent[UserControl].DataContext.Dcv}"							
 							Content="Detach"
 							IsVisible="{Binding DisconnectCommandVisible}"
-							FontSize="10"/>
+							CommandParameter="{Binding}"
+							FontSize="10">							
+							</Button>
 					</Panel>
 					<Panel DockPanel.Dock="Right">
 						<Button
@@ -47,6 +50,7 @@
 							FontSize="10"
 							IsVisible="{Binding ConnectCommandVisible}"
 							Command="{Binding ConnectCommand}"
+							CommandParameter="{Binding}"
 							/>  
 					</Panel>
 				<StackPanel 

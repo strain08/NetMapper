@@ -23,15 +23,16 @@ namespace NetDriveManager.Services
             NetDriveList = new ObservableCollection<MappingModel>(_store.GetAll());
             foreach (MappingModel model in NetDriveList) 
             {
-                model.OnDisconnectCommand = DisconnectDrive;
-                model.OnConnectCommand = ConnectDrive;
+                // model delegate is bound to list buttons
+                model.OnConnectCommand = ConnectDriveCommand;
+                model.OnDisconnectCommand = DisconnectDriveCommand;                
             }
 
         }
 
         public void AddDrive(MappingModel model)
         {
-            model.OnDisconnectCommand+= DisconnectDrive;
+            model.OnDisconnectCommand+= DisconnectDriveCommand;
             NetDriveList.Add(model);           
 
             _store.Update(new List<MappingModel>(NetDriveList));
@@ -45,10 +46,7 @@ namespace NetDriveManager.Services
             _store.Update(new List<MappingModel>(NetDriveList));
         }
 
-        public void Clear()
-        {
-            NetDriveList.Clear();
-        }
+
 
         public void EditDrive(MappingModel oldModel, MappingModel newModel)
         {
@@ -59,12 +57,12 @@ namespace NetDriveManager.Services
             _store.Update(new List<MappingModel>(NetDriveList));
         }
 
-        private void DisconnectDrive(MappingModel model)
+        private void DisconnectDriveCommand(MappingModel model)
         {
             Utility.DisconnectNetworkDrive(model.DriveLetter[0].ToString(), true);
         }
 
-        private void ConnectDrive(MappingModel model)
+        private void ConnectDriveCommand(MappingModel model)
         {
             Utility.MapNetworkDrive(model.DriveLetter[0].ToString(),model.NetworkPath );
         }

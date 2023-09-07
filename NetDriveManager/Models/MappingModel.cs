@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using NetDriveManager.Enums;
+using System.Diagnostics;
 using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
 
@@ -50,9 +51,10 @@ namespace NetDriveManager.Models
         }
 
 
-        public void DisconnectCommand()
+        public void DisconnectCommand(object obj)
         {
-
+            Debug.WriteLine(obj.GetType().ToString());
+            
             if (OnDisconnectCommand != null)
             {
                 OnDisconnectCommand(this);
@@ -73,10 +75,10 @@ namespace NetDriveManager.Models
         bool disconnectCommandVisible;
 
         [ObservableProperty]
-        string connectionStatusMessage = "Status changing...";
+        string connectionStatusMessage = "Updating status...";
 
         [ObservableProperty]
-        string statusColor;
+        string statusColor=COLOR_WARNING;
 
         const string COLOR_OK = "Green";
         const string COLOR_ERROR = "Red";

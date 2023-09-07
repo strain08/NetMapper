@@ -12,14 +12,13 @@ namespace NetDriveManager.ViewModels
     {
         // PROP
         public ObservableCollection<MappingModel>
-            NetDrivesList
-        { get; set; }
+            NetDrivesList { get; set; }
 
         [ObservableProperty]
         MappingModel?
             selectedItem;
 
-        private readonly DriveListManager _ndmanager;
+        private readonly DriveListManager _listManager;
         //private readonly NetMonitor _netMonitor;
 
         // CTOR
@@ -27,28 +26,29 @@ namespace NetDriveManager.ViewModels
         {
             if (Avalonia.Controls.Design.IsDesignMode) return;
 
-            _ndmanager = Locator.Current.GetService<DriveListManager>() ?? throw new KeyNotFoundException("Error getting service " + typeof(DriveListManager));
-            NetDrivesList = _ndmanager.NetDriveList;
+            _listManager = Locator.Current.GetService<DriveListManager>() ?? throw new KeyNotFoundException("Error getting service " + typeof(DriveListManager));
+            NetDrivesList = _listManager.NetDriveList;
         }
 
-        // COMMS
-        public void DisconnectCommand()
+
+        // COMMS        
+        public void Dcv(object obj)
         {
-            Debug.WriteLine("Viwe model:" + SelectedItem.DriveLetter);
+            var model = (MappingModel)obj;
+            Debug.WriteLine("Viwe model:" + model.DriveLetter);
         }
 
         public void RemoveItem()
         {
             if (SelectedItem != null)
             {
-                _ndmanager.RemoveDrive(SelectedItem);
+                _listManager.RemoveDrive(SelectedItem);
             }
         }
 
         public void AddItem()
         {
             VMServices.MainWindowViewModel!.Content = new DriveDetailViewModel();
-
         }
 
 

@@ -4,13 +4,13 @@ using System.Net.NetworkInformation;
 
 namespace NetDriveManager.Services.Monitoring
 {
-    public delegate void ConnectionOnline();
-    public delegate void ConnectionOffline();
+    public delegate void ConnectionOnlineDelegate();
+    public delegate void ConnectionOfflineDelegate();
 
     public class NetworkAvailabilityMon
     {
-       public ConnectionOffline? OnConnectionOffline;
-       public ConnectionOnline? OnConnectionOnline;
+       public ConnectionOfflineDelegate? OnConnectionOffline;
+       public ConnectionOnlineDelegate? OnConnectionOnline;
 
         public NetworkAvailabilityMon()
         {

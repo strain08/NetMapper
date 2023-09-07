@@ -14,7 +14,7 @@ namespace NetDriveManager.Interfaces
         public void AddDrive(MappingModel model);
         public void RemoveDrive(MappingModel model);
         public void EditDrive(MappingModel oldModel, MappingModel newModel);
-        public void Clear();
+        
 
     }
 }
