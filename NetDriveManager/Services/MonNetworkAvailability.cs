@@ -2,25 +2,25 @@
 using System.Diagnostics;
 using System.Net.NetworkInformation;
 
-namespace NetDriveManager.Services.Monitoring
+namespace NetDriveManager.Services
 {
     public delegate void ConnectionOnlineDelegate();
     public delegate void ConnectionOfflineDelegate();
 
-    public class NetworkAvailabilityMon
+    public class MonNetworkAvailability
     {
-       public ConnectionOfflineDelegate? OnConnectionOffline;
-       public ConnectionOnlineDelegate? OnConnectionOnline;
+        public ConnectionOfflineDelegate? OnConnectionOffline;
+        public ConnectionOnlineDelegate? OnConnectionOnline;
 
-        public NetworkAvailabilityMon()
+        public MonNetworkAvailability()
         {
             NetworkChange.NetworkAvailabilityChanged += NetworkAvailabilityChanged;
         }
         private void NetworkAvailabilityChanged(object? sender, NetworkAvailabilityEventArgs e)
         {
-            if (OnConnectionOnline == null) return; 
+            if (OnConnectionOnline == null) return;
             if (OnConnectionOffline == null) return;
-            
+
             if (e.IsAvailable)
             {
                 OnConnectionOnline();
@@ -30,10 +30,10 @@ namespace NetDriveManager.Services.Monitoring
                 OnConnectionOffline();
             }
         }
-        ~NetworkAvailabilityMon()
+        ~MonNetworkAvailability()
         {
             NetworkChange.NetworkAvailabilityChanged -= NetworkAvailabilityChanged;
         }
-        
+
     }
 }

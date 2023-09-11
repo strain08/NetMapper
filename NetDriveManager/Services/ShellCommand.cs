@@ -7,16 +7,50 @@ namespace NetDriveManager.Services.Helpers
 {
     public class ShellCommand
     {
-        const int NETUSE_STATUS = 0;
-        const int NETUSE_LOCAL = 1;
-        const int NETUSE_REMOTE = 2;
-        private readonly ProcessStartInfo? _startInfo;
+        private const int 
+            NETUSE_STATUS = 0,
+            NETUSE_LOCAL = 1,
+            NETUSE_REMOTE = 2;
+        private readonly ProcessStartInfo _startInfo;
         private readonly Process _process;
+        
+        //CTOR
+        public ShellCommand()
+        {
+            _startInfo = new ProcessStartInfo
+            {
+                RedirectStandardOutput = true,
+                UseShellExecute = false,
+                CreateNoWindow = true
+            };
+            _process = new Process
+            {
+                StartInfo = _startInfo
+            };
+        }
+        
+        private string ExecuteCmdSync(string command)
+        {
+            try
+            {
+                _process.StartInfo.FileName = "cmd ";                
+                _process.StartInfo.Arguments = "/c " + command; // execute and exit - /c 
+                _process.Start();                
+                return _process.StandardOutput.ReadToEnd();
 
-        public string NetUseStatus(string driveLetter)
+            }
+            catch (Exception ex)
+            {
+                // Log the exception
+                Debug.WriteLine("ExecuteCommandSync failed: " + ex.Message);
+                return string.Empty;
+            }
+        }
+
+        public string CmdNetUseStatus(string driveLetter)
         {
 
-            IEnumerable<String> output = ExecuteCommandSync("net use")
+            IEnumerable<String> output = ExecuteCmdSync("net use")
                                                         .Split('\n')
                                                         .Where(x => x.Contains(':'));
 
@@ -33,36 +67,8 @@ namespace NetDriveManager.Services.Helpers
         }
 
 
-        public ShellCommand()
-        {
-            ProcessStartInfo procStartInfo = new ProcessStartInfo
-            {
-                RedirectStandardOutput = true,
-                UseShellExecute = false,
-                CreateNoWindow = true
-            };
-            _process = new Process
-            {
-                StartInfo = procStartInfo
-            };
-        }
+       
 
-        private string ExecuteCommandSync(string command)
-        {
-            try
-            {
-                _process.StartInfo.FileName = "cmd ";
-                _process.StartInfo.Arguments = "/c " + command;
-                _process.Start();
-                return _process.StandardOutput.ReadToEnd();
-
-            }
-            catch (Exception ex)
-            {
-                // Log the exception
-                Debug.WriteLine("ExecuteCommandSync failed" + ex.Message);
-                return string.Empty;
-            }
-        }
+        
     }
 }

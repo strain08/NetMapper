@@ -17,7 +17,8 @@ namespace NetDriveManager
         public static AppBuilder BuildAvaloniaApp()
             => AppBuilder.Configure<App>()
                 .UsePlatformDetect()
+            
                 .LogToTrace()
-            .WithInterFont().UseReactiveUI();    
+            .UseReactiveUI();    
     }
 }

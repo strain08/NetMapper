@@ -6,13 +6,16 @@ using System.Threading.Tasks;
 
 namespace NetDriveManager.Enums
 {
-    public enum ConnectionState
+    public enum ShareState
+    {
+        Undefined,        
+        Available,
+        Unavailable 
+    }
+    public enum MappingState
     {
         Undefined,
-        Degraded,
-        Connected,
-        Disconnected,
-        Connecting,
-        Disconnecting
+        Mapped,
+        Unmapped
     }
 }

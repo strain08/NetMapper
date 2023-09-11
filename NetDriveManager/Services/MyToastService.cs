@@ -16,7 +16,7 @@ namespace NetDriveManager.Services
 
     public class MyToastService
     {
-        private RemoveDriveToastDelegate OnRemoveDriveToast;
+        private RemoveDriveToastDelegate _onRemoveDriveToast;
 
         const string ACTION_REMOVEDRIVE= "removedrive";
         const string ANSWER_REMOVEDRIVE_FORCE = "ForceArg";
@@ -28,7 +28,7 @@ namespace NetDriveManager.Services
         {
             
             ToastNotificationManagerCompat.OnActivated += ToastAnswer;
-            OnRemoveDriveToast = onRemoveDriveToast;
+            _onRemoveDriveToast = onRemoveDriveToast;
         }
 
         // TOAST ACTION SELECTOR

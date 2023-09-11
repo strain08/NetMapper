@@ -3,19 +3,19 @@ using System.Management;
 using System.IO;
 using System.Diagnostics;
 
-namespace NetDriveManager.Services.Monitoring
+namespace NetDriveManager.Services
 {
     public delegate void DriveConnectedDelegate(string driveLetter);
     public delegate void DriveDisconnectedDelegate(string driveLetter);
 
-    public class DriveAddRemoveMon
+    public class MonDriveConnection
     {
         // Detects when drive added or removed
 
         public DriveConnectedDelegate? OnDriveConnected;
         public DriveDisconnectedDelegate? OnDriveDisconnected;
         // CTOR
-        public DriveAddRemoveMon()
+        public MonDriveConnection()
         {
 
             WqlEventQuery wqlEventQuery;
@@ -50,7 +50,7 @@ namespace NetDriveManager.Services.Monitoring
                 if (Convert.ToInt32(logicalDisk.Properties["DriveType"].Value) == (int)DriveType.Network)
                 {
                     Debug.WriteLine($"Network drive {logicalDisk.Properties["Name"].Value} added.");
-                    
+
                     OnDriveConnected((string)logicalDisk.Properties["Name"].Value);
                 }
 

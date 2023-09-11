@@ -17,23 +17,16 @@ namespace NetDriveManager.Services
 
         private readonly IStorage _store;
 
+        // CTOR
         public DriveListManager(IStorage store)
         {
             _store = store;
             NetDriveList = new ObservableCollection<MappingModel>(_store.GetAll());
-            foreach (MappingModel model in NetDriveList) 
-            {
-                // model delegate is bound to list buttons
-                model.OnConnectCommand = ConnectDriveCommand;
-                model.OnDisconnectCommand = DisconnectDriveCommand;                
-            }
-
         }
 
         public void AddDrive(MappingModel model)
         {
-            model.OnDisconnectCommand+= DisconnectDriveCommand;
-            NetDriveList.Add(model);           
+            NetDriveList.Add(model);
 
             _store.Update(new List<MappingModel>(NetDriveList));
         }
@@ -47,7 +40,6 @@ namespace NetDriveManager.Services
         }
 
 
-
         public void EditDrive(MappingModel oldModel, MappingModel newModel)
         {
             var i = NetDriveList.IndexOf(oldModel);
@@ -57,15 +49,7 @@ namespace NetDriveManager.Services
             _store.Update(new List<MappingModel>(NetDriveList));
         }
 
-        private void DisconnectDriveCommand(MappingModel model)
-        {
-            Utility.DisconnectNetworkDrive(model.DriveLetter[0].ToString(), true);
-        }
-
-        private void ConnectDriveCommand(MappingModel model)
-        {
-            Utility.MapNetworkDrive(model.DriveLetter[0].ToString(),model.NetworkPath );
-        }
+       
     }
 
 

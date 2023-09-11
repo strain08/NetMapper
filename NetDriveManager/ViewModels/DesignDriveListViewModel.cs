@@ -1,4 +1,5 @@
 ﻿using NetDriveManager.Models;
+using NetDriveManager.Enums;
 
 namespace NetDriveManager.ViewModels
 {
@@ -8,8 +9,8 @@ namespace NetDriveManager.ViewModels
         {
             NetDrivesList = new()
             {
-                new MappingModel { DriveLetter = "X:", NetworkPath = @"\\XOXO\mir1" , ConnectionState=Enums.ConnectionState.Connected },
-                new MappingModel { DriveLetter = "Y:", NetworkPath = @"\\XOXO\mir2" },
+                new MappingModel { DriveLetter = "X:", NetworkPath = @"\\XOXO\mir1" , ShareStateProp=ShareState.Available, MappingStateProp=MappingState.Mapped },
+                new MappingModel { DriveLetter = "Y:", NetworkPath = @"\\XOXO\mir2", ShareStateProp=ShareState.Unavailable, MappingStateProp=MappingState.Unmapped },
                 new MappingModel { DriveLetter = "Z:", NetworkPath = @"\\XOXO\mir2\share" }
             };
 

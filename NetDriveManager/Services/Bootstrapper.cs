@@ -1,6 +1,5 @@
 ﻿using NetDriveManager.Interfaces;
 using NetDriveManager.Services.Helpers;
-using NetDriveManager.Services.Monitoring;
 using Splat;
 
 namespace NetDriveManager.Services
@@ -9,26 +8,21 @@ namespace NetDriveManager.Services
     {
         public static void Register(IMutableDependencyResolver s, IReadonlyDependencyResolver r)
         {
-            s.RegisterLazySingleton
-                <ShellCommand>(() => new ShellCommand());            
+            // calls cmd shell
+            s.Register<ShellCommand>(() => new ShellCommand());          
             
+            // returns network connection status
+            s.Register<MonNetworkAvailability>(() => new MonNetworkAvailability());
+
             // transient data storage
-            s.Register
-                <IStorage>(() => new JsonStore("NetDriveSettings.json"));
-            
+            s.Register<IStorage>(() => new JsonStore("NetDriveSettings.json"));
+
             // singleton list manager for mappings
-            s.RegisterConstant
-                <DriveListManager>(new DriveListManager(
-                    r.GetService<IStorage>()));
-            
-            s.RegisterLazySingleton
-                <NetworkAvailabilityMon>(() => new NetworkAvailabilityMon());
-            
-            s.RegisterConstant
-                <ConnectionEventHandler>(new ConnectionEventHandler(
-                    r.GetService<DriveListManager>(), 
-                    r.GetService<NetworkAvailabilityMon>()));
-            
+            s.RegisterLazySingleton<DriveListManager>( ()=> new DriveListManager(r.GetService<IStorage>()));           
+
+            // drive state manager
+            s.RegisterConstant<StateManager>(new StateManager(r.GetService<DriveListManager>()));
+
 
         }
     }

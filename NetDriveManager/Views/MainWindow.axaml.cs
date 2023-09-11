@@ -13,8 +13,8 @@ namespace NetDriveManager.Views
         public MainWindow()
         {
             InitializeComponent();
-            this.Height = 400;
-            this.Width = 250;
+            this.Height = 500;
+            this.Width = 325;
 #if DEBUG
             this.AttachDevTools();
 #endif

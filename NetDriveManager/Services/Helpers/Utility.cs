@@ -2,7 +2,6 @@
 using NetDriveManager.Models;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -25,7 +24,7 @@ namespace NetDriveManager.Services.Helpers
         private static extern int WNetCancelConnection2
             (string sLocalName, uint iFlags, int iForce);
 
-        public static int 
+        public static int
             MapNetworkDrive(string sDriveLetter, string sNetworkPath)
         {
             //Checks if the last character is \ as this causes error on mapping a drive.
@@ -44,7 +43,7 @@ namespace NetDriveManager.Services.Helpers
             return WNetAddConnection2(ref oNetworkResource, null, null, 0);
         }
 
-        public static CancelConnection 
+        public static CancelConnection
             DisconnectNetworkDrive(string sDriveLetter, bool bForceDisconnect)
         {
             if (bForceDisconnect)
@@ -57,21 +56,21 @@ namespace NetDriveManager.Services.Helpers
             }
         }
 
-        public static bool 
+        public static bool
             IsDriveMapped(string sDriveLetter)
         {
-            string[] DriveList = Environment.GetLogicalDrives();
-            for (int i = 0; i < DriveList.Length; i++)
+            DriveInfo[] drives = DriveInfo.GetDrives();
+            foreach (DriveInfo drive in drives)
             {
-                if (sDriveLetter + ":\\" == DriveList[i].ToString())
-                {
-                    return true;
+                if (drive.DriveType == DriveType.Network && drive.Name[0] == sDriveLetter[0]) 
+                { 
+                    return true; 
                 }
             }
             return false;
         }
-  
-        public static bool 
+
+        public static bool
             IsNetworkDrive(string sDriveLetter)
         {
             DriveInfo[] allDrives = DriveInfo.GetDrives();
@@ -85,7 +84,7 @@ namespace NetDriveManager.Services.Helpers
             return false;
         }
 
-        public static void 
+        public static void
             IsMachineOnline(string hostName)
         {
             Ping pingSender = new Ping();
@@ -120,7 +119,7 @@ namespace NetDriveManager.Services.Helpers
 
         }
 
-        public static List<char> 
+        public static List<char>
             GetAvailableDriveLetters()
         {
             const int lower = 'A';
@@ -136,7 +135,7 @@ namespace NetDriveManager.Services.Helpers
                     availableLetters.Add(letter);
                 }
             }
-            
+
             return availableLetters;
         }
 
@@ -150,7 +149,7 @@ namespace NetDriveManager.Services.Helpers
             return string.Empty;
         }
 
-        public static List<MappingModel> 
+        public static List<MappingModel>
             GetMappedDrives()
         {
             var mappedDrives = new List<MappingModel>();
@@ -186,6 +185,7 @@ namespace NetDriveManager.Services.Helpers
                 return mappedDrives;
             }
         }
+
     }
 
 }
