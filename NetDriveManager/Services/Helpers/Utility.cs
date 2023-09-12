@@ -25,7 +25,7 @@ namespace NetDriveManager.Services.Helpers
             (string sLocalName, uint iFlags, int iForce);
 
         public static int
-            MapNetworkDrive(string sDriveLetter, string sNetworkPath)
+            MapNetworkDrive(char cDriveLetter, string sNetworkPath)
         {
             //Checks if the last character is \ as this causes error on mapping a drive.
             if (sNetworkPath.Substring(sNetworkPath.Length - 1, 1) == @"\")
@@ -34,25 +34,25 @@ namespace NetDriveManager.Services.Helpers
                 sNetworkPath = sNetworkPath[..^1];
             }
 
-            NETRESOURCE oNetworkResource = new NETRESOURCE()
+            NETRESOURCE oNetworkResource = new()
             {
                 oResourceType = ResourceType.RESOURCETYPE_DISK,
-                sLocalName = sDriveLetter + ":",
+                sLocalName = cDriveLetter + ":",
                 sRemoteName = sNetworkPath
             };
             return WNetAddConnection2(ref oNetworkResource, null, null, 0);
         }
 
         public static CancelConnection
-            DisconnectNetworkDrive(string sDriveLetter, bool bForceDisconnect)
+            DisconnectNetworkDrive(char cDriveLetter, bool bForceDisconnect = false)
         {
             if (bForceDisconnect)
             {
-                return (CancelConnection)WNetCancelConnection2(sDriveLetter + ":", 0, 1);
+                return (CancelConnection)WNetCancelConnection2(cDriveLetter + ":", 0, 1);
             }
             else
             {
-                return (CancelConnection)WNetCancelConnection2(sDriveLetter + ":", 0, 0);
+                return (CancelConnection)WNetCancelConnection2(cDriveLetter + ":", 0, 0);
             }
         }
 
@@ -62,9 +62,9 @@ namespace NetDriveManager.Services.Helpers
             DriveInfo[] drives = DriveInfo.GetDrives();
             foreach (DriveInfo drive in drives)
             {
-                if (drive.DriveType == DriveType.Network && drive.Name[0] == sDriveLetter[0]) 
-                { 
-                    return true; 
+                if (drive.DriveType == DriveType.Network && drive.Name[0] == sDriveLetter[0])
+                {
+                    return true;
                 }
             }
             return false;
@@ -87,12 +87,13 @@ namespace NetDriveManager.Services.Helpers
         public static void
             IsMachineOnline(string hostName)
         {
-            Ping pingSender = new Ping();
-            PingOptions options = new PingOptions();
-
-            // Use the default Ttl value which is 128,
-            // but change the fragmentation behavior.
-            options.DontFragment = true;
+            using Ping pingSender = new();
+            PingOptions options = new()
+            {
+                // Use the default Ttl value which is 128,
+                // but change the fragmentation behavior.
+                DontFragment = true
+            };
 
 
             // Create a buffer of 32 bytes of data to be transmitted.
@@ -125,8 +126,8 @@ namespace NetDriveManager.Services.Helpers
             const int lower = 'A';
             const int upper = 'Z';
 
-            List<char> availableLetters = new List<char>();
-            var letters = Directory.GetLogicalDrives().Select(l => l.Substring(0, 1).ToUpperInvariant()[0]);
+            List<char> availableLetters = new();
+            var letters = Directory.GetLogicalDrives().Select(l => l[..1].ToUpperInvariant()[0]);
             for (int i = lower; i < upper; i++)
             {
                 char letter = (char)i;

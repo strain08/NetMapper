@@ -1,16 +1,16 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
-using System.Collections.Generic;
-using System.ComponentModel;
 using System;
 using System.Collections;
+using System.Collections.Generic;
+using System.ComponentModel;
 
 namespace NetDriveManager.ViewModels
 {
     public class ViewModelBase : ObservableObject, INotifyDataErrorInfo
     {
         private static readonly string[] NO_ERRORS = Array.Empty<string>();
-        private readonly Dictionary<string, List<string>> _errorsByPropertyName = new Dictionary<string, List<string>>();
-        
+        private readonly Dictionary<string, List<string>> _errorsByPropertyName = new();
+
         public event EventHandler<DataErrorsChangedEventArgs>? ErrorsChanged;
 
         public bool HasErrors => _errorsByPropertyName.Count > 0;
@@ -43,11 +43,10 @@ namespace NetDriveManager.ViewModels
 
         protected void RemoveError(string propertyName)
         {
-            if (_errorsByPropertyName.ContainsKey(propertyName))
-            {
-                _errorsByPropertyName.Remove(propertyName);
-                ErrorsChanged?.Invoke(this, new DataErrorsChangedEventArgs(propertyName));
-            }
+
+            _errorsByPropertyName.Remove(propertyName);
+            ErrorsChanged?.Invoke(this, new DataErrorsChangedEventArgs(propertyName));
+
         }
 
         protected bool ValidateString(string propertyName, string? value, int minLength = 1, int maxLength = 1000)

@@ -45,12 +45,12 @@ namespace NetDriveManager.ViewModels
 
         private bool isEditing;
 
-        private readonly DriveListManager? _ndmanager;
+        private readonly DriveListManager _ndmanager;
 
         // CTOR
         public DriveDetailViewModel(MappingModel? selectedItem = null)
         {
-            _ndmanager = Locator.Current.GetService<DriveListManager>() ?? throw new KeyNotFoundException();
+            _ndmanager = Locator.Current.GetRequiredService<DriveListManager>();
             LoadDriveLetters();
 
             if (selectedItem == null)

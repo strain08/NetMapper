@@ -31,11 +31,11 @@ namespace NetDriveManager.Services
             };
 
             var w = new ManagementEventWatcher(scope, wqlEventQuery);
-            w.EventArrived += new EventArrivedEventHandler(w_EventArrived);
+            w.EventArrived += new EventArrivedEventHandler(W_EventArrived);
             w.Start();
         }
 
-        private void w_EventArrived(object sender, EventArrivedEventArgs e)
+        private void W_EventArrived(object sender, EventArrivedEventArgs e)
         {
             if (OnDriveConnected == null) return;
             if (OnDriveDisconnected == null) return;

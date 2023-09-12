@@ -24,7 +24,7 @@
 		<!-- ACTION TITLE -->
 		<TextBlock 
 			DockPanel.Dock="Top"
-			FontWeight="Heavy"
+			FontWeight="Normal"
 			FontSize="18"
 			Margin="8,0,0,0"
 			Foreground="LightBlue"
@@ -85,8 +85,8 @@
 			<StackPanel Classes="detail">
 				<CheckBox
 					IsChecked="True"
-					Content="Unmap when unavailable"
-					ToolTip.Tip="Remove drive mapping when connection down or share becomes unavailable."/>
+					Content="Managed"
+					ToolTip.Tip="Remove drive mapping when connection down or share becomes unavailable. Add back when available."/>
 			</StackPanel>
 			
 		</StackPanel>

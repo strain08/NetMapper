@@ -10,7 +10,7 @@ namespace NetDriveManager.Services
     {
          
 
-        private string? jsonSettingsFile;
+        private readonly string jsonSettingsFile;
         
         private List<MappingModel> DrivesDb { get; set; } = new();
         
@@ -29,7 +29,7 @@ namespace NetDriveManager.Services
             try
             {
                 var jsonString = File.ReadAllText(jsonSettingsFile);
-                DrivesDb = JsonSerializer.Deserialize<List<MappingModel>>(jsonString);
+                DrivesDb = JsonSerializer.Deserialize<List<MappingModel>>(jsonString) ?? throw new JsonException();
                 return true;
             }
             catch

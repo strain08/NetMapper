@@ -1,6 +1,7 @@
 ﻿using NetDriveManager.Interfaces;
 using NetDriveManager.Services.Helpers;
 using Splat;
+using System;
 
 namespace NetDriveManager.Services
 {
@@ -8,22 +9,29 @@ namespace NetDriveManager.Services
     {
         public static void Register(IMutableDependencyResolver s, IReadonlyDependencyResolver r)
         {
-            // calls cmd shell
-            s.Register<ShellCommand>(() => new ShellCommand());          
-            
-            // returns network connection status
-            s.Register<MonNetworkAvailability>(() => new MonNetworkAvailability());
+            s.RegisterConstant<NotificationService>(new NotificationService());
 
-            // transient data storage
+            // JsonStore
             s.Register<IStorage>(() => new JsonStore("NetDriveSettings.json"));
 
-            // singleton list manager for mappings
-            s.RegisterLazySingleton<DriveListManager>( ()=> new DriveListManager(r.GetService<IStorage>()));           
+            // DriveListManager
+            s.RegisterLazySingleton<DriveListManager>(() => new DriveListManager(r.GetRequiredService<IStorage>()));
 
-            // drive state manager
-            s.RegisterConstant<StateManager>(new StateManager(r.GetService<DriveListManager>()));
-
+            // StateManager
+            s.RegisterConstant<StateGenerator>(new StateGenerator(r.GetRequiredService<DriveListManager>()));
 
         }
+        public static TService GetRequiredService<TService>(this IReadonlyDependencyResolver resolver)
+        {
+            var service = resolver.GetService<TService>() ??
+                throw new InvalidOperationException($"Failed to resolve object of type {typeof(TService)}"); // throw error with detailed description
+
+             // design mode bypass      
+            return service; // return instance if not null
+        }
+        
     }
+
+    
+
 }
