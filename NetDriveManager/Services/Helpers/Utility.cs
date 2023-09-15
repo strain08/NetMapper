@@ -9,11 +9,13 @@ using System.Management;
 using System.Net.NetworkInformation;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace NetDriveManager.Services.Helpers
 {
     public static class Utility
     {
+        
 
         [DllImport("mpr.dll")]
         private static extern int WNetAddConnection2
@@ -24,9 +26,10 @@ namespace NetDriveManager.Services.Helpers
         private static extern int WNetCancelConnection2
             (string sLocalName, uint iFlags, int iForce);
 
-        public static int
+        public static ConnectResult
             MapNetworkDrive(char cDriveLetter, string sNetworkPath)
         {
+           
             //Checks if the last character is \ as this causes error on mapping a drive.
             if (sNetworkPath.Substring(sNetworkPath.Length - 1, 1) == @"\")
             {
@@ -40,11 +43,10 @@ namespace NetDriveManager.Services.Helpers
                 sLocalName = cDriveLetter + ":",
                 sRemoteName = sNetworkPath
             };
-            return WNetAddConnection2(ref oNetworkResource, null, null, 0);
+            return (ConnectResult)WNetAddConnection2(ref oNetworkResource, null, null, 0);
         }
 
-        public static CancelConnection
-            DisconnectNetworkDrive(char cDriveLetter, bool bForceDisconnect = false)
+        public static CancelConnection DisconnectNetworkDrive(char cDriveLetter, bool bForceDisconnect = false)
         {
             if (bForceDisconnect)
             {
@@ -56,33 +58,35 @@ namespace NetDriveManager.Services.Helpers
             }
         }
 
-        public static bool
-            IsDriveMapped(string sDriveLetter)
+        public static bool IsNetworkDrive(char cDriveLetter)
         {
-            DriveInfo[] drives = DriveInfo.GetDrives();
-            foreach (DriveInfo drive in drives)
+            try
             {
-                if (drive.DriveType == DriveType.Network && drive.Name[0] == sDriveLetter[0])
+                if (new DriveInfo(cDriveLetter + @":\").DriveType == DriveType.Network)
                 {
                     return true;
                 }
+            }
+            catch (ArgumentException)
+            {
+                return false;
             }
             return false;
         }
 
-        public static bool
-            IsNetworkDrive(string sDriveLetter)
-        {
-            DriveInfo[] allDrives = DriveInfo.GetDrives();
-            foreach (DriveInfo d in allDrives)
-            {
-                if (d.IsReady && d.DriveType == DriveType.Network && d.Name == sDriveLetter)
-                {
-                    return true;
-                }
-            }
-            return false;
-        }
+        //public static bool
+        //    IsNetworkDrive(string sDriveLetter)
+        //{
+        //    DriveInfo[] allDrives = DriveInfo.GetDrives();
+        //    foreach (DriveInfo d in allDrives)
+        //    {
+        //        if (d.DriveType == DriveType.Network && d.Name == sDriveLetter)
+        //        {
+        //            return true;
+        //        }
+        //    }
+        //    return false;
+        //}
 
         public static void
             IsMachineOnline(string hostName)
@@ -140,28 +144,28 @@ namespace NetDriveManager.Services.Helpers
             return availableLetters;
         }
 
-        public static string GetPathForLetter(string letter)
+        public static string GetPathForLetter(char letter)
         {
             var mappedList = GetMappedDrives();
-            foreach (MappingModel item in mappedList)
+            foreach (DriveModel item in mappedList)
             {
-                if (item.DriveLetter[0] == letter[0]) return item.NetworkPath;
+                if (item.DriveLetter == letter) return item.NetworkPath;
             }
             return string.Empty;
         }
 
-        public static List<MappingModel>
-            GetMappedDrives()
+        public static List<DriveModel>  GetMappedDrives()
         {
-            var mappedDrives = new List<MappingModel>();
+            var mappedDrives = new List<DriveModel>();
             try
             {
                 var searcher = new ManagementObjectSearcher("root\\CIMV2", $"SELECT * FROM Win32_LogicalDisk WHERE DriveType={(int)DriveType.Network}");
 
                 foreach (ManagementObject queryObj in searcher.Get().Cast<ManagementObject>())
                 {
-                    var nd = new MappingModel();
-                    nd.DriveLetter = (string)queryObj["Caption"];
+                    var nd = new DriveModel();
+                    var s = (string)queryObj["Caption"];
+                    nd.DriveLetter = s[0];                    
                     nd.NetworkPath = (string)queryObj["ProviderName"];
                     mappedDrives.Add(nd);
 
@@ -186,7 +190,14 @@ namespace NetDriveManager.Services.Helpers
                 return mappedDrives;
             }
         }
-
+        
+        public static bool IsNetworkPath(string path)
+        {
+            // source: https://regexlib.com/REDetails.aspx?regexp_id=2285
+            string uncPattern = @"^((\\\\[a-zA - Z0 - 9 -]+\\[a-zA - Z0 - 9`~!@#$%^&(){}'._-]+([ ]+[a-zA-Z0-9`~!@#$%^&(){}'._-]+)*)|([a-zA-Z]:))(\\[^ \\/:*?""<>|]+([ ]+[^ \\/:*?""<>|]+)*)*\\?$";
+            
+            return Regex.Match(path, uncPattern).Success;
+        }
     }
 
 }

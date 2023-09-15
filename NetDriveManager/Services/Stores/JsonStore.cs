@@ -12,7 +12,7 @@ namespace NetDriveManager.Services
 
         private readonly string jsonSettingsFile;
         
-        private List<MappingModel> DrivesDb { get; set; } = new();
+        private List<DriveModel> DrivesDb { get; set; } = new();
         
         // CTOR
         
@@ -29,7 +29,7 @@ namespace NetDriveManager.Services
             try
             {
                 var jsonString = File.ReadAllText(jsonSettingsFile);
-                DrivesDb = JsonSerializer.Deserialize<List<MappingModel>>(jsonString) ?? throw new JsonException();
+                DrivesDb = JsonSerializer.Deserialize<List<DriveModel>>(jsonString) ?? throw new JsonException();
                 return true;
             }
             catch
@@ -55,14 +55,14 @@ namespace NetDriveManager.Services
         }
 
         // UPDATE
-        public bool Update(List<MappingModel> updatedList)
+        public bool Update(List<DriveModel> updatedList)
         {
 
             DrivesDb = new(updatedList);
             return Save();
         }
 
-        List<MappingModel> IStorage.GetAll()
+        List<DriveModel> IStorage.GetAll()
         {
             Load();
             return DrivesDb;

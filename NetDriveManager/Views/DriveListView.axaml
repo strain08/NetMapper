@@ -40,7 +40,7 @@
 	
 	<!-- Drive list -->
 	<ListBox
-		ItemsSource="{Binding NetDrivesList}"
+		ItemsSource="{Binding DriveList}"
 		SelectedItem="{Binding SelectedItem}"
 		DoubleTapped="OnDoubleClick"
 		Background="Transparent">
@@ -77,7 +77,7 @@
 						<TextBlock							
 							Classes="letter"							
 							Margin="0,0,0,0"
-							Text="{Binding DriveLetter}"/>
+							Text="{Binding DriveLetterColon}"/>
 						<TextBlock							
 							Classes="detail"
 							Margin="4,0,0,2"							

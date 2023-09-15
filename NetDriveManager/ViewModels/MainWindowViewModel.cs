@@ -1,15 +1,5 @@
-﻿using Avalonia.Controls;
-using CommunityToolkit.Mvvm.ComponentModel;
-using System.Collections.ObjectModel;
-using NetDriveManager.Models;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
 using NetDriveManager.Services;
-using NetDriveManager.Services.Helpers;
-using System.Diagnostics;
-using System.Threading;
-using Avalonia;
-using NetDriveManager;
-using Splat;
-using System;
 
 namespace NetDriveManager.ViewModels
 {
@@ -19,13 +9,13 @@ namespace NetDriveManager.ViewModels
         ViewModelBase content;
 
         [ObservableProperty]
-        DriveListViewModel list;
+        DriveListViewModel driveListViewModel;
         
         
         public MainWindowViewModel()
-        {
+        {            
             VMServices.DriveListViewModel = new DriveListViewModel();
-            Content = List = VMServices.DriveListViewModel;            
+            Content = driveListViewModel = VMServices.DriveListViewModel;            
         }
     }
 }

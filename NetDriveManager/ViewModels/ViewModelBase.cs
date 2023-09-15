@@ -1,4 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
+using NetDriveManager.Services.Helpers;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -49,21 +50,22 @@ namespace NetDriveManager.ViewModels
 
         }
 
-        protected bool ValidateString(string propertyName, string? value, int minLength = 1, int maxLength = 1000)
+        protected bool ValidateNetworkPath(string propertyName, string? value, int maxLength = 255)
         {
             if (string.IsNullOrEmpty(value))
             {
-                //AddError(propertyName, $"The text must not be empty.");
+                AddError(propertyName, $"Path must not be empty.");
                 return false;
             }
-            if (value.Length < minLength)
-            {
-                AddError(propertyName, $"The text must be at least {minLength} characters long.");
-                return false;
-            }
+           
             if (value.Length > maxLength)
             {
-                AddError(propertyName, $"The text must be at most {maxLength} characters long.");
+                AddError(propertyName, $"Path must be at most {maxLength} characters long.");
+                return false;
+            }
+            if (!Utility.IsNetworkPath(value))
+            {
+                AddError(propertyName, $"Not a valid network path.");
                 return false;
             }
             RemoveError(propertyName);

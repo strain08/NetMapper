@@ -19,7 +19,7 @@ namespace NetDriveManager.Converters
                         case ShareState.Unavailable:
                         return "Unavailable";
                     case ShareState.Undefined:
-                        return "...";
+                        return "Waiting..";
                 }
             }
             if (value is MappingState mappingState && targetType.IsAssignableTo(typeof(string)))
@@ -31,7 +31,7 @@ namespace NetDriveManager.Converters
                     case MappingState.Unmapped:
                         return "Unmapped";
                     case MappingState.Undefined:
-                        return "...";
+                        return "Waiting..";
                 }
             }
             return new BindingNotification(new InvalidCastException(), BindingErrorType.Error);

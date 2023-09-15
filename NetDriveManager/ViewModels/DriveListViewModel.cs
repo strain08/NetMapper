@@ -10,49 +10,52 @@ namespace NetDriveManager.ViewModels
     public partial class DriveListViewModel : ViewModelBase
     {
         // PROP
-        public ObservableCollection<MappingModel>?
-            NetDrivesList
+        public ObservableCollection<DriveModel>?
+            DriveList
         { get; set; }
 
         [ObservableProperty]
-        MappingModel?
+        DriveModel?
             selectedItem;
 
-        private readonly DriveListManager 
-            listManager;
-        
-        private readonly StateResolver 
-            stateResolver = new();
+        DriveListService driveListService;
+
+        StateResolverService stateResolverService;
 
         // CTOR
         public DriveListViewModel()
         {
+
             if (Avalonia.Controls.Design.IsDesignMode) return; // design mode bypass            
            
-            listManager = Locator.Current.GetRequiredService<DriveListManager>();
-            NetDrivesList = listManager.NetDriveList;
+            driveListService = Locator.Current.GetRequiredService<DriveListService>();
+            stateResolverService = Locator.Current.GetRequiredService<StateResolverService>();
+
+            DriveList = driveListService.DriveList;
         }
 
         // COMMS        
         public void DisconnectDriveCommand(object commandParameter)
         {
-            var model = (MappingModel)commandParameter
+            var model = (DriveModel)commandParameter
                 ?? throw new InvalidOperationException("Error getting command parameter for DisconnectDriveCommand");
-            stateResolver.DisconnectDrive(model);
+            model.MappingStateProp = Enums.MappingState.Undefined;
+            stateResolverService.DisconnectDriveToast(model);
         }
 
         public void ConnectDriveCommand(object commandParameter)
         {
-            var model = (MappingModel)commandParameter
+            var model = (DriveModel)commandParameter
                 ?? throw new InvalidOperationException("Error getting command parameter for ConnectDriveCommand");
-            stateResolver.ConnectDrive(model);
+            model.MappingStateProp = Enums.MappingState.Undefined;
+            stateResolverService.ConnectDriveToast(model);
         }
 
         public void RemoveItem()
         {
-            if (SelectedItem != null && listManager != null)
+            if (SelectedItem != null && driveListService != null)
             {
-                listManager.RemoveDrive(SelectedItem);
+                driveListService.RemoveDrive(SelectedItem);
             }
         }
 

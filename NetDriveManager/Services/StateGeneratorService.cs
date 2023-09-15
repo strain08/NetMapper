@@ -2,6 +2,7 @@
 using NetDriveManager.Interfaces;
 using NetDriveManager.Models;
 using NetDriveManager.Services.Helpers;
+using System.Collections.Generic;
 using System.IO;
 using System.Net.NetworkInformation;
 using System.Threading;
@@ -9,15 +10,17 @@ using System.Threading.Tasks;
 
 namespace NetDriveManager.Services
 {
-    public class StateGenerator
+    public class StateGeneratorService
     {
-        private readonly IListManager _listManager;        
+        private readonly IListManager _listManager;
+        private readonly StateResolverService _stateResolver;
         private readonly TaskFactory _taskFactory = new();
 
         //CTOR
-        public StateGenerator(IListManager listManager)
+        public StateGeneratorService(IListManager listManager, StateResolverService stateResolver)
         {
             _listManager = listManager;
+            _stateResolver = stateResolver;
 
             _taskFactory.StartNew(() => MapAllDrives());
 
@@ -31,40 +34,53 @@ namespace NetDriveManager.Services
         }
 
         //DTOR
-        ~StateGenerator()
+        ~StateGeneratorService()
         {
             NetworkChange.NetworkAvailabilityChanged -= NetworkAvailabilityChanged;
         }
-        
-        private void ShareStateLoop(int timeMilliseconds)
+
+        private async void ShareStateLoop(int timeMilliseconds)
         {
+
+            List<Task> _tasks = new();
             while (true)
             {
-                foreach (MappingModel m in _listManager.NetDriveList)
+                foreach (DriveModel m in _listManager.DriveList)
                 {
-                    ShareState shState = Directory.Exists(m.NetworkPath) ? ShareState.Available : ShareState.Unavailable;
-                    if (shState != m.ShareStateProp)
-                    {
-                        m.ShareStateProp = shState;
-                        // TODO call an action to state change
-                    }
-
+                    _tasks.Add(Task.Factory.StartNew(() =>
+                    {// long op
+                        ShareState shState = Directory.Exists(m.NetworkPath)
+                            ? ShareState.Available : ShareState.Unavailable;
+                        if (shState != m.ShareStateProp)
+                        {
+                            m.ShareStateProp = shState;
+                            _stateResolver.ShareStateChanged(m);
+                        }
+                    })
+                    );
                 }
+                await Task.WhenAll(_tasks);
+                _tasks.Clear();
                 Thread.Sleep(timeMilliseconds);
             }
 
         }
+
+
 
         private void MappingStateLoop(int timeMilliseconds)
         {
             while (true)
             {
-                foreach (MappingModel m in _listManager.NetDriveList)
+                foreach (DriveModel m in _listManager.DriveList)
                 {
-                    MappingState mpState = Utility.IsDriveMapped(m.DriveLetter) ? MappingState.Mapped : MappingState.Unmapped;
+                    // long op
+                    MappingState mpState = Utility.IsNetworkDrive(m.DriveLetter)
+                        ? MappingState.Mapped : MappingState.Unmapped;
                     if (mpState != m.MappingStateProp)
                     {
                         m.MappingStateProp = mpState;
+                        //MappingStateChange(m);
                         // TODO call an action to state change
                     }
                 }
@@ -72,31 +88,36 @@ namespace NetDriveManager.Services
             }
         }
 
+        //private void MappingStateChange(MappingModel m)
+        //{
+
+        //}
+
         private void NetworkAvailabilityChanged(object? sender, NetworkAvailabilityEventArgs e)
         {
             if (e.IsAvailable)
             {
-                _taskFactory.StartNew(() => MapAllDrives());               
+                MapAllDrives();
             }
             else
             {
-                _taskFactory.StartNew(() => UnmapAllDrives());                
+                UnmapAllDrives();
             }
         }
 
         private void MapAllDrives()
         {
-            foreach (MappingModel model in _listManager.NetDriveList)
+            foreach (DriveModel model in _listManager.DriveList)
             {
-                Utility.MapNetworkDrive(model.DriveLetter[0], model.NetworkPath);
+                _stateResolver.ConnectDriveToast(model);
             }
         }
 
         private void UnmapAllDrives()
         {
-            foreach (MappingModel model in _listManager.NetDriveList)
+            foreach (DriveModel model in _listManager.DriveList)
             {
-                Utility.DisconnectNetworkDrive(model.DriveLetter[0], true);
+                _stateResolver.DisconnectDriveToast(model);
             }
         }
     }

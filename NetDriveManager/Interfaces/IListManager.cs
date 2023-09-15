@@ -10,11 +10,11 @@ namespace NetDriveManager.Interfaces
 {
     public interface IListManager
     {
-        public ObservableCollection<MappingModel> NetDriveList { get; set; }
-        public void AddDrive(MappingModel model);
-        public void RemoveDrive(MappingModel model);
-        public void EditDrive(MappingModel oldModel, MappingModel newModel);
-        
+        public ObservableCollection<DriveModel> DriveList { get; set; }
+        public void AddDrive(DriveModel model);
+        public void RemoveDrive(DriveModel model);
+        public void EditDrive(DriveModel oldModel, DriveModel newModel);
+        public bool ContainsDriveLetter(char letter);
 
     }
 }

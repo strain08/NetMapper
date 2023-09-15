@@ -69,7 +69,7 @@
 					Text="Network path"/>
 				<TextBox
 					Classes="detail"					
-					Text="{Binding DisplayItem.NetworkPath}"
+					Text="{Binding NetworkPath}"
 					VerticalAlignment="Center"
 					Watermark="\\SERVER\share"
 					/>
@@ -78,17 +78,16 @@
 			<!-- PERSISTENT -->
 			<StackPanel Classes="detail">
 				<CheckBox
-					IsChecked="{Binding DisplayItem.MappingSettings.Persistent}"
-					Content="Persistent"
-					ToolTip.Tip="Always connect share at application startup. When unchecked, share must be manually connected/disconnected."/>
+					IsChecked="{Binding DisplayItem.MappingSettings.AutoConnect}"
+					Content="Auto-connect"
+					ToolTip.Tip="Connect when share is available."/>
 			</StackPanel>
 			<StackPanel Classes="detail">
 				<CheckBox
-					IsChecked="True"
-					Content="Managed"
-					ToolTip.Tip="Remove drive mapping when connection down or share becomes unavailable. Add back when available."/>
+					IsChecked="{Binding DisplayItem.MappingSettings.AutoDisconnect}"
+					Content="Auto-disconnect"
+					ToolTip.Tip="Remove drive mapping when connection down or share becomes unavailable."/>
 			</StackPanel>
-			
 		</StackPanel>
 	</DockPanel>
 	

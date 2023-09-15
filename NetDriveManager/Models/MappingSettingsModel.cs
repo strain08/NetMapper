@@ -10,8 +10,8 @@ namespace NetDriveManager.Models
     public partial class MappingSettingsModel:ObservableObject
     {
         [ObservableProperty]
-        bool persistent;
+        bool autoConnect;
         [ObservableProperty]
-        bool unmapWhenUnavailable;
+        bool autoDisconnect;
     }
 }

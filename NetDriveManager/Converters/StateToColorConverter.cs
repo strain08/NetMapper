@@ -21,7 +21,7 @@ namespace NetDriveManager.Converters
                     case ShareState.Unavailable:
                         return new SolidColorBrush() { Color = Colors.Chocolate };
                     default:
-                        return new SolidColorBrush() { Color = Colors.Transparent };
+                        return new SolidColorBrush() { Color = Colors.Chocolate };
                 }
             }
             if (value is MappingState mappingState && targetType.IsAssignableTo(typeof(IBrush)))
@@ -33,7 +33,7 @@ namespace NetDriveManager.Converters
                     case MappingState.Unmapped:
                         return new SolidColorBrush() { Color = Colors.Chocolate };
                     default:
-                        return new SolidColorBrush() { Color = Colors.Transparent };
+                        return new SolidColorBrush() { Color = Colors.Chocolate };
                 }
             }
             return new BindingNotification(new InvalidCastException(), BindingErrorType.Error);
