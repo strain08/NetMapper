@@ -4,6 +4,7 @@ using NetDriveManager.Services;
 using NetDriveManager.Services.Helpers;
 using Splat;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace NetDriveManager.ViewModels
 {
@@ -11,7 +12,7 @@ namespace NetDriveManager.ViewModels
     {
 
         [ObservableProperty]
-        DriveModel
+        MappingModel
             displayItem;
 
         public string NetworkPath
@@ -55,13 +56,18 @@ namespace NetDriveManager.ViewModels
 
         private bool isEditing;
 
-        private readonly DriveListService driveListService;
+        DriveListService driveListService;
+        NotificationService notificationService;
+        StateResolverService stateResolverService;
 
         // CTOR
-        public DriveDetailViewModel(DriveModel? selectedItem = null)
+        public DriveDetailViewModel(MappingModel? selectedItem = null)
         {
             driveListService = Locator.Current.GetRequiredService<DriveListService>();
-            LoadDriveLetters();
+            notificationService = Locator.Current.GetRequiredService<NotificationService>();    
+            stateResolverService = Locator.Current.GetRequiredService<StateResolverService>();
+
+           LoadDriveLetters();
 
             if (selectedItem == null)
             {
@@ -72,8 +78,9 @@ namespace NetDriveManager.ViewModels
             {
                 IsEditing = true;
                 // decoupled copy of selected item
-                DisplayItem = new DriveModel(selectedItem);
+                DisplayItem = new MappingModel(selectedItem);
 
+                // add selected item letter
                 DriveLettersList.Add(selectedItem.DriveLetter);
 
                 // extract just drive letter from X:
@@ -84,21 +91,28 @@ namespace NetDriveManager.ViewModels
         private void LoadDriveLetters()
         {
             var cLetterList = new List<char>(Utility.GetAvailableDriveLetters());
-            foreach (var cLetter in cLetterList)
+            foreach (char cLetter in cLetterList)
             {
                 if (!driveListService.ContainsDriveLetter(cLetter))
-                { 
-                    DriveLettersList.Add(cLetter); 
+                {
+                    DriveLettersList.Add(cLetter);
                 }
             }
         }
 
-        public void Ok()
+        public async void Ok()
         {
+            
 
             //DisplayItem.DriveLetter = SelectedLetter + ":";
             if (IsEditing)
             {
+                // drive letter changed
+                if (VMServices.DriveListViewModel!.SelectedItem!.DriveLetter != DisplayItem.DriveLetter)
+                {
+                    stateResolverService.DisconnectDriveToast(VMServices.DriveListViewModel!.SelectedItem!);
+                }                
+
                 driveListService.EditDrive(VMServices.DriveListViewModel!.SelectedItem!, DisplayItem!);
             }
             else

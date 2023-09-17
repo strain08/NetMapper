@@ -3,7 +3,7 @@ using System.Management;
 using System.IO;
 using System.Diagnostics;
 
-namespace NetDriveManager.Services
+namespace WMISample
 {
     public delegate void DriveConnectedDelegate(string driveLetter);
     public delegate void DriveDisconnectedDelegate(string driveLetter);
@@ -37,10 +37,11 @@ namespace NetDriveManager.Services
 
         private void W_EventArrived(object sender, EventArrivedEventArgs e)
         {
-            if (OnDriveConnected == null) return;
-            if (OnDriveDisconnected == null) return;
+            //if (OnDriveConnected == null) return;
+            //if (OnDriveDisconnected == null) return;
 
             var baseObject = e.NewEvent;
+            Console.WriteLine(baseObject.ClassPath);
 
             if (baseObject.ClassPath.ClassName.Equals(WmiClass.INSTANCE_CREATION))
             {
@@ -49,13 +50,13 @@ namespace NetDriveManager.Services
 
                 if (Convert.ToInt32(logicalDisk.Properties["DriveType"].Value) == (int)DriveType.Network)
                 {
-                    Debug.WriteLine($"Network drive {logicalDisk.Properties["Name"].Value} added.");
+                    Console.WriteLine($"Network drive {logicalDisk.Properties["Name"].Value} added.");
 
-                    OnDriveConnected((string)logicalDisk.Properties["Name"].Value);
+                    //OnDriveConnected((string)logicalDisk.Properties["Name"].Value);
                 }
 
             }
-            else if (baseObject.ClassPath.ClassName.Equals(WmiClass.INSTANCE_DELETION))
+            if (baseObject.ClassPath.ClassName.Equals(WmiClass.INSTANCE_DELETION))
             {
                 //Drive removed
 
@@ -63,8 +64,24 @@ namespace NetDriveManager.Services
 
                 if (Convert.ToInt32(logicalDisk.Properties["DriveType"].Value) == (int)DriveType.Network)
                 {
-                    Debug.WriteLine($"Network drive {logicalDisk.Properties["Name"].Value} removed");
-                    OnDriveDisconnected((string)logicalDisk.Properties["Name"].Value);
+                    Console.WriteLine($"Network drive {logicalDisk.Properties["Name"].Value} removed");
+                    //OnDriveDisconnected((string)logicalDisk.Properties["Name"].Value);
+                }
+            }
+            if (baseObject.ClassPath.ClassName.Equals(WmiClass.INSTANCE_MODIFICATION))
+            {
+                //Drive removed
+
+                var logicalDisk = (ManagementBaseObject)e.NewEvent["TargetInstance"];
+
+                if (Convert.ToInt32(logicalDisk.Properties["DriveType"].Value) == (int)DriveType.Network)
+                {
+                    foreach (PropertyData propertyData in logicalDisk.Properties)
+                    {
+                        Console.WriteLine(propertyData.Name + " " + propertyData.Value);
+                    }
+                    Console.WriteLine($"Network drive {logicalDisk.Properties["Name"].Value} status {logicalDisk.Properties["StatusInfo"].Value}");
+                    //OnDriveDisconnected((string)logicalDisk.Properties["Name"].Value);
                 }
             }
         }
@@ -75,6 +92,7 @@ namespace NetDriveManager.Services
     {
         public static readonly string INSTANCE_CREATION = "__InstanceCreationEvent";
         public static readonly string INSTANCE_DELETION = "__InstanceDeletionEvent";
+        public static readonly string INSTANCE_MODIFICATION = "__InstanceModificationEvent";
     }
 
 }

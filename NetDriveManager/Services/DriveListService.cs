@@ -10,7 +10,7 @@ namespace NetDriveManager.Services
     public class DriveListService : IListManager
     {
 
-        public ObservableCollection<DriveModel> DriveList { get; set; } = new();
+        public ObservableCollection<MappingModel> DriveList { get; set; } = new();
 
         private readonly IStorage _store;
 
@@ -19,47 +19,42 @@ namespace NetDriveManager.Services
         public DriveListService(IStorage store)
         {
             _store = store;
-            DriveList = new ObservableCollection<DriveModel>(_store.GetAll());
+            DriveList = new ObservableCollection<MappingModel>(_store.GetAll());
 
         }
         ~DriveListService()
         {
-            _store.Update(new List<DriveModel>(DriveList));
+            _store.Update(new List<MappingModel>(DriveList));
         }
 
-        public void AddDrive(DriveModel model)
+        public void AddDrive(MappingModel model)
         {
             DriveList.Add(model);
-            _store.Update(new List<DriveModel>(DriveList));
+            _store.Update(new List<MappingModel>(DriveList));
         }
 
-        public void RemoveDrive(DriveModel model)
+        public void RemoveDrive(MappingModel model)
         {
             var i = DriveList.IndexOf(model);
             DriveList.RemoveAt(i);
-            _store.Update(new List<DriveModel>(DriveList));
+            _store.Update(new List<MappingModel>(DriveList));
         }
 
         public bool ContainsDriveLetter(char letter)
         {
-            DriveModel? d = null;
-            try
+            foreach (MappingModel d in DriveList)
             {
-                d = DriveList.First((m) => (m.DriveLetter == letter));
+                if (d.DriveLetter.Equals(letter)) return true;
             }
-            catch
-            {
-                return false;
-            }
-            return true;
+            return false;
         }
 
-        public void EditDrive(DriveModel oldModel, DriveModel newModel)
+        public void EditDrive(MappingModel oldModel, MappingModel newModel)
         {
             var i = DriveList.IndexOf(oldModel);
             DriveList.RemoveAt(i);
             DriveList.Insert(i, newModel);
-            _store.Update(new List<DriveModel>(DriveList));
+            _store.Update(new List<MappingModel>(DriveList));
         }
 
 

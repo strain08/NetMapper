@@ -1,21 +1,21 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using NetDriveManager.Enums;
+using System.IO;
 using System.Text.Json.Serialization;
 
 namespace NetDriveManager.Models;
 
-public partial class DriveModel : ObservableObject
+public partial class MappingModel : ObservableObject
 {
     // CTOR
-
-
-    public DriveModel(DriveModel copyModel)
+    public MappingModel(MappingModel copyModel)
     {
         NetworkPath = copyModel.NetworkPath;
         DriveLetter = copyModel.DriveLetter;
         MappingSettings = copyModel.MappingSettings;
     }
-    public DriveModel()
+
+    public MappingModel()
     {
         MappingSettings = new MappingSettingsModel();
     }
@@ -31,30 +31,24 @@ public partial class DriveModel : ObservableObject
 
     public string NetworkPath { get; set; } = string.Empty;
 
-    // Return SERVER from \\SERVER\share\etc
-    //[JsonIgnore]
-    //public string Hostname
-    //{
-    //    get 
-    //    {
+    [JsonIgnore]
+    public string VolumeLabel 
+    {
+        get
+        {
+            DriveInfo drive = new(DriveLetterColon);
+            return drive.IsReady ? drive.VolumeLabel : string.Empty;            
+        }
+    }
 
-    //        if (string.IsNullOrEmpty(NetworkPath)) return string.Empty;            
-    //        string pattern = @"\\\\(.*?)\\";
-    //        Match m = Regex.Match(NetworkPath, pattern);
-    //        if (m.Success)
-    //        {
-    //            return m.Groups[1].Value;
-    //        }
-    //        return string.Empty;
-    //    }
-    //}    
+  
 
     public MappingSettingsModel MappingSettings { get; set; }
 
     [JsonIgnore]
     public bool ConnectCommandVisible =>
-        ShareStateProp == ShareState.Available &&
-        MappingStateProp == MappingState.Unmapped;
+    ShareStateProp == ShareState.Available &&
+    MappingStateProp == MappingState.Unmapped;
 
     [JsonIgnore]
     public bool DisconnectCommandVisible =>
@@ -70,16 +64,9 @@ public partial class DriveModel : ObservableObject
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(ConnectCommandVisible))]
     [NotifyPropertyChangedFor(nameof(DisconnectCommandVisible))]
+    [NotifyPropertyChangedFor(nameof(VolumeLabel))]
     MappingState mappingStateProp = MappingState.Undefined;
 
-    //string? name;
-    //string? caption;
-    //string? volumeName;
-    //string? deviceID;
-    //string? fileSystem;
-    //string? freeSpace;
-    //string? size;
-    //string? volumeSerialNumber;
 
 }
 

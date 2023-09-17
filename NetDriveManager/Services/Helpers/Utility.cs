@@ -15,7 +15,7 @@ namespace NetDriveManager.Services.Helpers
 {
     public static class Utility
     {
-        
+
 
         [DllImport("mpr.dll")]
         private static extern int WNetAddConnection2
@@ -29,7 +29,7 @@ namespace NetDriveManager.Services.Helpers
         public static ConnectResult
             MapNetworkDrive(char cDriveLetter, string sNetworkPath)
         {
-           
+
             //Checks if the last character is \ as this causes error on mapping a drive.
             if (sNetworkPath.Substring(sNetworkPath.Length - 1, 1) == @"\")
             {
@@ -132,6 +132,7 @@ namespace NetDriveManager.Services.Helpers
 
             List<char> availableLetters = new();
             var letters = Directory.GetLogicalDrives().Select(l => l[..1].ToUpperInvariant()[0]);
+            
             for (int i = lower; i < upper; i++)
             {
                 char letter = (char)i;
@@ -147,25 +148,25 @@ namespace NetDriveManager.Services.Helpers
         public static string GetPathForLetter(char letter)
         {
             var mappedList = GetMappedDrives();
-            foreach (DriveModel item in mappedList)
+            foreach (MappingModel item in mappedList)
             {
                 if (item.DriveLetter == letter) return item.NetworkPath;
             }
             return string.Empty;
-        }
+        }        
 
-        public static List<DriveModel>  GetMappedDrives()
+        public static List<MappingModel> GetMappedDrives()
         {
-            var mappedDrives = new List<DriveModel>();
+            var mappedDrives = new List<MappingModel>();
             try
             {
                 var searcher = new ManagementObjectSearcher("root\\CIMV2", $"SELECT * FROM Win32_LogicalDisk WHERE DriveType={(int)DriveType.Network}");
 
                 foreach (ManagementObject queryObj in searcher.Get().Cast<ManagementObject>())
                 {
-                    var nd = new DriveModel();
+                    var nd = new MappingModel();
                     var s = (string)queryObj["Caption"];
-                    nd.DriveLetter = s[0];                    
+                    nd.DriveLetter = s[0];
                     nd.NetworkPath = (string)queryObj["ProviderName"];
                     mappedDrives.Add(nd);
 
@@ -190,12 +191,12 @@ namespace NetDriveManager.Services.Helpers
                 return mappedDrives;
             }
         }
-        
+
         public static bool IsNetworkPath(string path)
         {
             // source: https://regexlib.com/REDetails.aspx?regexp_id=2285
             string uncPattern = @"^((\\\\[a-zA - Z0 - 9 -]+\\[a-zA - Z0 - 9`~!@#$%^&(){}'._-]+([ ]+[a-zA-Z0-9`~!@#$%^&(){}'._-]+)*)|([a-zA-Z]:))(\\[^ \\/:*?""<>|]+([ ]+[^ \\/:*?""<>|]+)*)*\\?$";
-            
+
             return Regex.Match(path, uncPattern).Success;
         }
     }

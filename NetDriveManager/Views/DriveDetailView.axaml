@@ -1,12 +1,12 @@
 <UserControl xmlns="https://github.com/avaloniaui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             mc:Ignorable="d" d:DesignWidth="250" d:DesignHeight="450"
-             x:Class="NetDriveManager.Views.DriveDetailView">
+			 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			 xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+			 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 mc:Ignorable="d" d:DesignWidth="250" d:DesignHeight="450"
+			 x:Class="NetDriveManager.Views.DriveDetailView">
 	<UserControl.Styles>
 		<Style Selector="StackPanel.detail">
-			<Setter Property="Margin" Value="16,8,16,0"/>			
+			<Setter Property="Margin" Value="16,8,16,0"/>
 		</Style>
 		<Style Selector="TextBox.detail">
 			<Setter Property="Margin" Value="4,2,0,0"/>
@@ -16,20 +16,19 @@
 			<Setter Property="Margin" Value="4,2,0,0"/>
 		</Style>
 		<Style Selector="TextBlock.detail">
-			<Setter Property="Margin" Value="0,0,0,0"/>			
-		</Style>		
+			<Setter Property="Margin" Value="0,0,0,0"/>
+		</Style>
 	</UserControl.Styles>
-	
+
 	<DockPanel>
 		<!-- ACTION TITLE -->
-		<TextBlock 
+		<TextBlock
 			DockPanel.Dock="Top"
 			FontWeight="Normal"
 			FontSize="18"
 			Margin="8,0,0,0"
 			Foreground="LightBlue"
-			Text="{Binding OperationTitle}"
-			/>
+			Text="{Binding OperationTitle}"/>
 		<StackPanel
 			Background="Transparent"
 			HorizontalAlignment="Center"
@@ -45,12 +44,12 @@
 					Content="Cancel"
 					Command="{Binding Cancel}"/>
 		</StackPanel>
-		
-		<StackPanel>			
+
+		<StackPanel>
 			<!-- DRIVE LETTER -->
 			<StackPanel Classes="detail">
 				<TextBlock Classes="detail" Text="Drive letter"/>
-				<ComboBox 
+				<ComboBox
 					ItemsSource="{Binding DriveLettersList}"
 					SelectedItem="{Binding SelectedLetter}"
 					Classes="detail">
@@ -60,22 +59,21 @@
 						</DataTemplate>
 					</ComboBox.ItemTemplate>
 				</ComboBox>
-				
-			</StackPanel>			
+			</StackPanel>
+			
 			<!-- NETWORK PATH -->
 			<StackPanel Classes="detail">
 				<TextBlock
-					Classes="detail"					
+					Classes="detail"
 					Text="Network path"/>
 				<TextBox
-					Classes="detail"					
+					Classes="detail"
 					Text="{Binding NetworkPath}"
 					VerticalAlignment="Center"
-					Watermark="\\SERVER\share"
-					/>
-				
-			</StackPanel>			
-			<!-- PERSISTENT -->
+					Watermark="\\SERVER\share"/>
+			</StackPanel>
+			
+			<!-- OPTIONS -->
 			<StackPanel Classes="detail">
 				<CheckBox
 					IsChecked="{Binding DisplayItem.MappingSettings.AutoConnect}"
@@ -90,5 +88,4 @@
 			</StackPanel>
 		</StackPanel>
 	</DockPanel>
-	
 </UserControl>

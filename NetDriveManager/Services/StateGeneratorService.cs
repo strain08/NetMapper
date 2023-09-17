@@ -1,8 +1,10 @@
-﻿using NetDriveManager.Enums;
+﻿using DynamicData.Experimental;
+using NetDriveManager.Enums;
 using NetDriveManager.Interfaces;
 using NetDriveManager.Models;
 using NetDriveManager.Services.Helpers;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Net.NetworkInformation;
 using System.Threading;
@@ -22,16 +24,15 @@ namespace NetDriveManager.Services
             _listManager = listManager;
             _stateResolver = stateResolver;
 
-            _taskFactory.StartNew(() => MapAllDrives());
+            _taskFactory.StartNew(() => stateResolver.TryMapAllDrives());
 
             NetworkChange.NetworkAvailabilityChanged += NetworkAvailabilityChanged;
 
             // Get share and mapping states into model, at regular intervals
-
             _taskFactory.StartNew(() => ShareStateLoop(5000));
-            _taskFactory.StartNew(() => MappingStateLoop(5000));
-
+            _taskFactory.StartNew(() => MappingStateLoop(5000));          
         }
+        
 
         //DTOR
         ~StateGeneratorService()
@@ -42,83 +43,76 @@ namespace NetDriveManager.Services
         private async void ShareStateLoop(int timeMilliseconds)
         {
 
-            List<Task> _tasks = new();
+            List<Task> shareCheckTasks = new();
             while (true)
             {
-                foreach (DriveModel m in _listManager.DriveList)
-                {
-                    _tasks.Add(Task.Factory.StartNew(() =>
-                    {// long op
-                        ShareState shState = Directory.Exists(m.NetworkPath)
-                            ? ShareState.Available : ShareState.Unavailable;
-                        if (shState != m.ShareStateProp)
-                        {
-                            m.ShareStateProp = shState;
-                            _stateResolver.ShareStateChanged(m);
-                        }
-                    })
-                    );
-                }
-                await Task.WhenAll(_tasks);
-                _tasks.Clear();
+                foreach (MappingModel m in _listManager.DriveList)                
+                    shareCheckTasks.Add(Task.Factory.StartNew(() => CheckShareState(m)));                
+                await Task.WhenAll(shareCheckTasks);
+                shareCheckTasks.Clear();
                 Thread.Sleep(timeMilliseconds);
             }
 
         }
 
+        private void CheckShareState(MappingModel m)
+        {
+            // check share state
+            ShareState shState = Directory.Exists(m.NetworkPath) ? ShareState.Available : ShareState.Unavailable;
+            // if share state changed
+            if (shState != m.ShareStateProp)
+            {
+                m.ShareStateProp = shState; // UI notify
+                ShareStateChanged(m); // handle new state
+            }
+        }
 
+        private void ShareStateChanged(MappingModel m)
+        {
+            if (m.ShareStateProp == ShareState.Available &&
+                m.MappingStateProp == MappingState.Unmapped &&
+                m.MappingSettings.AutoConnect)
+            {
+                _stateResolver.ConnectDriveToast(m);
+                return;
+            }
+            if (m.ShareStateProp == ShareState.Unavailable &&
+                m.MappingStateProp == MappingState.Mapped &&
+                m.MappingSettings.AutoDisconnect)
+            {
+                _stateResolver.DisconnectDriveToast(m);
+            }
+        }
 
         private void MappingStateLoop(int timeMilliseconds)
         {
             while (true)
             {
-                foreach (DriveModel m in _listManager.DriveList)
+                foreach (MappingModel m in _listManager.DriveList)
                 {
-                    // long op
-                    MappingState mpState = Utility.IsNetworkDrive(m.DriveLetter)
-                        ? MappingState.Mapped : MappingState.Unmapped;
-                    if (mpState != m.MappingStateProp)
-                    {
+                    // check if drive mapped
+                    MappingState mpState = Utility.IsNetworkDrive(m.DriveLetter) ? MappingState.Mapped : MappingState.Unmapped;
+                  
                         m.MappingStateProp = mpState;
-                        //MappingStateChange(m);
-                        // TODO call an action to state change
-                    }
+                    
                 }
                 Thread.Sleep(timeMilliseconds);
             }
         }
 
-        //private void MappingStateChange(MappingModel m)
-        //{
-
-        //}
 
         private void NetworkAvailabilityChanged(object? sender, NetworkAvailabilityEventArgs e)
         {
             if (e.IsAvailable)
             {
-                MapAllDrives();
+                _stateResolver.TryMapAllDrives();
             }
             else
             {
-                UnmapAllDrives();
+                _stateResolver.TryUnmapAllDrives();
             }
         }
 
-        private void MapAllDrives()
-        {
-            foreach (DriveModel model in _listManager.DriveList)
-            {
-                _stateResolver.ConnectDriveToast(model);
-            }
-        }
 
-        private void UnmapAllDrives()
-        {
-            foreach (DriveModel model in _listManager.DriveList)
-            {
-                _stateResolver.DisconnectDriveToast(model);
-            }
-        }
     }
 }

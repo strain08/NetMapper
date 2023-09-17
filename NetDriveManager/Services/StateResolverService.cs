@@ -1,5 +1,6 @@
 ﻿using Avalonia.Threading;
 using NetDriveManager.Enums;
+using NetDriveManager.Interfaces;
 using NetDriveManager.Models;
 using NetDriveManager.Services.Helpers;
 using Splat;
@@ -15,57 +16,53 @@ namespace NetDriveManager.Services
 
         public StateResolverService(DriveListService driveListService, NotificationService notificationService)
         {
-            if (Avalonia.Controls.Design.IsDesignMode) return; // design mode bypass
-            
+            if (Avalonia.Controls.Design.IsDesignMode) return; // design mode bypass            
 
             this.notificationService = notificationService;
             this.driveListService = driveListService;
-            notificationService.TestMessage();
+            
         }
-
-        internal void ShareStateChanged(DriveModel m)
+        public void TryMapAllDrives()
         {
-            if (m.ShareStateProp == ShareState.Available &&
-                m.MappingStateProp == MappingState.Unmapped &&
-                m.MappingSettings.AutoConnect
-                )
+            foreach (MappingModel model in driveListService.DriveList)
             {
-                ConnectDriveToast(m);
-                return;
-            }
-            if (m.ShareStateProp == ShareState.Unavailable &&
-                m.MappingStateProp == MappingState.Mapped &&
-                m.MappingSettings.AutoDisconnect
-                )
-            {
-                DisconnectDriveToast(m);
+                ConnectDriveToast(model);
             }
         }
 
-        internal void ConnectDriveToast(DriveModel model)
+        public void TryUnmapAllDrives()
+        {
+            foreach (MappingModel model in driveListService.DriveList)
+            {
+                DisconnectDriveToast(model);
+            }
+        }
+
+        public void ConnectDriveToast(MappingModel model)
         {
             taskFactory.StartNew(() =>
             {
-                ConnectResult test = Utility.MapNetworkDrive(model.DriveLetter, model.NetworkPath);
-
-                switch (test)
+                switch (Utility.MapNetworkDrive(model.DriveLetter, model.NetworkPath))
                 {
                     case ConnectResult.Success:
-                        notificationService.ToastDriveAdded(model, DriveAddedRemovedCallback);
+
+                        // toast notify success
+                        notificationService.DriveConnectedToast(model, DriveAddedRemovedCallback);
                         break;
+
                     case ConnectResult.DriveLetterAlreadyAssigned:
+
                         if (!driveListService.ContainsDriveLetter(model.DriveLetter))
                         {
                             DisconnectDriveToast(model);
                             ConnectDriveToast(model);
-                        }
-                        
+                        }                        
                         break;
                 }
             });
         }
 
-        internal void DisconnectDriveToast(DriveModel model)
+        public void DisconnectDriveToast(MappingModel model)
         {
             taskFactory.StartNew(() =>
             {
@@ -73,39 +70,41 @@ namespace NetDriveManager.Services
                 switch (error)
                 {
                     case CancelConnection.DISCONNECT_SUCCESS:
-                        notificationService.ToastDriveRemoved(model, DriveAddedRemovedCallback);
+                        notificationService.DriveDisconnectedToast(model, DriveAddedRemovedCallback);
                         break;
+                        
                     default:
-                        notificationService.ToastCanNotRemoveDrive(model, CanNotRemoveDriveCallback);
+                        notificationService.NotifyCanNotRemoveDrive(model, CanNotRemoveDriveCallback);
                         break;
 
                 }
             });
         }
 
-        private void CanNotRemoveDriveCallback(DriveModel model, RemoveDriveAnswer answer)
+        private void CanNotRemoveDriveCallback(MappingModel model, DisconnectDriveAnswer answer)
         {
             switch (answer)
             {
-                case RemoveDriveAnswer.Retry:
+                case DisconnectDriveAnswer.Retry:
                     VMServices.DriveListViewModel.DisconnectDriveCommand(model);
                     break;
 
-                case RemoveDriveAnswer.Force:
+                case DisconnectDriveAnswer.Force:
                     CancelConnection error = Utility.DisconnectNetworkDrive(model.DriveLetter, true);
                     if (error == CancelConnection.DISCONNECT_SUCCESS)
                     {
-                        notificationService.ToastDriveRemoved(model, DriveAddedRemovedCallback);
+                        notificationService.DriveDisconnectedToast(model, DriveAddedRemovedCallback);
                     }
                     break;
-                case RemoveDriveAnswer.ShowWindow:
+                case DisconnectDriveAnswer.ShowWindow:
                     ShowMainWindow();
                     break;
 
             }
         }
+        
 
-        private void DriveAddedRemovedCallback(DriveModel mappingModel, AddRemoveAnswer toast)
+        private void DriveAddedRemovedCallback(MappingModel mappingModel, AddRemoveAnswer toast)
         {
             ShowMainWindow();
         }

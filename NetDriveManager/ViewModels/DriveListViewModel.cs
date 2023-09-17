@@ -1,4 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
+using NetDriveManager.Enums;
 using NetDriveManager.Models;
 using NetDriveManager.Services;
 using Splat;
@@ -10,12 +11,12 @@ namespace NetDriveManager.ViewModels
     public partial class DriveListViewModel : ViewModelBase
     {
         // PROP
-        public ObservableCollection<DriveModel>?
+        public ObservableCollection<MappingModel>?
             DriveList
         { get; set; }
 
         [ObservableProperty]
-        DriveModel?
+        MappingModel?
             selectedItem;
 
         DriveListService driveListService;
@@ -37,17 +38,17 @@ namespace NetDriveManager.ViewModels
         // COMMS        
         public void DisconnectDriveCommand(object commandParameter)
         {
-            var model = (DriveModel)commandParameter
+            var model = (MappingModel)commandParameter
                 ?? throw new InvalidOperationException("Error getting command parameter for DisconnectDriveCommand");
-            model.MappingStateProp = Enums.MappingState.Undefined;
+            model.MappingStateProp = MappingState.Undefined;
             stateResolverService.DisconnectDriveToast(model);
         }
 
         public void ConnectDriveCommand(object commandParameter)
         {
-            var model = (DriveModel)commandParameter
+            var model = (MappingModel)commandParameter
                 ?? throw new InvalidOperationException("Error getting command parameter for ConnectDriveCommand");
-            model.MappingStateProp = Enums.MappingState.Undefined;
+            model.MappingStateProp = MappingState.Undefined;
             stateResolverService.ConnectDriveToast(model);
         }
 

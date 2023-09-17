@@ -9,10 +9,10 @@ namespace NetDriveManager.Interfaces
 {
     public interface IStorage
     {
-        public List<DriveModel> GetAll();
+        public List<MappingModel> GetAll();
         public bool Load();
         public bool Save();
-        public bool Update(List<DriveModel> updatedList);
+        public bool Update(List<MappingModel> updatedList);
         
     }
 }
