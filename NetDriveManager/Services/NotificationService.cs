@@ -62,6 +62,7 @@ namespace NetDriveManager.Services
         public void DriveConnectedToast(MappingModel model, AddRemoveAnswerDelegate del)
         {
             _onAddRemoveDriveToast = del;
+            _mappingModel = model;
             var t = new ToastContentBuilder()
                 .AddArgument(ACTION_ADDREMOVE, DisconnectDriveAnswer.ShowWindow)
                 .AddText($"Drive {model.DriveLetterColon} connected.")
@@ -73,6 +74,7 @@ namespace NetDriveManager.Services
         public void DriveDisconnectedToast(MappingModel model, AddRemoveAnswerDelegate del)
         {
             _onAddRemoveDriveToast = del;
+            _mappingModel = model;
             var t = new ToastContentBuilder()
                 .AddArgument(ACTION_ADDREMOVE, DisconnectDriveAnswer.ShowWindow)
                 .AddText($"Drive {model.DriveLetterColon} disconnected.")

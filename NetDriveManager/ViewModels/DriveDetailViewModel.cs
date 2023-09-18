@@ -128,6 +128,7 @@ namespace NetDriveManager.ViewModels
         {
             VMServices.MainWindowViewModel!.Content = VMServices.MainWindowViewModel.DriveListViewModel;
 
+
         }
     }
 }

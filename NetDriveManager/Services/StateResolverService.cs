@@ -1,9 +1,9 @@
-﻿using Avalonia.Threading;
+﻿using Avalonia.Controls.ApplicationLifetimes;
+using Avalonia.Threading;
 using NetDriveManager.Enums;
-using NetDriveManager.Interfaces;
 using NetDriveManager.Models;
 using NetDriveManager.Services.Helpers;
-using Splat;
+using System;
 using System.Threading.Tasks;
 
 namespace NetDriveManager.Services
@@ -20,7 +20,7 @@ namespace NetDriveManager.Services
 
             this.notificationService = notificationService;
             this.driveListService = driveListService;
-            
+
         }
         public void TryMapAllDrives()
         {
@@ -56,7 +56,7 @@ namespace NetDriveManager.Services
                         {
                             DisconnectDriveToast(model);
                             ConnectDriveToast(model);
-                        }                        
+                        }
                         break;
                 }
             });
@@ -72,7 +72,7 @@ namespace NetDriveManager.Services
                     case CancelConnection.DISCONNECT_SUCCESS:
                         notificationService.DriveDisconnectedToast(model, DriveAddedRemovedCallback);
                         break;
-                        
+
                     default:
                         notificationService.NotifyCanNotRemoveDrive(model, CanNotRemoveDriveCallback);
                         break;
@@ -102,7 +102,7 @@ namespace NetDriveManager.Services
 
             }
         }
-        
+
 
         private void DriveAddedRemovedCallback(MappingModel mappingModel, AddRemoveAnswer toast)
         {
@@ -112,9 +112,9 @@ namespace NetDriveManager.Services
         private void ShowMainWindow()
         {
             Dispatcher.UIThread.Post(() =>
-            {
-                VMServices.mainWindow!.WindowState = Avalonia.Controls.WindowState.Normal;
-                VMServices.mainWindow.Activate();
+            {             
+                VMServices.mainWindow.WindowState = Avalonia.Controls.WindowState.Normal;
+                VMServices.mainWindow.Show();
             });
         }
     }
