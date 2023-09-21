@@ -1,10 +1,10 @@
-﻿using NetDriveManager.Interfaces;
-using NetDriveManager.Services.Helpers;
+﻿using NetMapper.Interfaces;
+using NetMapper.Services.Helpers;
 using Splat;
 using System;
 using System.ComponentModel.Design;
 
-namespace NetDriveManager.Services
+namespace NetMapper.Services
 {
     public static class Bootstrapper
     {

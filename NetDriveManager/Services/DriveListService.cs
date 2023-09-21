@@ -1,10 +1,11 @@
-﻿using NetDriveManager.Interfaces;
-using NetDriveManager.Models;
+﻿using NetMapper.Interfaces;
+using NetMapper.Models;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 
-namespace NetDriveManager.Services
+namespace NetMapper.Services
 {
 
     public class DriveListService : IListManager
@@ -24,20 +25,23 @@ namespace NetDriveManager.Services
         }
         ~DriveListService()
         {
-            _store.Update(new List<MappingModel>(DriveList));
+            if (!_store.Update(new List<MappingModel>(DriveList)))
+                throw new ApplicationException("Can not write settings file.");
         }
 
         public void AddDrive(MappingModel model)
         {
             DriveList.Add(model);
-            _store.Update(new List<MappingModel>(DriveList));
+            if (!_store.Update(new List<MappingModel>(DriveList)))
+                throw new ApplicationException("Can not write settings file.");
         }
 
         public void RemoveDrive(MappingModel model)
         {
             var i = DriveList.IndexOf(model);
             DriveList.RemoveAt(i);
-            _store.Update(new List<MappingModel>(DriveList));
+            if (!_store.Update(new List<MappingModel>(DriveList)))
+                throw new ApplicationException("Can not write settings file.");
         }
 
         public bool ContainsDriveLetter(char letter)
@@ -54,7 +58,8 @@ namespace NetDriveManager.Services
             var i = DriveList.IndexOf(oldModel);
             DriveList.RemoveAt(i);
             DriveList.Insert(i, newModel);
-            _store.Update(new List<MappingModel>(DriveList));
+            if (!_store.Update(new List<MappingModel>(DriveList))) 
+                throw new ApplicationException("Can not write settings file.");
         }
 
 

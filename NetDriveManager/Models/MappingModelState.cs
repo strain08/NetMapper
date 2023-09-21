@@ -1,9 +1,9 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
-using NetDriveManager.Enums;
-using NetDriveManager.Services.Helpers;
+using NetMapper.Enums;
+using NetMapper.Services.Helpers;
 using System.Text.Json.Serialization;
 
-namespace NetDriveManager.Models
+namespace NetMapper.Models
 {
     public partial class MappingModel
     {

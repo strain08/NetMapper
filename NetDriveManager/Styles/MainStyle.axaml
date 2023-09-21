@@ -13,6 +13,7 @@
 		</StackPanel>
     </Border>
   </Design.PreviewWith>
+	
 	<!-- TEXTBLOCK -->
 	<Style Selector="TextBlock.textMain">
 		<Setter	Property="FontSize"	Value="16" />

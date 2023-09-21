@@ -1,19 +1,9 @@
 ﻿using Microsoft.Toolkit.Uwp.Notifications;
-using NetDriveManager.Models;
+using NetMapper.Models;
+using NetMapper.Enums;
 
-namespace NetDriveManager.Services
-{
-    public enum DisconnectDriveAnswer
-    {
-        Force,
-        Retry,
-        ShowWindow
-    }
-    public enum AddRemoveAnswer
-    {
-        ShowWindow
-    }
-
+namespace NetMapper.Services
+{ 
 
     public delegate void RemoveDriveAnswerDelegate(MappingModel mappingModel, DisconnectDriveAnswer toast);
     public delegate void AddRemoveAnswerDelegate(MappingModel mappingModel, AddRemoveAnswer toast);
@@ -24,8 +14,8 @@ namespace NetDriveManager.Services
         AddRemoveAnswerDelegate? _onAddRemoveDriveToast;
         MappingModel? _mappingModel;
 
-        const string ACTION_REMOVEDRIVE = "removedrive";
-        const string ACTION_ADDREMOVE = "addremove";
+        const string ACTION_REMOVEDRIVE = "1";
+        const string ACTION_ADDREMOVE = "2";
 
         // CTOR
         public NotificationService()

@@ -2,7 +2,7 @@
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 
-namespace NetDriveManager.Enums
+namespace NetMapper.Enums
 {
     [StructLayout(LayoutKind.Sequential)]
     struct NETRESOURCE

@@ -1,5 +1,5 @@
-﻿using NetDriveManager.Enums;
-using NetDriveManager.Models;
+﻿using NetMapper.Enums;
+using NetMapper.Models;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -11,7 +11,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.RegularExpressions;
 
-namespace NetDriveManager.Services.Helpers
+namespace NetMapper.Services.Helpers
 {
     public static class Utility
     {
@@ -26,8 +26,7 @@ namespace NetDriveManager.Services.Helpers
         private static extern int WNetCancelConnection2
             (string sLocalName, uint iFlags, int iForce);
 
-        public static ConnectResult
-            MapNetworkDrive(char cDriveLetter, string sNetworkPath)
+        public static ConnectResult MapNetworkDrive(char cDriveLetter, string sNetworkPath)
         {
 
             //Checks if the last character is \ as this causes error on mapping a drive.
@@ -74,22 +73,7 @@ namespace NetDriveManager.Services.Helpers
             return false;
         }
 
-        //public static bool
-        //    IsNetworkDrive(string sDriveLetter)
-        //{
-        //    DriveInfo[] allDrives = DriveInfo.GetDrives();
-        //    foreach (DriveInfo d in allDrives)
-        //    {
-        //        if (d.DriveType == DriveType.Network && d.Name == sDriveLetter)
-        //        {
-        //            return true;
-        //        }
-        //    }
-        //    return false;
-        //}
-
-        public static void
-            IsMachineOnline(string hostName)
+        public static void IsMachineOnline(string hostName)
         {
             using Ping pingSender = new();
             PingOptions options = new()
@@ -124,73 +108,68 @@ namespace NetDriveManager.Services.Helpers
 
         }
 
-        public static List<char>
-            GetAvailableDriveLetters()
+        public static List<char> GetAvailableDriveLetters()
         {
-            const int lower = 'A';
-            const int upper = 'Z';
+            List<char> availableLetters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".ToList();
+            List<char> usedLetters = new(Directory.GetLogicalDrives().Select(l => l[..1].ToUpperInvariant()[0]));
 
-            List<char> availableLetters = new();
-            var letters = Directory.GetLogicalDrives().Select(l => l[..1].ToUpperInvariant()[0]);
-            
-            for (int i = lower; i < upper; i++)
-            {
-                char letter = (char)i;
-                if (!letters.Contains(letter))
-                {
-                    availableLetters.Add(letter);
-                }
-            }
+            foreach (char c in usedLetters) 
+                availableLetters.Remove(c);
 
             return availableLetters;
         }
 
-        public static string GetPathForLetter(char letter)
-        {
-            var mappedList = GetMappedDrives();
-            foreach (MappingModel item in mappedList)
-            {
-                if (item.DriveLetter == letter) return item.NetworkPath;
-            }
-            return string.Empty;
-        }        
+        //public static string GetPathForLetter(char letter)
+        //{
+        //    var mappedList = GetMappedDrives();
+        //    foreach (MappingModel item in mappedList)
+        //    {
+        //        if (item.DriveLetter == letter)
+        //            return item.NetworkPath;
+        //    }
+        //    return string.Empty;
+        //}
 
-        public static List<MappingModel> GetMappedDrives()
-        {
-            var mappedDrives = new List<MappingModel>();
-            try
-            {
-                var searcher = new ManagementObjectSearcher("root\\CIMV2", $"SELECT * FROM Win32_LogicalDisk WHERE DriveType={(int)DriveType.Network}");
+        //public static List<MappingModel> GetMappedDrives()
+        //{
+        //    var mappedDrives = new List<MappingModel>();
+        //    try
+        //    {
+        //        var searcher = new ManagementObjectSearcher("root\\CIMV2", $"SELECT * FROM Win32_LogicalDisk WHERE DriveType={(int)DriveType.Network}");
 
-                foreach (ManagementObject queryObj in searcher.Get().Cast<ManagementObject>())
-                {
-                    var nd = new MappingModel();
-                    var s = (string)queryObj["Caption"];
-                    nd.DriveLetter = s[0];
-                    nd.NetworkPath = (string)queryObj["ProviderName"];
-                    mappedDrives.Add(nd);
-
-                    //nd.DeviceID = (string)queryObj["DeviceID"];
-                    //Debug.WriteLine("DeviceID: {0}", queryObj["DeviceID"]);
-                    //Debug.WriteLine("DriveType: {0}", queryObj["DriveType"]);
-                    //Debug.WriteLine("FileSystem: {0}", queryObj["FileSystem"]);
-                    //Debug.WriteLine("FreeSpace: {0}", queryObj["FreeSpace"]);
-                    //Debug.WriteLine("MediaType: {0}", queryObj["MediaType"]);
-                    //Debug.WriteLine("Name: {0}", queryObj["Name"]);
-                    //Console.WriteLine("ProviderName: {0}", queryObj["ProviderName"]);
-                    //Console.WriteLine("Size: {0}", queryObj["Size"]);
-                    //Console.WriteLine("SystemName: {0}", queryObj["SystemName"]);
-                    //Console.WriteLine("VolumeName: {0}", queryObj["VolumeName"]);
-                    //Console.WriteLine("VolumeSerialNumber: {0}", queryObj["VolumeSerialNumber"]);
-                }
-                return mappedDrives;
-            }
-            catch (ManagementException e)
-            {
-                Debug.WriteLine("An error occurred while querying for WMI data: " + e.Message);
-                return mappedDrives;
-            }
-        }
+        //        foreach (ManagementObject queryObj in searcher.Get().Cast<ManagementObject>())
+        //        {
+        //            var caption = queryObj["Caption"] as String
+        //                ?? throw new ApplicationException("Wmi error getting mapped drive letter.");
+        //            mappedDrives.Add(
+        //                new MappingModel
+        //                {
+        //                    DriveLetter = caption[0],
+        //                    NetworkPath = (string)queryObj["ProviderName"]
+        //                });
+        //            #region Other possible properties
+        //            //nd.DeviceID = (string)queryObj["DeviceID"];
+        //            //Debug.WriteLine("DeviceID: {0}", queryObj["DeviceID"]);
+        //            //Debug.WriteLine("DriveType: {0}", queryObj["DriveType"]);
+        //            //Debug.WriteLine("FileSystem: {0}", queryObj["FileSystem"]);
+        //            //Debug.WriteLine("FreeSpace: {0}", queryObj["FreeSpace"]);
+        //            //Debug.WriteLine("MediaType: {0}", queryObj["MediaType"]);
+        //            //Debug.WriteLine("Name: {0}", queryObj["Name"]);
+        //            //Console.WriteLine("ProviderName: {0}", queryObj["ProviderName"]);
+        //            //Console.WriteLine("Size: {0}", queryObj["Size"]);
+        //            //Console.WriteLine("SystemName: {0}", queryObj["SystemName"]);
+        //            //Console.WriteLine("VolumeName: {0}", queryObj["VolumeName"]);
+        //            //Console.WriteLine("VolumeSerialNumber: {0}", queryObj["VolumeSerialNumber"]);
+        //            #endregion
+        //        }
+        //        return mappedDrives;
+        //    }
+        //    catch (ManagementException e)
+        //    {
+        //        Debug.WriteLine("An error occurred while querying for WMI data: " + e.Message);
+        //        return mappedDrives;
+        //    }
+        //}
 
         public static bool IsNetworkPath(string path)
         {

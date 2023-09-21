@@ -3,12 +3,14 @@ using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Data.Core.Plugins;
 using Avalonia.Markup.Xaml;
-using NetDriveManager.Services;
-using NetDriveManager.ViewModels;
-using NetDriveManager.Views;
+using NetMapper.Services;
+using NetMapper.ViewModels;
+using NetMapper.Views;
 using Splat;
+using System;
+using System.Diagnostics;
 
-namespace NetDriveManager
+namespace NetMapper
 {
     public partial class App : Application
     {
@@ -30,15 +32,15 @@ namespace NetDriveManager
                 
                 desktop.ShutdownMode = ShutdownMode.OnExplicitShutdown;
                 
-                DataContext = new ApplicationViewModel();
-                
-                //desktop.MainWindow = new MainWindow
-                //{
-                //    DataContext = VMServices.MainWindowViewModel = new MainWindowViewModel()
-                //};
+                DataContext = new ApplicationViewModel();                
+
             }
             base.OnFrameworkInitializationCompleted();
         }
-        
+
+        public void OnTrayClicked(object sender, EventArgs e)
+        {
+            VMServices.MainWindow!.Show();
+        }
     }
 }

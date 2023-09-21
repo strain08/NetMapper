@@ -2,13 +2,13 @@
 			 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 			 xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 			 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-			 xmlns:vm="using:NetDriveManager.ViewModels"
-			 xmlns:converters="using:NetDriveManager.Converters"
+			 xmlns:vm="using:NetMapper.ViewModels"
+			 xmlns:converters="using:NetMapper.Converters"
 			 mc:Ignorable="d"
 			 d:DesignWidth="350"
 			 d:DesignHeight="350"
 			 x:DataType="vm:DriveListViewModel"
-			 x:Class="NetDriveManager.Views.DriveListView">
+			 x:Class="NetMapper.Views.DriveListView">
 	<Design.DataContext>
 		<vm:DesignDriveListViewModel/>
 	</Design.DataContext>
@@ -21,20 +21,38 @@
 	<Panel>
 		<DockPanel>
 			<!-- Bottom buttons -->
-			<StackPanel
-				DockPanel.Dock="Bottom"
-				Background="Transparent"
-				HorizontalAlignment="Center"
-				Orientation="Horizontal"
-				Height="50"
-		>
-				<Button Classes="btnMain"
-						Content="+"
-						Command="{Binding AddItem}" />
-				<Button Classes="btnMain"
-						Content="-"
-						Command="{Binding RemoveItem}"/>
-			</StackPanel>
+			<Panel	DockPanel.Dock="Bottom" Height="50">
+				<!-- Settings -->
+				<Button HorizontalAlignment="Left"
+						VerticalAlignment="Bottom"
+						Background="Transparent"
+						Classes="btnMain"
+						Margin="8,0,0,6">
+					<Image Source="{SvgImage /Assets/settings-2-svgrepo-com.svg}"/>
+				</Button>
+				<!-- Info -->
+				<Button VerticalAlignment="Bottom"
+						HorizontalAlignment="Right"
+						Background="Transparent"
+						Classes="btnMain"
+						Margin="8,0,0,6">
+					<Image Source="{SvgImage /Assets/info-borderless-svgrepo-com.svg}"/>
+				</Button>
+				<StackPanel HorizontalAlignment="Center"
+							Orientation="Horizontal">
+					<!-- Add / Remove -->
+					<Button Classes="btnMain"
+							Command="{Binding AddItem}" Padding="8" Margin="4">
+						<Image Source="{SvgImage /Assets/plus-large-svgrepo-com.svg}"/>
+
+					</Button>
+					<Button Classes="btnMain"
+							Command="{Binding RemoveItem}" Padding="8">
+						<Image Source="{SvgImage /Assets/minus-svgrepo-com.svg}"/>
+
+					</Button>
+				</StackPanel>
+			</Panel>
 
 			<!-- Drive list -->
 			<ListBox
@@ -51,13 +69,11 @@
 									Content="Detach"
 									Command="{Binding $parent[ListBox].DataContext.DisconnectDriveCommand}"
 									IsVisible="{Binding DisconnectCommandVisible}"
-									CommandParameter="{Binding}"
-									FontSize="12"
+									CommandParameter="{Binding}"									
 									VerticalAlignment="Center"
 									VerticalContentAlignment="Center"/>
 								<Button
-									Content="Attach"
-									FontSize="12"
+									Content="Attach"									
 									IsVisible="{Binding ConnectCommandVisible}"
 									Command="{Binding $parent[ListBox].DataContext.ConnectDriveCommand}"
 									CommandParameter="{Binding}"
@@ -69,21 +85,23 @@
 								Orientation="Vertical"
 								VerticalAlignment="Center">
 								<!-- Drive Letter-->
-								<StackPanel Orientation="Horizontal">
-								<TextBlock
-									Classes="letter"
-									Margin="0,0,0,0"
-									Text="{Binding DriveLetterColon}"/>
+								<StackPanel Margin="1" Orientation="Horizontal">
+									<TextBlock
+										Classes="letter"
+										Margin="0,0,0,0"
+										FontSize="18"
+										Text="{Binding DriveLetterColon}"/>
 									<TextBlock
 										Classes="letter"
 										Foreground="Gray"
-										Margin="4,0,0,0"
-										Text="{Binding VolumeLabel}"/>	
+										Margin="8,0,0,0"
+										VerticalAlignment="Bottom"
+										Text="{Binding VolumeLabel}"/>
 								</StackPanel>
 								<!-- Network path-->
-								<TextBlock
+								<TextBlock 
 									Classes="detail"
-									Margin="4,0,0,2"
+									Margin="8,0,0,8"
 									Text="{Binding NetworkPath}"							/>
 								<!-- Statuses -->
 								<StackPanel Margin="4,0,0,0" Orientation="Horizontal">

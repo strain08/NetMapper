@@ -1,16 +1,13 @@
-﻿using Avalonia.Controls.ApplicationLifetimes;
-using Avalonia.Threading;
-using NetDriveManager.Enums;
-using NetDriveManager.Models;
-using NetDriveManager.Services.Helpers;
-using System;
+﻿using Avalonia.Threading;
+using NetMapper.Enums;
+using NetMapper.Models;
+using NetMapper.Services.Helpers;
 using System.Threading.Tasks;
 
-namespace NetDriveManager.Services
+namespace NetMapper.Services
 {
     public class StateResolverService
     {
-        private readonly TaskFactory taskFactory = new();
         private readonly NotificationService notificationService;
         private readonly DriveListService driveListService;
 
@@ -24,23 +21,19 @@ namespace NetDriveManager.Services
         }
         public void TryMapAllDrives()
         {
-            foreach (MappingModel model in driveListService.DriveList)
-            {
-                ConnectDriveToast(model);
-            }
+            foreach (MappingModel model in driveListService.DriveList)            
+                ConnectDriveToast(model);            
         }
 
         public void TryUnmapAllDrives()
         {
-            foreach (MappingModel model in driveListService.DriveList)
-            {
-                DisconnectDriveToast(model);
-            }
+            foreach (MappingModel model in driveListService.DriveList)            
+                DisconnectDriveToast(model);            
         }
 
         public void ConnectDriveToast(MappingModel model)
         {
-            taskFactory.StartNew(() =>
+            Task.Run(() =>
             {
                 switch (Utility.MapNetworkDrive(model.DriveLetter, model.NetworkPath))
                 {
@@ -52,6 +45,7 @@ namespace NetDriveManager.Services
 
                     case ConnectResult.DriveLetterAlreadyAssigned:
 
+                        // if drive letter is unmanaged
                         if (!driveListService.ContainsDriveLetter(model.DriveLetter))
                         {
                             DisconnectDriveToast(model);
@@ -64,7 +58,7 @@ namespace NetDriveManager.Services
 
         public void DisconnectDriveToast(MappingModel model)
         {
-            taskFactory.StartNew(() =>
+            Task.Run(() =>
             {
                 CancelConnection error = Utility.DisconnectNetworkDrive(model.DriveLetter);
                 switch (error)
@@ -83,24 +77,27 @@ namespace NetDriveManager.Services
 
         private void CanNotRemoveDriveCallback(MappingModel model, DisconnectDriveAnswer answer)
         {
-            switch (answer)
+            Task.Run(() =>
             {
-                case DisconnectDriveAnswer.Retry:
-                    VMServices.DriveListViewModel.DisconnectDriveCommand(model);
-                    break;
+                switch (answer)
+                {
+                    case DisconnectDriveAnswer.Retry:
+                        VMServices.DriveListViewModel.DisconnectDriveCommand(model);
+                        break;
 
-                case DisconnectDriveAnswer.Force:
-                    CancelConnection error = Utility.DisconnectNetworkDrive(model.DriveLetter, true);
-                    if (error == CancelConnection.DISCONNECT_SUCCESS)
-                    {
-                        notificationService.DriveDisconnectedToast(model, DriveAddedRemovedCallback);
-                    }
-                    break;
-                case DisconnectDriveAnswer.ShowWindow:
-                    ShowMainWindow();
-                    break;
-
-            }
+                    case DisconnectDriveAnswer.Force:
+                        CancelConnection error = Utility.DisconnectNetworkDrive(model.DriveLetter, true);
+                        if (error == CancelConnection.DISCONNECT_SUCCESS)
+                        {
+                            notificationService.DriveDisconnectedToast(model, DriveAddedRemovedCallback);
+                        }
+                        break;
+                    case DisconnectDriveAnswer.ShowWindow:
+                        ShowMainWindow();
+                        break;
+                }
+            });
+            
         }
 
 
@@ -113,8 +110,8 @@ namespace NetDriveManager.Services
         {
             Dispatcher.UIThread.Post(() =>
             {             
-                VMServices.mainWindow.WindowState = Avalonia.Controls.WindowState.Normal;
-                VMServices.mainWindow.Show();
+                VMServices.MainWindow!.WindowState = Avalonia.Controls.WindowState.Normal;
+                VMServices.MainWindow.Show();
             });
         }
     }

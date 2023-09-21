@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.6.33829.357
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NetDriveManager", "NetDriveManager\NetDriveManager.csproj", "{F6BE841D-EE1A-4D8F-A420-AFBC8323DA7D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NetMapper", "NetDriveManager\NetMapper.csproj", "{F6BE841D-EE1A-4D8F-A420-AFBC8323DA7D}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ConsoleTest", "ConsoleTest\ConsoleTest.csproj", "{B7A4A8B5-0B94-4574-82D3-E8F493D8B279}"
 EndProject

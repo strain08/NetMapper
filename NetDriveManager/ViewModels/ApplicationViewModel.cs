@@ -1,16 +1,9 @@
 ﻿using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Controls;
-using CommunityToolkit.Mvvm.Input;
-using NetDriveManager.Views;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using NetDriveManager.Services;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
+using NetMapper.Views;
+using NetMapper.Services;
 
-namespace NetDriveManager.ViewModels
+namespace NetMapper.ViewModels
 {
     public class ApplicationViewModel:ViewModelBase
     {
@@ -25,9 +18,11 @@ namespace NetDriveManager.ViewModels
             // hide window on close
             _mainWindow.Closing += (s, e) =>
             {
-                ((Window)s).Hide();
+                ((Window)s!).Hide();
                 e.Cancel = true;
             };
+            
+            VMServices.MainWindow = _mainWindow;
             //_mainWindow.PropertyChanged += (s, e) => 
             //{  
             //    if (e.NewValue is WindowState windowState)
@@ -45,7 +40,7 @@ namespace NetDriveManager.ViewModels
             //    }
             //};
 
-            VMServices.mainWindow = _mainWindow;
+
 
         }
 
@@ -64,7 +59,7 @@ namespace NetDriveManager.ViewModels
         }
 
 
-        public static void ExitCommand()
+        public void ExitCommand()
         {
             if (App.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime application)
             {

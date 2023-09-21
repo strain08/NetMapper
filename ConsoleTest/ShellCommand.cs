@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 
-namespace NetDriveManager.Services.Helpers
+namespace NetMapper.Services.Helpers
 {
     public class ShellCommand
     {

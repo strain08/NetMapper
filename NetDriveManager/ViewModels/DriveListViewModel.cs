@@ -1,13 +1,12 @@
-﻿using Avalonia.Controls.ApplicationLifetimes;
-using CommunityToolkit.Mvvm.ComponentModel;
-using NetDriveManager.Enums;
-using NetDriveManager.Models;
-using NetDriveManager.Services;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+using NetMapper.Enums;
+using NetMapper.Models;
+using NetMapper.Services;
 using Splat;
 using System;
 using System.Collections.ObjectModel;
 
-namespace NetDriveManager.ViewModels
+namespace NetMapper.ViewModels
 {
     public partial class DriveListViewModel : ViewModelBase
     {
@@ -21,7 +20,6 @@ namespace NetDriveManager.ViewModels
             selectedItem;
 
         DriveListService driveListService;
-
         StateResolverService stateResolverService;
 
         // CTOR

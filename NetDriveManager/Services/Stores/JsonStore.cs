@@ -1,15 +1,18 @@
-﻿using NetDriveManager.Interfaces;
-using NetDriveManager.Models;
+﻿using NetMapper.Interfaces;
+using NetMapper.Models;
+using System.Reflection;
 using System.Collections.Generic;
 using System.IO;
 using System.Text.Json;
+using System;
+using Windows.Media.Capture;
+using Avalonia;
+using System.Diagnostics;
 
-namespace NetDriveManager.Services
+namespace NetMapper.Services
 {
     public class JsonStore : IStorage
-    {
-         
-
+    {        
         private readonly string jsonSettingsFile;
         
         private List<MappingModel> DrivesDb { get; set; } = new();
@@ -18,10 +21,16 @@ namespace NetDriveManager.Services
         
         public JsonStore(string jsonFile)
         {
-            jsonSettingsFile = jsonFile;
+            string strExeFilePath = Process.GetCurrentProcess()?.MainModule?.FileName 
+                ?? throw new ApplicationException("Process.GetCurrentProcess()?.MainModule?.FileName null");
+
+            string strWorkPath = Path.GetDirectoryName(strExeFilePath)
+                ?? throw new ApplicationException("Path.GetDirectoryName(strExeFilePath) null");
+
+            jsonSettingsFile =Path.Combine(strWorkPath, jsonFile);
         }
 
-        
+
 
         // READ
         public bool Load()
@@ -48,9 +57,11 @@ namespace NetDriveManager.Services
                 return true;
             }
             catch
-            {
+            {                
                 return false;
-            }
+                
+            } 
+            
 
         }
 

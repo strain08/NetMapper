@@ -1,8 +1,7 @@
 <Window xmlns="https://github.com/avaloniaui"
 		xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-		x:Class="NetDriveManager.Views.MainWindow"
-		Icon="/Assets/avalonia-logo.ico"
-		Title="Network Drive Monitor"
+		x:Class="NetMapper.Views.MainWindow"
+		Icon="/Assets/avalonia-logo.ico"		
 		TransparencyLevelHint="AcrylicBlur"
 		Background="#1f1f1f"
 		WindowStartupLocation="CenterScreen"
@@ -17,7 +16,7 @@
 				<RowDefinition></RowDefinition>
 			</Grid.RowDefinitions>
 			<TextBlock
-				Text="NetDrives"
+				Text="NetMapper"
 				FontSize="14"
 				Padding="0,0,0,0"
 				IsHitTestVisible="False"/>

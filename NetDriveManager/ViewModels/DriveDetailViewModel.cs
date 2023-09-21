@@ -1,12 +1,11 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
-using NetDriveManager.Models;
-using NetDriveManager.Services;
-using NetDriveManager.Services.Helpers;
+using NetMapper.Models;
+using NetMapper.Services;
+using NetMapper.Services.Helpers;
 using Splat;
 using System.Collections.Generic;
-using System.Linq;
 
-namespace NetDriveManager.ViewModels
+namespace NetMapper.ViewModels
 {
     public partial class DriveDetailViewModel : ViewModelBase
     {
@@ -57,14 +56,12 @@ namespace NetDriveManager.ViewModels
         private bool isEditing;
 
         DriveListService driveListService;
-        NotificationService notificationService;
         StateResolverService stateResolverService;
 
         // CTOR
         public DriveDetailViewModel(MappingModel? selectedItem = null)
         {
             driveListService = Locator.Current.GetRequiredService<DriveListService>();
-            notificationService = Locator.Current.GetRequiredService<NotificationService>();    
             stateResolverService = Locator.Current.GetRequiredService<StateResolverService>();
 
            LoadDriveLetters();
@@ -100,7 +97,7 @@ namespace NetDriveManager.ViewModels
             }
         }
 
-        public async void Ok()
+        public void Ok()
         {
             
 

@@ -1,7 +1,7 @@
-﻿using NetDriveManager.Models;
-using NetDriveManager.Enums;
+﻿using NetMapper.Models;
+using NetMapper.Enums;
 
-namespace NetDriveManager.ViewModels
+namespace NetMapper.ViewModels
 {
     public class DesignDriveListViewModel : DriveListViewModel
     {

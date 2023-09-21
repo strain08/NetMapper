@@ -1,10 +1,10 @@
 ﻿using Avalonia.Data;
 using Avalonia.Data.Converters;
-using NetDriveManager.Enums;
+using NetMapper.Enums;
 using System;
 using System.Globalization;
 
-namespace NetDriveManager.Converters
+namespace NetMapper.Converters
 {
     public class StateToTextConverter : IValueConverter
     {

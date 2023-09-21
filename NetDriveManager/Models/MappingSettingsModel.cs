@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace NetDriveManager.Models
+namespace NetMapper.Models
 {
     public partial class MappingSettingsModel:ObservableObject
     {

@@ -1,8 +1,8 @@
 ﻿using Avalonia.Controls;
 using CommunityToolkit.Mvvm.ComponentModel;
-using NetDriveManager.Services;
+using NetMapper.Services;
 
-namespace NetDriveManager.ViewModels
+namespace NetMapper.ViewModels
 {
     public partial class MainWindowViewModel : ViewModelBase
     {

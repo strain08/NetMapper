@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace NetDriveManager.Enums
+﻿namespace NetMapper.Enums
 {
     public enum ShareState
     {
@@ -16,6 +10,18 @@ namespace NetDriveManager.Enums
     {
         Undefined,
         Mapped,
-        Unmapped
+        Unmapped,
+        LetterUnavailable
+    }
+
+    public enum DisconnectDriveAnswer
+    {
+        Force,
+        Retry,
+        ShowWindow
+    }
+    public enum AddRemoveAnswer
+    {
+        ShowWindow
     }
 }

@@ -1,11 +1,11 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
-using NetDriveManager.Services.Helpers;
+using NetMapper.Services.Helpers;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 
-namespace NetDriveManager.ViewModels
+namespace NetMapper.ViewModels
 {
     public class ViewModelBase : ObservableObject, INotifyDataErrorInfo
     {

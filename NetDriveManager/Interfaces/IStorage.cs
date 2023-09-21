@@ -1,11 +1,11 @@
-﻿using NetDriveManager.Models;
+﻿using NetMapper.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace NetDriveManager.Interfaces
+namespace NetMapper.Interfaces
 {
     public interface IStorage
     {

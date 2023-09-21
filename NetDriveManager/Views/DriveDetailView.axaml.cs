@@ -1,10 +1,10 @@
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
-using NetDriveManager.Services;
+using NetMapper.Services;
 using System.Linq;
 
-namespace NetDriveManager.Views;
+namespace NetMapper.Views;
 
 public partial class DriveDetailView : UserControl
 {

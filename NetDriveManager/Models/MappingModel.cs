@@ -1,9 +1,9 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
-using NetDriveManager.Enums;
+using NetMapper.Enums;
 using System.IO;
 using System.Text.Json.Serialization;
 
-namespace NetDriveManager.Models;
+namespace NetMapper.Models;
 
 public partial class MappingModel : ObservableObject
 {
@@ -22,7 +22,8 @@ public partial class MappingModel : ObservableObject
 
     // PUBLIC PROP
     public char DriveLetter { get; set; }
-
+    
+    [JsonIgnore]
     public string DriveLetterColon
     {
         get => DriveLetter + ":";
@@ -32,23 +33,21 @@ public partial class MappingModel : ObservableObject
     public string NetworkPath { get; set; } = string.Empty;
 
     [JsonIgnore]
-    public string VolumeLabel 
+    public string VolumeLabel
     {
         get
         {
             DriveInfo drive = new(DriveLetterColon);
-            return drive.IsReady ? drive.VolumeLabel : string.Empty;            
+            return drive.IsReady ? drive.VolumeLabel : string.Empty;
         }
     }
-
-  
 
     public MappingSettingsModel MappingSettings { get; set; }
 
     [JsonIgnore]
     public bool ConnectCommandVisible =>
-    ShareStateProp == ShareState.Available &&
-    MappingStateProp == MappingState.Unmapped;
+        ShareStateProp == ShareState.Available &&
+        MappingStateProp == MappingState.Unmapped;
 
     [JsonIgnore]
     public bool DisconnectCommandVisible =>

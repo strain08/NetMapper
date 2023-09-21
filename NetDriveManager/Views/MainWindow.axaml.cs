@@ -1,7 +1,7 @@
 using Avalonia;
 using Avalonia.Controls;
 
-namespace NetDriveManager.Views
+namespace NetMapper.Views
 {
     public partial class MainWindow : Window
     {
@@ -9,10 +9,11 @@ namespace NetDriveManager.Views
         {
             InitializeComponent();
             this.Height = 400;
-            this.Width = 250;
+            this.Width = 225;
 #if DEBUG
             this.AttachDevTools();
 #endif
+            MinWidth = this.Width;
         }
     }
 }

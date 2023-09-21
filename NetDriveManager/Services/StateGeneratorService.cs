@@ -1,22 +1,19 @@
-﻿using DynamicData.Experimental;
-using NetDriveManager.Enums;
-using NetDriveManager.Interfaces;
-using NetDriveManager.Models;
-using NetDriveManager.Services.Helpers;
+﻿using NetMapper.Enums;
+using NetMapper.Interfaces;
+using NetMapper.Models;
+using NetMapper.Services.Helpers;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Net.NetworkInformation;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace NetDriveManager.Services
+namespace NetMapper.Services
 {
     public class StateGeneratorService
     {
         private readonly IListManager _listManager;
         private readonly StateResolverService _stateResolver;
-        private readonly TaskFactory _taskFactory = new();
 
         //CTOR
         public StateGeneratorService(IListManager listManager, StateResolverService stateResolver)
@@ -24,13 +21,13 @@ namespace NetDriveManager.Services
             _listManager = listManager;
             _stateResolver = stateResolver;
 
-            _taskFactory.StartNew(() => stateResolver.TryMapAllDrives());
+            Task.Run(stateResolver.TryMapAllDrives);
 
             NetworkChange.NetworkAvailabilityChanged += NetworkAvailabilityChanged;
 
             // Get share and mapping states into model, at regular intervals
-            _taskFactory.StartNew(() => ShareStateLoop(5000));
-            _taskFactory.StartNew(() => MappingStateLoop(5000));          
+            Task.Run(() => ShareStateLoop(5000));
+            Task.Run(() => MappingStateLoop(5000));          
         }
         
 
@@ -42,23 +39,22 @@ namespace NetDriveManager.Services
 
         private async void ShareStateLoop(int timeMilliseconds)
         {
-
             List<Task> shareCheckTasks = new();
             while (true)
             {
                 foreach (MappingModel m in _listManager.DriveList)                
-                    shareCheckTasks.Add(Task.Factory.StartNew(() => CheckShareState(m)));                
+                    shareCheckTasks.Add(Task.Run(() => CheckShareState(m)));                
                 await Task.WhenAll(shareCheckTasks);
                 shareCheckTasks.Clear();
                 Thread.Sleep(timeMilliseconds);
             }
-
         }
 
         private void CheckShareState(MappingModel m)
         {
             // check share state
-            ShareState shState = Directory.Exists(m.NetworkPath) ? ShareState.Available : ShareState.Unavailable;
+            ShareState shState = Directory.Exists(m.NetworkPath) 
+                ? ShareState.Available : ShareState.Unavailable;
             // if share state changed
             if (shState != m.ShareStateProp)
             {
@@ -91,7 +87,8 @@ namespace NetDriveManager.Services
                 foreach (MappingModel m in _listManager.DriveList)
                 {
                     // check if drive mapped
-                    MappingState mpState = Utility.IsNetworkDrive(m.DriveLetter) ? MappingState.Mapped : MappingState.Unmapped;
+                    MappingState mpState = Utility.IsNetworkDrive(m.DriveLetter)
+                        ? MappingState.Mapped : MappingState.Unmapped;
                   
                         m.MappingStateProp = mpState;
                     
