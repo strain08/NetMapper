@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using NetMapper.Enums;
+using NetMapper.Interfaces;
 using System.IO;
 using System.Text.Json.Serialization;
 

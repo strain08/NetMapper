@@ -44,6 +44,11 @@ namespace NetMapper.Services
                         break;
 
                     case ConnectResult.DriveLetterAlreadyAssigned:
+                        if (!Utility.IsNetworkDriveMapped(model.DriveLetter))
+                        {
+                            model.MappingStateProp = MappingState.LetterUnavailable;
+                            break;
+                        }
 
                         // if drive letter is unmanaged
                         if (!driveListService.ContainsDriveLetter(model.DriveLetter))
@@ -52,6 +57,7 @@ namespace NetMapper.Services
                             ConnectDriveToast(model);
                         }
                         break;
+                    
                 }
             });
         }

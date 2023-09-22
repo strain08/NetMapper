@@ -1,9 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using NetMapper.Enums;
 
 namespace NetMapper.Models
 {
@@ -13,5 +9,7 @@ namespace NetMapper.Models
         bool autoConnect;
         [ObservableProperty]
         bool autoDisconnect;
+        
+        Coords coords;
     }
 }

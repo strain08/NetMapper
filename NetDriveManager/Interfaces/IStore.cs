@@ -7,12 +7,12 @@ using System.Threading.Tasks;
 
 namespace NetMapper.Interfaces
 {
-    public interface IStorage
+    public interface IStore<TData> where TData:new()
     {
-        public List<MappingModel> GetAll();
+        public TData GetAll();
         public bool Load();
         public bool Save();
-        public bool Update(List<MappingModel> updatedList);
+        public bool Update(TData updatedStore);
         
     }
 }

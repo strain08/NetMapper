@@ -14,9 +14,9 @@ namespace NetMapper.Converters
             {
                 switch (shareState)
                 {
-                    case ShareState.Available: 
+                    case ShareState.Available:
                         return "Available";
-                        case ShareState.Unavailable:
+                    case ShareState.Unavailable:
                         return "Unavailable";
                     case ShareState.Undefined:
                         return "Waiting..";
@@ -30,6 +30,8 @@ namespace NetMapper.Converters
                         return "Mapped";
                     case MappingState.Unmapped:
                         return "Unmapped";
+                    case MappingState.LetterUnavailable:
+                        return "Letter unavailable";
                     case MappingState.Undefined:
                         return "Waiting..";
                 }

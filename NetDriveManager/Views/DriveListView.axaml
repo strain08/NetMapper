@@ -27,7 +27,8 @@
 						VerticalAlignment="Bottom"
 						Background="Transparent"
 						Classes="btnMain"
-						Margin="8,0,0,6">
+						Margin="8,0,0,6"
+						Command="{Binding Settings}">
 					<Image Source="{SvgImage /Assets/settings-2-svgrepo-com.svg}"/>
 				</Button>
 				<!-- Info -->
@@ -35,7 +36,7 @@
 						HorizontalAlignment="Right"
 						Background="Transparent"
 						Classes="btnMain"
-						Margin="8,0,0,6">
+						Margin="8,0,0,6"						>
 					<Image Source="{SvgImage /Assets/info-borderless-svgrepo-com.svg}"/>
 				</Button>
 				<StackPanel HorizontalAlignment="Center"

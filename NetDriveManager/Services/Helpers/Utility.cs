@@ -57,7 +57,7 @@ namespace NetMapper.Services.Helpers
             }
         }
 
-        public static bool IsNetworkDrive(char cDriveLetter)
+        public static bool IsNetworkDriveMapped(char cDriveLetter)
         {
             try
             {
@@ -73,6 +73,22 @@ namespace NetMapper.Services.Helpers
             return false;
         }
 
+        public static bool IsRegularDriveMapped(char cDriveLetter)
+        {
+            try
+            {
+                DriveInfo di = new(cDriveLetter + @":\");
+                if (di.DriveType != DriveType.Network && di.IsReady)
+                {                    
+                    return true;
+                }
+            }
+            catch (ArgumentException)
+            {
+                return false;
+            }
+            return false;
+        }
         public static void IsMachineOnline(string hostName)
         {
             using Ping pingSender = new();

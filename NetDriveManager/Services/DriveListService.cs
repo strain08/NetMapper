@@ -8,31 +8,31 @@ using System.Linq;
 namespace NetMapper.Services
 {
 
-    public class DriveListService : IListManager
+    public class DriveListService
     {
 
-        public ObservableCollection<MappingModel> DriveList { get; set; } = new();
+        public ObservableCollection<MappingModel> DriveList { get; set; }
 
-        private readonly IStorage _store;
+        private readonly IStore<List<MappingModel>> store;
 
 
         // CTOR
-        public DriveListService(IStorage store)
+        public DriveListService(IStore<List<MappingModel>> storeService)
         {
-            _store = store;
-            DriveList = new ObservableCollection<MappingModel>(_store.GetAll());
+            store = storeService;
+            DriveList = new ObservableCollection<MappingModel>(store.GetAll());
 
         }
         ~DriveListService()
         {
-            if (!_store.Update(new List<MappingModel>(DriveList)))
+            if (!store.Update(new List<MappingModel>(DriveList)))
                 throw new ApplicationException("Can not write settings file.");
         }
 
         public void AddDrive(MappingModel model)
         {
             DriveList.Add(model);
-            if (!_store.Update(new List<MappingModel>(DriveList)))
+            if (!store.Update(new List<MappingModel>(DriveList)))
                 throw new ApplicationException("Can not write settings file.");
         }
 
@@ -40,7 +40,7 @@ namespace NetMapper.Services
         {
             var i = DriveList.IndexOf(model);
             DriveList.RemoveAt(i);
-            if (!_store.Update(new List<MappingModel>(DriveList)))
+            if (!store.Update(new List<MappingModel>(DriveList)))
                 throw new ApplicationException("Can not write settings file.");
         }
 
@@ -58,7 +58,7 @@ namespace NetMapper.Services
             var i = DriveList.IndexOf(oldModel);
             DriveList.RemoveAt(i);
             DriveList.Insert(i, newModel);
-            if (!_store.Update(new List<MappingModel>(DriveList))) 
+            if (!store.Update(new List<MappingModel>(DriveList))) 
                 throw new ApplicationException("Can not write settings file.");
         }
 

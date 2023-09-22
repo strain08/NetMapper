@@ -1,35 +1,29 @@
 ﻿using NetMapper.Interfaces;
-using NetMapper.Models;
-using System.Reflection;
-using System.Collections.Generic;
+using System;
+using System.Diagnostics;
 using System.IO;
 using System.Text.Json;
-using System;
-using Windows.Media.Capture;
-using Avalonia;
-using System.Diagnostics;
 
 namespace NetMapper.Services
 {
-    public class JsonStore : IStorage
-    {        
-        private readonly string jsonSettingsFile;
-        
-        private List<MappingModel> DrivesDb { get; set; } = new();
-        
+    public class JsonStore<T> : IStore<T> where T : new()
+    {
+        readonly string jsonSettingsFile;
+
+        private T ItemsList { get; set; } = new();
+
         // CTOR
-        
+
         public JsonStore(string jsonFile)
         {
-            string strExeFilePath = Process.GetCurrentProcess()?.MainModule?.FileName 
+            string strExeFilePath = Process.GetCurrentProcess()?.MainModule?.FileName
                 ?? throw new ApplicationException("Process.GetCurrentProcess()?.MainModule?.FileName null");
 
             string strWorkPath = Path.GetDirectoryName(strExeFilePath)
                 ?? throw new ApplicationException("Path.GetDirectoryName(strExeFilePath) null");
 
-            jsonSettingsFile =Path.Combine(strWorkPath, jsonFile);
-        }
-
+            jsonSettingsFile = Path.Combine(strWorkPath, jsonFile);
+        }      
 
 
         // READ
@@ -38,7 +32,7 @@ namespace NetMapper.Services
             try
             {
                 var jsonString = File.ReadAllText(jsonSettingsFile);
-                DrivesDb = JsonSerializer.Deserialize<List<MappingModel>>(jsonString) ?? throw new JsonException();
+                ItemsList = JsonSerializer.Deserialize<T>(jsonString) ?? throw new JsonException();
                 return true;
             }
             catch
@@ -52,31 +46,31 @@ namespace NetMapper.Services
         {
             try
             {
-                var jsonString = JsonSerializer.Serialize(DrivesDb, DrivesDb.GetType());
+                var jsonString = JsonSerializer.Serialize(ItemsList, ItemsList.GetType());
                 File.WriteAllText(jsonSettingsFile, jsonString);
                 return true;
             }
             catch
-            {                
+            {
                 return false;
-                
-            } 
-            
+
+            }
+
 
         }
 
         // UPDATE
-        public bool Update(List<MappingModel> updatedList)
+        public bool Update(T updatedList)
         {
 
-            DrivesDb = new(updatedList);
+            ItemsList = updatedList;
             return Save();
         }
 
-        List<MappingModel> IStorage.GetAll()
+        public T GetAll()
         {
             Load();
-            return DrivesDb;
+            return ItemsList;
         }
     }
 

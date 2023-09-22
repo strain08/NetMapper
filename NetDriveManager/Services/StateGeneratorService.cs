@@ -1,5 +1,4 @@
 ﻿using NetMapper.Enums;
-using NetMapper.Interfaces;
 using NetMapper.Models;
 using NetMapper.Services.Helpers;
 using System.Collections.Generic;
@@ -12,11 +11,11 @@ namespace NetMapper.Services
 {
     public class StateGeneratorService
     {
-        private readonly IListManager _listManager;
+        private readonly DriveListService _listManager;
         private readonly StateResolverService _stateResolver;
 
         //CTOR
-        public StateGeneratorService(IListManager listManager, StateResolverService stateResolver)
+        public StateGeneratorService(DriveListService listManager, StateResolverService stateResolver)
         {
             _listManager = listManager;
             _stateResolver = stateResolver;
@@ -27,9 +26,9 @@ namespace NetMapper.Services
 
             // Get share and mapping states into model, at regular intervals
             Task.Run(() => ShareStateLoop(5000));
-            Task.Run(() => MappingStateLoop(5000));          
+            Task.Run(() => MappingStateLoop(5000));
         }
-        
+
 
         //DTOR
         ~StateGeneratorService()
@@ -42,8 +41,8 @@ namespace NetMapper.Services
             List<Task> shareCheckTasks = new();
             while (true)
             {
-                foreach (MappingModel m in _listManager.DriveList)                
-                    shareCheckTasks.Add(Task.Run(() => CheckShareState(m)));                
+                foreach (MappingModel m in _listManager.DriveList)
+                    shareCheckTasks.Add(Task.Run(() => CheckShareState(m)));
                 await Task.WhenAll(shareCheckTasks);
                 shareCheckTasks.Clear();
                 Thread.Sleep(timeMilliseconds);
@@ -53,7 +52,7 @@ namespace NetMapper.Services
         private void CheckShareState(MappingModel m)
         {
             // check share state
-            ShareState shState = Directory.Exists(m.NetworkPath) 
+            ShareState shState = Directory.Exists(m.NetworkPath)
                 ? ShareState.Available : ShareState.Unavailable;
             // if share state changed
             if (shState != m.ShareStateProp)
@@ -86,17 +85,36 @@ namespace NetMapper.Services
             {
                 foreach (MappingModel m in _listManager.DriveList)
                 {
-                    // check if drive mapped
-                    MappingState mpState = Utility.IsNetworkDrive(m.DriveLetter)
-                        ? MappingState.Mapped : MappingState.Unmapped;
-                  
-                        m.MappingStateProp = mpState;
-                    
+                    CheckMappingState(m);
                 }
                 Thread.Sleep(timeMilliseconds);
             }
         }
 
+        private void CheckMappingState(MappingModel m)
+        {
+            MappingState mpState;
+            if (Utility.IsRegularDriveMapped(m.DriveLetter))
+            {
+                mpState = MappingState.LetterUnavailable;
+            }
+            else // no regular drive on this letter, may be a network drive
+            {
+
+                // check if network drive mapped
+                 mpState = Utility.IsNetworkDriveMapped(m.DriveLetter)
+                    ? MappingState.Mapped : MappingState.Unmapped;
+                if (mpState == MappingState.Unmapped &&
+                    m.ShareStateProp == ShareState.Available &&
+                    m.MappingStateProp != MappingState.LetterUnavailable &&
+                    m.MappingSettings.AutoConnect)
+                {
+                    _stateResolver.ConnectDriveToast(m);
+                }
+                
+            }
+            m.MappingStateProp = mpState;
+        }
 
         private void NetworkAvailabilityChanged(object? sender, NetworkAvailabilityEventArgs e)
         {

@@ -26,8 +26,7 @@ namespace NetMapper
             GC.KeepAlive(typeof(Avalonia.Svg.Skia.Svg).Assembly);
             return   AppBuilder.Configure<App>()
                 .UsePlatformDetect()
-                .LogToTrace()
-                .UseReactiveUI();
+                .LogToTrace();
         }
     }
 }

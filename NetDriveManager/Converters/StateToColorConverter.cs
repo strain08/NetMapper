@@ -32,6 +32,8 @@ namespace NetMapper.Converters
                         return new SolidColorBrush() { Color = Colors.DarkGreen };
                     case MappingState.Unmapped:
                         return new SolidColorBrush() { Color = Colors.Chocolate };
+                    case MappingState.LetterUnavailable:
+                        return new SolidColorBrush() { Color = Colors.DarkRed };
                     default:
                         return new SolidColorBrush() { Color = Colors.Chocolate };
                 }
