@@ -19,15 +19,15 @@ namespace NetMapper.ViewModels
         MappingModel?
             selectedItem;
 
-        DriveListService driveListService;
-        StateResolverService stateResolverService;
+        readonly DriveListService driveListService;
+        readonly StateResolverService stateResolverService;
 
         // CTOR
         public DriveListViewModel()
         {
 
             if (Avalonia.Controls.Design.IsDesignMode) return; // design mode bypass            
-           
+            
             driveListService = Locator.Current.GetRequiredService<DriveListService>();
             stateResolverService = Locator.Current.GetRequiredService<StateResolverService>();
 
