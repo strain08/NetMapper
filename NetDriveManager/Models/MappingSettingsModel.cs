@@ -1,5 +1,4 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
-using NetMapper.Enums;
 
 namespace NetMapper.Models
 {

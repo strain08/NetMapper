@@ -52,7 +52,7 @@ public partial class MappingModel : ObservableObject
 
     [JsonIgnore]
     public bool DisconnectCommandVisible =>
-        MappingStateProp == MappingState.Mapped;
+        MappingStateProp == MappingState.Mapped; 
 
     [JsonIgnore]
     [ObservableProperty]
