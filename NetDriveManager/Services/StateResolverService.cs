@@ -42,21 +42,6 @@ namespace NetMapper.Services
                         // toast notify success
                         notificationService.DriveConnectedToast(model, DriveAddedRemovedCallback);
                         break;
-
-                    case ConnectResult.DriveLetterAlreadyAssigned:
-                        if (!Utility.IsNetworkDriveMapped(model.DriveLetter))
-                        {
-                            model.MappingStateProp = MappingState.LetterUnavailable;
-                            break;
-                        }
-
-                        // if drive letter is unmanaged
-                        if (!driveListService.ContainsDriveLetter(model.DriveLetter))
-                        {
-                            DisconnectDriveToast(model);
-                            ConnectDriveToast(model);
-                        }
-                        break;
                     
                 }
             });
@@ -66,22 +51,23 @@ namespace NetMapper.Services
         {
             Task.Run(() =>
             {
-                CancelConnection error = Utility.DisconnectNetworkDrive(model.DriveLetter);
-                switch (error)
+                if (Utility.IsRegularDriveMapped(model.DriveLetter)) return;
+
+                CancelConnection result = Utility.DisconnectNetworkDrive(model.DriveLetter);
+                
+                if (result == CancelConnection.DISCONNECT_SUCCESS)
                 {
-                    case CancelConnection.DISCONNECT_SUCCESS:
-                        notificationService.DriveDisconnectedToast(model, DriveAddedRemovedCallback);
-                        break;
+                    notificationService.DriveDisconnectedToast(model, DriveAddedRemovedCallback);
 
-                    default:
-                        notificationService.NotifyCanNotRemoveDrive(model, CanNotRemoveDriveCallback);
-                        break;
-
+                }
+                else
+                {
+                    notificationService.NotifyCanNotRemoveDrive(model, CanNotDisconnectDriveCallback);
                 }
             });
         }
 
-        private void CanNotRemoveDriveCallback(MappingModel model, DisconnectDriveAnswer answer)
+        private void CanNotDisconnectDriveCallback(MappingModel model, DisconnectDriveAnswer answer)
         {
             Task.Run(() =>
             {

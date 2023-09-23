@@ -49,18 +49,19 @@ public partial class MappingModel : ObservableObject
         ShareStateProp == ShareState.Available &&
         MappingStateProp == MappingState.Unmapped;
     
-    private bool CanAutoConnect =>
+    private bool CanDisconnect =>
+        ShareStateProp == ShareState.Unavailable &&
+        MappingStateProp == MappingState.Mapped;
+
+    public bool CanAutoConnect =>
         CanConnect &&
         MappingSettings.AutoConnect;
 
-    private bool CanAutoDisconnect => 
+    public bool CanAutoDisconnect => 
         CanDisconnect && 
         MappingSettings.AutoDisconnect;
 
-    private bool CanDisconnect =>
-        ShareStateProp == ShareState.Unavailable &&
-        MappingStateProp == MappingState.Mapped &&
-        MappingSettings.AutoDisconnect;
+
 
     [JsonIgnore]
     [ObservableProperty]

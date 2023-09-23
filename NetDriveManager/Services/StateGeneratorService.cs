@@ -1,6 +1,7 @@
 ﻿using NetMapper.Enums;
 using NetMapper.Models;
 using NetMapper.Services.Helpers;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Net.NetworkInformation;
@@ -28,8 +29,6 @@ namespace NetMapper.Services
             Task.Run(() => StateLoop(5000));
 
         }
-
-
         //DTOR
         ~StateGeneratorService()
         {
@@ -43,7 +42,7 @@ namespace NetMapper.Services
             {
                 foreach (MappingModel m in _listManager.DriveList)
                 {
-                    taskList.Add(Task.Run(m.UpdateProperties));
+                    taskList.Add(Task.Run(action: ()=>UpdateModel(m)));
                 }
                 await Task.WhenAll(taskList);
                 taskList.Clear();
@@ -52,6 +51,21 @@ namespace NetMapper.Services
             }
         }
 
+        private void UpdateModel(MappingModel m)
+        {
+            m.UpdateProperties();
+
+            if (m.CanAutoConnect)
+            {
+                _stateResolver.ConnectDriveToast(m);
+            }
+            if (m.CanAutoDisconnect)
+            {
+                _stateResolver.DisconnectDriveToast(m);
+            }
+
+
+        }
 
         private void NetworkAvailabilityChanged(object? sender, NetworkAvailabilityEventArgs e)
         {
