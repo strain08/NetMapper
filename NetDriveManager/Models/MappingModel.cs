@@ -1,6 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using NetMapper.Enums;
-using NetMapper.Interfaces;
+using NetMapper.Services.Helpers;
 using System.IO;
 using System.Text.Json.Serialization;
 
@@ -23,7 +23,7 @@ public partial class MappingModel : ObservableObject
 
     // PUBLIC PROP
     public char DriveLetter { get; set; }
-    
+
     [JsonIgnore]
     public string DriveLetterColon
     {
@@ -44,15 +44,23 @@ public partial class MappingModel : ObservableObject
     }
 
     public MappingSettingsModel MappingSettings { get; set; }
-
-    [JsonIgnore]
-    public bool ConnectCommandVisible =>
+    
+    private bool CanConnect =>
         ShareStateProp == ShareState.Available &&
         MappingStateProp == MappingState.Unmapped;
+    
+    private bool CanAutoConnect =>
+        CanConnect &&
+        MappingSettings.AutoConnect;
 
-    [JsonIgnore]
-    public bool DisconnectCommandVisible =>
-        MappingStateProp == MappingState.Mapped; 
+    private bool CanAutoDisconnect => 
+        CanDisconnect && 
+        MappingSettings.AutoDisconnect;
+
+    private bool CanDisconnect =>
+        ShareStateProp == ShareState.Unavailable &&
+        MappingStateProp == MappingState.Mapped &&
+        MappingSettings.AutoDisconnect;
 
     [JsonIgnore]
     [ObservableProperty]
@@ -66,6 +74,38 @@ public partial class MappingModel : ObservableObject
     [NotifyPropertyChangedFor(nameof(DisconnectCommandVisible))]
     [NotifyPropertyChangedFor(nameof(VolumeLabel))]
     MappingState mappingStateProp = MappingState.Undefined;
+
+    private void UpdateShareState()
+    {
+        ShareStateProp = Directory.Exists(NetworkPath) ? ShareState.Available : ShareState.Unavailable;
+    }
+
+    private void UpdateMappingState()
+    {
+        // if it is a network drive mapped to this path -> Mapped
+        string testPath = Utility.GetPathForLetter(DriveLetter);
+        if (testPath == NetworkPath)
+        {
+            MappingStateProp = MappingState.Mapped;
+            return;
+        }
+        // if letter available -> unmapped, else -> unavailable
+        if (Utility.GetAvailableDriveLetters().Contains(DriveLetter))
+        {
+            MappingStateProp = MappingState.Unmapped;
+        }
+        else
+        {
+            MappingStateProp = MappingState.LetterUnavailable;
+        }
+
+    }
+
+    public void UpdateProperties()
+    {
+        UpdateShareState();
+        UpdateMappingState();
+    }
 
 
 }

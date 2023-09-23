@@ -98,8 +98,7 @@ namespace NetMapper.ViewModels
         }
 
         public void Ok()
-        {
-            
+        {           
 
             //DisplayItem.DriveLetter = SelectedLetter + ":";
             if (IsEditing)

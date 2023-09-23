@@ -23,6 +23,7 @@ namespace NetMapper.Services
             DriveList = new ObservableCollection<MappingModel>(store.GetAll());
 
         }
+        // DTOR
         ~DriveListService()
         {
             if (!store.Update(new List<MappingModel>(DriveList)))
