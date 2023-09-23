@@ -46,6 +46,7 @@ namespace NetMapper.Services
                 await Task.WhenAll(shareCheckTasks);
                 shareCheckTasks.Clear();
                 Thread.Sleep(timeMilliseconds);
+                //
             }
         }
 
