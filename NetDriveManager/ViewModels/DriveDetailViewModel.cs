@@ -106,7 +106,7 @@ namespace NetMapper.ViewModels
                 // drive letter changed
                 if (VMServices.DriveListViewModel!.SelectedItem!.DriveLetter != DisplayItem.DriveLetter)
                 {
-                    stateResolverService.DisconnectDriveToast(VMServices.DriveListViewModel!.SelectedItem!);
+                    stateResolverService.UnmapDriveToast(VMServices.DriveListViewModel!.SelectedItem!);
                 }                
 
                 driveListService.EditDrive(VMServices.DriveListViewModel!.SelectedItem!, DisplayItem!);

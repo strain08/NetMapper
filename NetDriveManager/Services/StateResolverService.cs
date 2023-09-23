@@ -21,53 +21,49 @@ namespace NetMapper.Services
         }
         public void TryMapAllDrives()
         {
-            foreach (MappingModel model in driveListService.DriveList)            
-                ConnectDriveToast(model);            
+            foreach (MappingModel m in driveListService.DriveList)
+                MapDriveToast(m);
         }
 
         public void TryUnmapAllDrives()
         {
-            foreach (MappingModel model in driveListService.DriveList)            
-                DisconnectDriveToast(model);            
+            foreach (MappingModel m in driveListService.DriveList)
+                UnmapDriveToast(m);
         }
 
-        public void ConnectDriveToast(MappingModel model)
+        public void MapDriveToast(MappingModel m)
         {
             Task.Run(() =>
             {
-                switch (Utility.MapNetworkDrive(model.DriveLetter, model.NetworkPath))
-                {
-                    case ConnectResult.Success:
+                var result = Utility.MapNetworkDrive(m.DriveLetter, m.NetworkPath);
 
-                        // toast notify success
-                        notificationService.DriveConnectedToast(model, DriveAddedRemovedCallback);
-                        break;
-                    
+                if (result == ConnectResult.Success)
+                {
+                    notificationService.DriveConnectedToast(m, ToastClickedCallback);
                 }
             });
         }
 
-        public void DisconnectDriveToast(MappingModel model)
+        public void UnmapDriveToast(MappingModel m)
         {
             Task.Run(() =>
             {
-                if (Utility.IsRegularDriveMapped(model.DriveLetter)) return;
+                if (Utility.IsRegularDriveMapped(m.DriveLetter)) return;
 
-                CancelConnection result = Utility.DisconnectNetworkDrive(model.DriveLetter);
-                
+                var result = Utility.DisconnectNetworkDrive(m.DriveLetter);
+
                 if (result == CancelConnection.DISCONNECT_SUCCESS)
                 {
-                    notificationService.DriveDisconnectedToast(model, DriveAddedRemovedCallback);
-
+                    notificationService.DriveDisconnectedToast(m, ToastClickedCallback);
                 }
                 else
                 {
-                    notificationService.NotifyCanNotRemoveDrive(model, CanNotDisconnectDriveCallback);
+                    notificationService.NotifyCanNotRemoveDrive(m, CanNotUnmapDriveCallback);
                 }
             });
         }
 
-        private void CanNotDisconnectDriveCallback(MappingModel model, DisconnectDriveAnswer answer)
+        private void CanNotUnmapDriveCallback(MappingModel model, DisconnectDriveAnswer answer)
         {
             Task.Run(() =>
             {
@@ -81,7 +77,7 @@ namespace NetMapper.Services
                         CancelConnection error = Utility.DisconnectNetworkDrive(model.DriveLetter, true);
                         if (error == CancelConnection.DISCONNECT_SUCCESS)
                         {
-                            notificationService.DriveDisconnectedToast(model, DriveAddedRemovedCallback);
+                            notificationService.DriveDisconnectedToast(model, ToastClickedCallback);
                         }
                         break;
                     case DisconnectDriveAnswer.ShowWindow:
@@ -89,11 +85,10 @@ namespace NetMapper.Services
                         break;
                 }
             });
-            
+
         }
 
-
-        private void DriveAddedRemovedCallback(MappingModel mappingModel, AddRemoveAnswer toast)
+        private void ToastClickedCallback(MappingModel mappingModel, AddRemoveAnswer toast)
         {
             ShowMainWindow();
         }
@@ -101,7 +96,7 @@ namespace NetMapper.Services
         private void ShowMainWindow()
         {
             Dispatcher.UIThread.Post(() =>
-            {             
+            {
                 VMServices.MainWindow!.WindowState = Avalonia.Controls.WindowState.Normal;
                 VMServices.MainWindow.Show();
             });

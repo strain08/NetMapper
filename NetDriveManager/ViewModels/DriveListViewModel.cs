@@ -41,7 +41,7 @@ namespace NetMapper.ViewModels
                 ?? throw new InvalidOperationException("Error getting command parameter for DisconnectDriveCommand");
             model.MappingStateProp = MappingState.Undefined;
             model.MappingSettings.AutoConnect = false; // prevent auto reconnection in Mapping Loop
-            stateResolverService.DisconnectDriveToast(model);
+            stateResolverService.UnmapDriveToast(model);
         }
 
         public void ConnectDriveCommand(object commandParameter)
@@ -49,7 +49,7 @@ namespace NetMapper.ViewModels
             var model = (MappingModel)commandParameter
                 ?? throw new InvalidOperationException("Error getting command parameter for ConnectDriveCommand");
             model.MappingStateProp = MappingState.Undefined;
-            stateResolverService.ConnectDriveToast(model);
+            stateResolverService.MapDriveToast(model);
         }
 
         public void RemoveItem()

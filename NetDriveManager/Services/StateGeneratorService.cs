@@ -57,11 +57,11 @@ namespace NetMapper.Services
 
             if (m.CanAutoConnect)
             {
-                _stateResolver.ConnectDriveToast(m);
+                _stateResolver.MapDriveToast(m);
             }
             if (m.CanAutoDisconnect)
             {
-                _stateResolver.DisconnectDriveToast(m);
+                _stateResolver.UnmapDriveToast(m);
             }
 
 
