@@ -15,7 +15,6 @@ namespace NetMapper.Services
 
         private readonly IStore<List<MappingModel>> store;
 
-
         // CTOR
         public DriveListService(IStore<List<MappingModel>> storeService)
         {

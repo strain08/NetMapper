@@ -56,13 +56,13 @@ namespace NetMapper.ViewModels
         private bool isEditing;
 
         DriveListService driveListService;
-        StateResolverService stateResolverService;
+        DriveConnectService stateResolverService;
 
         // CTOR
         public DriveDetailViewModel(MappingModel? selectedItem = null)
         {
             driveListService = Locator.Current.GetRequiredService<DriveListService>();
-            stateResolverService = Locator.Current.GetRequiredService<StateResolverService>();
+            stateResolverService = Locator.Current.GetRequiredService<DriveConnectService>();
 
            LoadDriveLetters();
 
@@ -106,7 +106,7 @@ namespace NetMapper.ViewModels
                 // drive letter changed
                 if (VMServices.DriveListViewModel!.SelectedItem!.DriveLetter != DisplayItem.DriveLetter)
                 {
-                    stateResolverService.UnmapDriveToast(VMServices.DriveListViewModel!.SelectedItem!);
+                    stateResolverService.DisconnectDrive(VMServices.DriveListViewModel!.SelectedItem!);
                 }                
 
                 driveListService.EditDrive(VMServices.DriveListViewModel!.SelectedItem!, DisplayItem!);

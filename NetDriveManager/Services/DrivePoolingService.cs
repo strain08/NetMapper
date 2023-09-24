@@ -1,27 +1,21 @@
-﻿using NetMapper.Enums;
-using NetMapper.Models;
-using NetMapper.Services.Helpers;
-using System;
+﻿using NetMapper.Models;
 using System.Collections.Generic;
-using System.IO;
 using System.Net.NetworkInformation;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace NetMapper.Services
 {
-    public class StateGeneratorService
+    public class DrivePoolingService
     {
-        private readonly DriveListService _listManager;
-        private readonly StateResolverService _stateResolver;
+        private readonly DriveListService driveListService;
+        private readonly DriveConnectService stateResolverService;
 
         //CTOR
-        public StateGeneratorService(DriveListService listManager, StateResolverService stateResolver)
+        public DrivePoolingService(DriveListService driveListService, DriveConnectService stateResolverService)
         {
-            _listManager = listManager;
-            _stateResolver = stateResolver;
-
-            //Task.Run(stateResolver.TryMapAllDrives);
+            this.driveListService = driveListService;
+            this.stateResolverService = stateResolverService;           
 
             NetworkChange.NetworkAvailabilityChanged += NetworkAvailabilityChanged;
 
@@ -30,7 +24,7 @@ namespace NetMapper.Services
 
         }
         //DTOR
-        ~StateGeneratorService()
+        ~DrivePoolingService()
         {
             NetworkChange.NetworkAvailabilityChanged -= NetworkAvailabilityChanged;
         }
@@ -40,14 +34,13 @@ namespace NetMapper.Services
             List<Task> taskList = new();
             while (true)
             {
-                foreach (MappingModel m in _listManager.DriveList)
+                foreach (MappingModel m in driveListService.DriveList)
                 {
                     taskList.Add(Task.Run(action: ()=>UpdateModel(m)));
                 }
                 await Task.WhenAll(taskList);
                 taskList.Clear();
                 Thread.Sleep(timeMilliseconds);
-                //
             }
         }
 
@@ -57,25 +50,25 @@ namespace NetMapper.Services
 
             if (m.CanAutoConnect)
             {
-                _stateResolver.MapDriveToast(m);
+                stateResolverService.ConnectDrive(m);
             }
             if (m.CanAutoDisconnect)
             {
-                _stateResolver.UnmapDriveToast(m);
+                stateResolverService.DisconnectDrive(m);
             }
-
-
         }
-
+        
         private void NetworkAvailabilityChanged(object? sender, NetworkAvailabilityEventArgs e)
         {
             if (e.IsAvailable)
             {
-                _stateResolver.TryMapAllDrives();
+                foreach (MappingModel m in driveListService.DriveList)
+                    stateResolverService.ConnectDrive(m);
             }
             else
             {
-                _stateResolver.TryUnmapAllDrives();
+                foreach (MappingModel m in driveListService.DriveList)
+                    stateResolverService.DisconnectDrive(m);
             }
         }
 

@@ -10,9 +10,7 @@ namespace NetMapper.ViewModels
         ViewModelBase content;
 
         [ObservableProperty]
-        DriveListViewModel driveListViewModel;
-
-        
+        DriveListViewModel driveListViewModel;        
 
         public MainWindowViewModel()
         {            

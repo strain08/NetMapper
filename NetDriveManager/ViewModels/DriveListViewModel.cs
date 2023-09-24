@@ -20,7 +20,7 @@ namespace NetMapper.ViewModels
             selectedItem;
 
         readonly DriveListService driveListService;
-        readonly StateResolverService stateResolverService;
+        readonly DriveConnectService stateResolverService;
 
         // CTOR
         public DriveListViewModel()
@@ -29,7 +29,7 @@ namespace NetMapper.ViewModels
             if (Avalonia.Controls.Design.IsDesignMode) return; // design mode bypass            
             
             driveListService = Locator.Current.GetRequiredService<DriveListService>();
-            stateResolverService = Locator.Current.GetRequiredService<StateResolverService>();
+            stateResolverService = Locator.Current.GetRequiredService<DriveConnectService>();
 
             DriveList = driveListService.DriveList;
         }
@@ -41,7 +41,7 @@ namespace NetMapper.ViewModels
                 ?? throw new InvalidOperationException("Error getting command parameter for DisconnectDriveCommand");
             model.MappingStateProp = MappingState.Undefined;
             model.MappingSettings.AutoConnect = false; // prevent auto reconnection in Mapping Loop
-            stateResolverService.UnmapDriveToast(model);
+            stateResolverService.DisconnectDrive(model);
         }
 
         public void ConnectDriveCommand(object commandParameter)
@@ -49,7 +49,7 @@ namespace NetMapper.ViewModels
             var model = (MappingModel)commandParameter
                 ?? throw new InvalidOperationException("Error getting command parameter for ConnectDriveCommand");
             model.MappingStateProp = MappingState.Undefined;
-            stateResolverService.MapDriveToast(model);
+            stateResolverService.ConnectDrive(model);
         }
 
         public void RemoveItem()

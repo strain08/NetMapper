@@ -8,12 +8,12 @@ namespace NetMapper.Views
         public MainWindow()
         {
             InitializeComponent();
-            this.Height = 400;
-            this.Width = 225;
+            Height = 400;
+            Width = 225;
 #if DEBUG
             this.AttachDevTools();
 #endif
-            MinWidth = this.Width;
+            MinWidth = Width;
         }
     }
 }

@@ -10,6 +10,7 @@ using System.Net.NetworkInformation;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 
 namespace NetMapper.Services.Helpers
 {
@@ -26,7 +27,7 @@ namespace NetMapper.Services.Helpers
         private static extern int WNetCancelConnection2
             (string sLocalName, uint iFlags, int iForce);
 
-        public static ConnectResult MapNetworkDrive(char cDriveLetter, string sNetworkPath)
+        public static ConnectResult ConnectNetworkDrive(char cDriveLetter, string sNetworkPath)
         {
 
             //Checks if the last character is \ as this causes error on mapping a drive.
@@ -44,6 +45,8 @@ namespace NetMapper.Services.Helpers
             };
             return (ConnectResult)WNetAddConnection2(ref oNetworkResource, null, null, 0);
         }
+        public static async Task<ConnectResult> ConnectNetworkDriveAsync(char cDriveLetter, string sNetworkPath) => 
+            await Task.Run(() => ConnectNetworkDrive(cDriveLetter, sNetworkPath));
 
         public static CancelConnection DisconnectNetworkDrive(char cDriveLetter, bool bForceDisconnect = false)
         {
@@ -56,6 +59,9 @@ namespace NetMapper.Services.Helpers
                 return (CancelConnection)WNetCancelConnection2(cDriveLetter + ":", 0, 0);
             }
         }
+
+        public static async Task<CancelConnection> DisconnectNetworkDriveAsync(char cDriveLetter, bool bForceDisconnect = false) =>
+            await Task.Run(()=> DisconnectNetworkDrive(cDriveLetter, bForceDisconnect));
 
         public static bool IsNetworkDriveMapped(char cDriveLetter)
         {

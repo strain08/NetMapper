@@ -27,14 +27,14 @@ namespace NetMapper.Services
                 r.GetRequiredService<IStore<List<MappingModel>>>()));
 
             // StateResolver
-            s.RegisterConstant(new StateResolverService(
+            s.RegisterConstant(new DriveConnectService(
                 r.GetRequiredService<DriveListService>(),
                 r.GetRequiredService<NotificationService>()));
 
             // StateGenerator
-            s.RegisterConstant(new StateGeneratorService(
+            s.RegisterConstant(new DrivePoolingService(
                 r.GetRequiredService<DriveListService>(),
-                r.GetRequiredService<StateResolverService>()));
+                r.GetRequiredService<DriveConnectService>()));
 
 
         }

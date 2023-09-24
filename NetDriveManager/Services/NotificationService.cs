@@ -20,18 +20,18 @@ namespace NetMapper.Services
         // CTOR
         public NotificationService()
         {
-            ToastNotificationManagerCompat.OnActivated += ToastAnswer;
+            ToastNotificationManagerCompat.OnActivated += ToastAction;
         }
 
         // PUBLIC TOAST CALLS
-        public void NotifyCanNotRemoveDrive(MappingModel model, RemoveDriveAnswerDelegate del)
+        public void ToastCanNotRemoveDrive(MappingModel m, RemoveDriveAnswerDelegate del)
         {
             _onRemoveDriveToast = del;
-            _mappingModel = model;     
+            _mappingModel = m;     
 
             var t = new ToastContentBuilder()
-                .AddText("Cannot remove network drive " + model.DriveLetterColon)
-                .AddText($"Close all files in use on drive {model.DriveLetterColon} and retry.")
+                .AddText($"Cannot remove network drive {m.DriveLetterColon}")
+                .AddText($"Close all files in use on drive {m.DriveLetterColon} and retry.")
                 .AddButton(new ToastButton()
                             .SetContent("Retry")
                             .AddArgument(ACTION_REMOVEDRIVE, DisconnectDriveAnswer.Retry))
@@ -49,7 +49,7 @@ namespace NetMapper.Services
         }
 
 
-        public void DriveConnectedToast(MappingModel model, AddRemoveAnswerDelegate del)
+        public void ToastDriveConnected(MappingModel model, AddRemoveAnswerDelegate del)
         {
             _onAddRemoveDriveToast = del;
             _mappingModel = model;
@@ -61,7 +61,7 @@ namespace NetMapper.Services
             t.Show();
         }
 
-        public void DriveDisconnectedToast(MappingModel model, AddRemoveAnswerDelegate del)
+        public void ToastDriveDisconnected(MappingModel model, AddRemoveAnswerDelegate del)
         {
             _onAddRemoveDriveToast = del;
             _mappingModel = model;
@@ -74,7 +74,7 @@ namespace NetMapper.Services
         }
 
         // TOAST ACTION SELECTOR
-        private void ToastAnswer(ToastNotificationActivatedEventArgsCompat e)
+        private void ToastAction(ToastNotificationActivatedEventArgsCompat e)
         {
             if (_mappingModel == null) return;
 
