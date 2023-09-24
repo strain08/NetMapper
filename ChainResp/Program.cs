@@ -11,14 +11,16 @@ namespace Chain.RealWorld
         public static void Main(string[] args)
         {
             // Setup Chain of Responsibility
-            Approver larry = new Director();
-            Approver sam = new VicePresident();
-            Approver tammy = new President();
-            larry.SetSuccessor(sam);
-            sam.SetSuccessor(tammy);
+            Notification notif = new Toast().Next(new MessageBox()) ;
+            
             // Generate and process purchase requests
-            Purchase p = new (2034, 350.00, "Supplies");
-            larry.ProcessRequest(p);
+            DriveModel p = new()
+            {
+                letter = "A",
+                name = "diskette",
+            };
+
+            notif.NotifyDriveAdded(p);
             // Wait for user
             Console.ReadKey();
         }
