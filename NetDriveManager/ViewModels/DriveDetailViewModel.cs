@@ -11,8 +11,7 @@ namespace NetMapper.ViewModels
     {
 
         [ObservableProperty]
-        MappingModel
-            displayItem;
+        MappingModel displayItem;
 
         public string NetworkPath
         {
@@ -26,13 +25,11 @@ namespace NetMapper.ViewModels
             set => DisplayItem.DriveLetter = value;
         }
 
-        public List<char>
-            DriveLettersList
+        public List<char> DriveLettersList
         { get; set; } = new();
 
         [ObservableProperty]
-        string?
-            operationTitle;
+        string? operationTitle;
 
         private bool IsEditing
         {
@@ -77,7 +74,7 @@ namespace NetMapper.ViewModels
 
                 // add selected item letter
                 DriveLettersList.Add(selectedItem.DriveLetter);
-                
+
                 SelectedLetter = DisplayItem.DriveLetter;
             }
         }
@@ -85,12 +82,12 @@ namespace NetMapper.ViewModels
         private void LoadDriveLettersList()
         {
             var cAvailableLeters = new List<char>(Utility.GetAvailableDriveLetters());
-            
+
             // remove managed drive letters
             foreach (MappingModel d in driveListService.DriveList)
                 cAvailableLeters.Remove(d.DriveLetter);
 
-            foreach (char cLetter in cAvailableLeters)            
+            foreach (char cLetter in cAvailableLeters)
                 DriveLettersList.Add(cLetter);
         }
 
