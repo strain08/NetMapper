@@ -6,18 +6,15 @@ namespace ChainResp.Approvers
     /// The 'ConcreteHandler' class
     /// </summary>
     public class Toast : Notification
-    {       
-
-        public override void NotifyDriveAdded(DriveModel m)
+    {
+        public override void NotifyDriveAdded(Model m)
         {
-            Console.WriteLine("Toast");
-
+            Console.WriteLine("Toast"+ m.name);
+            m.name = "sss";
             successor?.NotifyDriveAdded(m);
+
         }
 
-        public override void NotifyRemved(DriveModel model)
-        {
-            throw new NotImplementedException();
-        }
+
     }
 }

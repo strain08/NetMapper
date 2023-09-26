@@ -10,16 +10,18 @@ namespace Chain.RealWorld
     {
         public static void Main(string[] args)
         {
-            // Setup Chain of Responsibility
-            Notification notif = new Toast().Next(new MessageBox()) ;
-            
-            // Generate and process purchase requests
-            DriveModel p = new()
-            {
-                letter = "A",
-                name = "diskette",
-            };
+            Approvers();
+           // Procedures();
+        }
 
+     
+
+        static void Approvers()
+        {
+            // Setup Chain of Responsibility
+            Notification notif = new Toast().Next(new MessageBox().Next(new Toast()));
+            // Generate and process purchase requests
+            Model p = new() { name = "dasds" };
             notif.NotifyDriveAdded(p);
             // Wait for user
             Console.ReadKey();

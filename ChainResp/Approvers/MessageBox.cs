@@ -7,16 +7,11 @@ namespace ChainResp.Approvers
     /// </summary>
     public class MessageBox : Notification
     {
-        public override void NotifyDriveAdded(DriveModel model)
+        public override void NotifyDriveAdded(Model m)
         {
-            Console.WriteLine("Messagebox");
-            successor?.NotifyDriveAdded(model);
-        }
-
-        public override void NotifyRemved(DriveModel model)
-        {
-
-            successor?.NotifyDriveAdded(model);
+            Console.WriteLine("Messagebox" + m.name);
+            successor?.NotifyDriveAdded(m);
+            
         }
     }
 }

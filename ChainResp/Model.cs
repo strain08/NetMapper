@@ -3,10 +3,9 @@
     /// <summary>
     /// Class holding request details
     /// </summary>
-    public class DriveModel
+    public class Model
     {
         public string name;
-        public string letter;
     }
 }
 

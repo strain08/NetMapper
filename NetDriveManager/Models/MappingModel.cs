@@ -59,54 +59,7 @@ public partial class MappingModel : ObservableObject
 
     public bool CanAutoDisconnect => 
         CanDisconnect && 
-        MappingSettings.AutoDisconnect;
-
-
-
-    [JsonIgnore]
-    [ObservableProperty]
-    [NotifyPropertyChangedFor(nameof(ConnectCommandVisible))]
-    [NotifyPropertyChangedFor(nameof(DisconnectCommandVisible))]
-    ShareState shareStateProp = ShareState.Undefined;
-
-    [JsonIgnore]
-    [ObservableProperty]
-    [NotifyPropertyChangedFor(nameof(ConnectCommandVisible))]
-    [NotifyPropertyChangedFor(nameof(DisconnectCommandVisible))]
-    [NotifyPropertyChangedFor(nameof(VolumeLabel))]
-    MappingState mappingStateProp = MappingState.Undefined;
-
-    private void UpdateShareState()
-    {
-        ShareStateProp = Directory.Exists(NetworkPath) ? ShareState.Available : ShareState.Unavailable;
-    }
-
-    private void UpdateMappingState()
-    {
-        // if it is a network drive mapped to this path -> Mapped
-        string testPath = Utility.GetPathForLetter(DriveLetter);
-        if (testPath == NetworkPath)
-        {
-            MappingStateProp = MappingState.Mapped;
-            return;
-        }
-        // if letter available -> unmapped, else -> unavailable
-        if (Utility.GetAvailableDriveLetters().Contains(DriveLetter))
-        {
-            MappingStateProp = MappingState.Unmapped;
-        }
-        else
-        {
-            MappingStateProp = MappingState.LetterUnavailable;
-        }
-
-    }
-
-    public void UpdateProperties()
-    {
-        UpdateShareState();
-        UpdateMappingState();
-    }
+        MappingSettings.AutoDisconnect;    
 
 
 }

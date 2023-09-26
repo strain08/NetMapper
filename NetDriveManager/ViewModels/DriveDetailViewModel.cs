@@ -30,8 +30,6 @@ namespace NetMapper.ViewModels
             DriveLettersList
         { get; set; } = new();
 
-
-
         [ObservableProperty]
         string?
             operationTitle;
@@ -53,7 +51,7 @@ namespace NetMapper.ViewModels
             }
         }
 
-        private bool isEditing;
+        bool isEditing;
 
         DriveListService driveListService;
         DriveConnectService stateResolverService;
@@ -64,7 +62,7 @@ namespace NetMapper.ViewModels
             driveListService = Locator.Current.GetRequiredService<DriveListService>();
             stateResolverService = Locator.Current.GetRequiredService<DriveConnectService>();
 
-           LoadDriveLetters();
+            LoadDriveLettersList();
 
             if (selectedItem == null)
             {
@@ -79,26 +77,25 @@ namespace NetMapper.ViewModels
 
                 // add selected item letter
                 DriveLettersList.Add(selectedItem.DriveLetter);
-
-                // extract just drive letter from X:
+                
                 SelectedLetter = DisplayItem.DriveLetter;
             }
         }
 
-        private void LoadDriveLetters()
+        private void LoadDriveLettersList()
         {
-            var cLetterList = new List<char>(Utility.GetAvailableDriveLetters());
-            foreach (char cLetter in cLetterList)
-            {
-                if (!driveListService.ContainsDriveLetter(cLetter))
-                {
-                    DriveLettersList.Add(cLetter);
-                }
-            }
+            var cAvailableLeters = new List<char>(Utility.GetAvailableDriveLetters());
+            
+            // remove managed drive letters
+            foreach (MappingModel d in driveListService.DriveList)
+                cAvailableLeters.Remove(d.DriveLetter);
+
+            foreach (char cLetter in cAvailableLeters)            
+                DriveLettersList.Add(cLetter);
         }
 
         public void Ok()
-        {           
+        {
 
             //DisplayItem.DriveLetter = SelectedLetter + ":";
             if (IsEditing)
@@ -107,7 +104,7 @@ namespace NetMapper.ViewModels
                 if (VMServices.DriveListViewModel!.SelectedItem!.DriveLetter != DisplayItem.DriveLetter)
                 {
                     stateResolverService.DisconnectDrive(VMServices.DriveListViewModel!.SelectedItem!);
-                }                
+                }
 
                 driveListService.EditDrive(VMServices.DriveListViewModel!.SelectedItem!, DisplayItem!);
             }

@@ -10,7 +10,6 @@ namespace NetMapper.Services
 
     public class DriveListService
     {
-
         public ObservableCollection<MappingModel> DriveList { get; set; }
 
         private readonly IStore<List<MappingModel>> store;
@@ -42,16 +41,7 @@ namespace NetMapper.Services
             DriveList.RemoveAt(i);
             if (!store.Update(new List<MappingModel>(DriveList)))
                 throw new ApplicationException("Can not write settings file.");
-        }
-
-        public bool ContainsDriveLetter(char letter)
-        {
-            foreach (MappingModel d in DriveList)
-            {
-                if (d.DriveLetter.Equals(letter)) return true;
-            }
-            return false;
-        }
+        }        
 
         public void EditDrive(MappingModel oldModel, MappingModel newModel)
         {
@@ -61,8 +51,6 @@ namespace NetMapper.Services
             if (!store.Update(new List<MappingModel>(DriveList))) 
                 throw new ApplicationException("Can not write settings file.");
         }
-
-
     }
 
 

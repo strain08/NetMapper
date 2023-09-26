@@ -19,17 +19,15 @@ namespace NetMapper.Services
             s.Register<IStore<List<MappingModel>>>(() => new JsonStore<List<MappingModel>>("NetDriveSettings.json"));           
 
             // Notification
-            s.RegisterConstant(new NotificationService());
-
-
-            // DriveListManager
-            s.RegisterConstant(new DriveListService(
-                r.GetRequiredService<IStore<List<MappingModel>>>()));
-
-            // StateResolver
+            s.RegisterConstant(new ToastService());
+            
+            // Connect service
             s.RegisterConstant(new DriveConnectService(
-                r.GetRequiredService<DriveListService>(),
-                r.GetRequiredService<NotificationService>()));
+                r.GetRequiredService<ToastService>()));
+
+            // Drive List CRUD
+            s.RegisterConstant(new DriveListService(
+                r.GetRequiredService<IStore<List<MappingModel>>>()));            
 
             // StateGenerator
             s.RegisterConstant(new DrivePoolingService(
