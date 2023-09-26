@@ -87,7 +87,7 @@ namespace NetMapper.ViewModels
         private void LoadDriveLettersList()
         {
             var cAvailableLeters = new List<char>(Utility.GetAvailableDriveLetters());
-            
+
             // remove unmapped managed drive letters
             foreach (MappingModel d in driveListService.DriveList)
                 cAvailableLeters.Remove(d.DriveLetter);
@@ -97,11 +97,7 @@ namespace NetMapper.ViewModels
         }
 
         public void Ok()
-        {            
-
-            //DisplayItem.DriveLetter = SelectedLetter + ":";
-
-            //DisplayItem.DriveLetter = SelectedLetter + ":";
+        {
             if (IsEditing)
             {
                 // drive letter changed
@@ -115,10 +111,10 @@ namespace NetMapper.ViewModels
             else
             {
                 driveListService.AddDrive(DisplayItem);
+            }
+            VMServices.DriveListViewModel.SelectedItem = DisplayItem;
 
             VMServices.MainWindowViewModel!.Content = VMServices.DriveListViewModel;
-            VMServices.DriveListViewModel.SelectedItem = DisplayItem;
-            VMServices.MainWindowViewModel!.Content = VMServices.MainWindowViewModel.DriveListViewModel;
         }
 
 
