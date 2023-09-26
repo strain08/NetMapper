@@ -11,8 +11,9 @@ namespace NetMapper.ViewModels
     {
 
         [ObservableProperty]
-        MappingModel
-            displayItem;
+        MappingModel displayItem;
+        [ObservableProperty]
+        MappingModel selectedItem;
 
         public string NetworkPath
         {
@@ -26,13 +27,11 @@ namespace NetMapper.ViewModels
             set => DisplayItem.DriveLetter = value;
         }
 
-        public List<char>
-            DriveLettersList
+        public List<char> DriveLettersList
         { get; set; } = new();
 
         [ObservableProperty]
-        string?
-            operationTitle;
+        string? operationTitle;
 
         private bool IsEditing
         {
@@ -54,13 +53,13 @@ namespace NetMapper.ViewModels
         bool isEditing;
 
         DriveListService driveListService;
-        DriveConnectService stateResolverService;
+        DriveConnectService driveConnectService;
 
         // CTOR
         public DriveDetailViewModel(MappingModel? selectedItem = null)
         {
             driveListService = Locator.Current.GetRequiredService<DriveListService>();
-            stateResolverService = Locator.Current.GetRequiredService<DriveConnectService>();
+            driveConnectService = Locator.Current.GetRequiredService<DriveConnectService>();
 
             LoadDriveLettersList();
 
@@ -72,6 +71,9 @@ namespace NetMapper.ViewModels
             else
             {
                 IsEditing = true;
+
+                SelectedItem = selectedItem;
+
                 // decoupled copy of selected item
                 DisplayItem = new MappingModel(selectedItem);
 
@@ -86,7 +88,7 @@ namespace NetMapper.ViewModels
         {
             var cAvailableLeters = new List<char>(Utility.GetAvailableDriveLetters());
             
-            // remove managed drive letters
+            // remove unmapped managed drive letters
             foreach (MappingModel d in driveListService.DriveList)
                 cAvailableLeters.Remove(d.DriveLetter);
 
@@ -95,31 +97,30 @@ namespace NetMapper.ViewModels
         }
 
         public void Ok()
-        {
-
-            //DisplayItem.DriveLetter = SelectedLetter + ":";
+        {            
             if (IsEditing)
             {
                 // drive letter changed
-                if (VMServices.DriveListViewModel!.SelectedItem!.DriveLetter != DisplayItem.DriveLetter)
+                if (SelectedItem.DriveLetter != DisplayItem.DriveLetter)
                 {
-                    stateResolverService.DisconnectDrive(VMServices.DriveListViewModel!.SelectedItem!);
+                    driveConnectService.DisconnectDrive(SelectedItem); // disconnect previous drive
                 }
 
-                driveListService.EditDrive(VMServices.DriveListViewModel!.SelectedItem!, DisplayItem!);
+                driveListService.EditDrive(SelectedItem, DisplayItem);
             }
             else
             {
-                driveListService.AddDrive(DisplayItem!);
+                driveListService.AddDrive(DisplayItem);
             }
             VMServices.DriveListViewModel.SelectedItem = DisplayItem;
-            VMServices.MainWindowViewModel!.Content = VMServices.MainWindowViewModel.DriveListViewModel;
+            
+            VMServices.MainWindowViewModel!.Content = VMServices.DriveListViewModel;
         }
 
 
         public void Cancel()
         {
-            VMServices.MainWindowViewModel!.Content = VMServices.MainWindowViewModel.DriveListViewModel;
+            VMServices.MainWindowViewModel!.Content = VMServices.DriveListViewModel;
 
 
         }
