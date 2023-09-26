@@ -22,6 +22,8 @@ namespace NetMapper.ViewModels
         readonly DriveListService driveListService;
         readonly DriveConnectService stateResolverService;
 
+
+
         // CTOR
         public DriveListViewModel()
         {
@@ -72,5 +74,6 @@ namespace NetMapper.ViewModels
         {
             VMServices.MainWindowViewModel!.Content = new SettingsViewModel();
         }
+        
     }
 }
