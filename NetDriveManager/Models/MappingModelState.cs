@@ -33,9 +33,8 @@ namespace NetMapper.Models
 
         private void UpdateMappingState()
         {
-            // if it is a network drive mapped to this path -> Mapped
-            string testPath = Utility.GetPathForLetter(DriveLetter);
-            if (testPath == NetworkPath)
+            // if it is a network drive mapped to this path -> Mapped            
+            if (Utility.GetActualPathForLetter(DriveLetter) == NetworkPath)
             {
                 MappingStateProp = MappingState.Mapped;
                 return;

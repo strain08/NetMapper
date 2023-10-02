@@ -8,6 +8,7 @@
    <IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>
    <PlatformTarget>x64</PlatformTarget>
    <ApplicationIcon>Assets\avalonia-logo.ico</ApplicationIcon>
+   <NeutralLanguage>en</NeutralLanguage>
 
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">

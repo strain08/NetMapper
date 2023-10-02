@@ -1,4 +1,5 @@
 ﻿using NetMapper.Interfaces;
+using NetMapper.Services.Helpers;
 using System;
 using System.Diagnostics;
 using System.IO;
@@ -8,21 +9,17 @@ namespace NetMapper.Services
 {
     public class JsonStore<T> : IStore<T> where T : new()
     {
-        readonly string jsonSettingsFile;
+        readonly string jsonFile;
 
-        private T ItemsList { get; set; } = new();
+        private T storeData { get; set; } = new();
 
         // CTOR
 
-        public JsonStore(string jsonFile)
-        {
-            string strExeFilePath = Process.GetCurrentProcess()?.MainModule?.FileName
-                ?? throw new ApplicationException("Process.GetCurrentProcess()?.MainModule?.FileName null");
+        public JsonStore(string jsonFileName)
+        {             
+            var strWorkPath = AppStartupFolder.GetStartupFolder();
 
-            string strWorkPath = Path.GetDirectoryName(strExeFilePath)
-                ?? throw new ApplicationException("Path.GetDirectoryName(strExeFilePath) null");
-
-            jsonSettingsFile = Path.Combine(strWorkPath, jsonFile);
+            jsonFile = Path.Combine(strWorkPath, jsonFileName);
         }      
 
 
@@ -31,8 +28,8 @@ namespace NetMapper.Services
         {
             try
             {
-                var jsonString = File.ReadAllText(jsonSettingsFile);
-                ItemsList = JsonSerializer.Deserialize<T>(jsonString) ?? throw new JsonException();
+                var jsonString = File.ReadAllText(jsonFile);
+                storeData = JsonSerializer.Deserialize<T>(jsonString) ?? throw new JsonException();
                 return true;
             }
             catch
@@ -46,14 +43,13 @@ namespace NetMapper.Services
         {
             try
             {
-                var jsonString = JsonSerializer.Serialize(ItemsList, ItemsList.GetType());
-                File.WriteAllText(jsonSettingsFile, jsonString);
+                var jsonString = JsonSerializer.Serialize(storeData, storeData.GetType());
+                File.WriteAllText(jsonFile, jsonString);
                 return true;
             }
             catch
             {
                 return false;
-
             }
         }
 
@@ -61,14 +57,14 @@ namespace NetMapper.Services
         public bool Update(T updatedList)
         {
 
-            ItemsList = updatedList;
+            storeData = updatedList;
             return Save();
         }
 
         public T GetAll()
         {
             Load();
-            return ItemsList;
+            return storeData;
         }
     }
 

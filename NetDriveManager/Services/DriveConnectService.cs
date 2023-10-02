@@ -2,6 +2,7 @@
 using NetMapper.Enums;
 using NetMapper.Models;
 using NetMapper.Services.Helpers;
+using NetMapper.Services.Static;
 using System.Threading.Tasks;
 
 namespace NetMapper.Services
@@ -84,9 +85,8 @@ namespace NetMapper.Services
         private void ShowMainWindow()
         {
             Dispatcher.UIThread.Post(() =>
-            {
-                VMServices.MainWindow!.WindowState = Avalonia.Controls.WindowState.Normal;
-                VMServices.MainWindow.Show();
+            {                
+                VMServices.ApplicationViewModel.ShowWindowCommand();                
             });
         }
     }

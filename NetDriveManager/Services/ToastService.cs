@@ -72,7 +72,7 @@ namespace NetMapper.Services
             t.Show();
         }
 
-        // TOAST ACTION SELECTOR
+        // TOAST USER ACTION SELECTOR
         private void ToastAction(ToastNotificationActivatedEventArgsCompat e)
         {
             if (_mappingModel == null) return;
@@ -90,8 +90,7 @@ namespace NetMapper.Services
                 // callback with user answer
                 _onAddRemoveDriveToast?.Invoke(_mappingModel, args.GetEnum<AddRemoveAnswer>(ACTION_ADDREMOVE));
             }
-        }
-        
+        }        
 
     }
 }

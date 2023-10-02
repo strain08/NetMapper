@@ -145,7 +145,7 @@ namespace NetMapper.Services.Helpers
         /// </summary>
         /// <param name="letter"></param>
         /// <returns>Empty string if letter not mapped to a network drive</returns>
-        public static string GetPathForLetter(char letter)
+        public static string GetActualPathForLetter(char letter)
         {
             var mappedList = GetMappedDrives();
             foreach (MappingModel item in mappedList)

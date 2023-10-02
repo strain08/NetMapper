@@ -2,59 +2,68 @@
 using Avalonia.Controls;
 using NetMapper.Views;
 using NetMapper.Services;
+using NetMapper.Models;
+using Splat;
+using NetMapper.Services.Static;
+using NetMapper.Interfaces;
 
 namespace NetMapper.ViewModels
 {
     public class ApplicationViewModel:ViewModelBase
     {
-        private readonly MainWindow _mainWindow;
+        public readonly MainWindow MainWindowView;
 
         public ApplicationViewModel()
         {
-            _mainWindow = new MainWindow
+            StaticSettings.Settings = Locator.Current.GetRequiredService<IStore<AppSettingsModel>>().GetAll();
+
+            MainWindowView = new MainWindow
             {
                 DataContext = VMServices.MainWindowViewModel = new MainWindowViewModel()
             };            
             // hide window on close
-            _mainWindow.Closing += (s, e) =>
+            MainWindowView.Closing += (s, e) =>
             {
                 ((Window)s!).Hide();
                 e.Cancel = true;
             };
-            
-            VMServices.MainWindow = _mainWindow;
-            //_mainWindow.PropertyChanged += (s, e) => 
-            //{  
-            //    if (e.NewValue is WindowState windowState)
-            //    {
-            //        switch (windowState)
-            //        {
-            //            case WindowState.Minimized:
-            //                _mainWindow.Hide();
-            //                _mainWindow.ShowInTaskbar = false;
-            //                break;
-            //            default:
-            //                _mainWindow.ShowInTaskbar= true; 
-            //                break;
-            //        }
-            //    }
-            //};
-
-
+            VMServices.ApplicationViewModel = this;
+            MainWindowView.PropertyChanged += _mainWindow_PropertyChanged;
 
         }
 
-       
+        private void _mainWindow_PropertyChanged(object? sender, Avalonia.AvaloniaPropertyChangedEventArgs e)
+        {
+            if (StaticSettings.Settings != null) 
+            {
+                if (!StaticSettings.Settings.bMinimizeToTaskbar) return;
+            }
+            if (e.NewValue is WindowState windowState)
+            {
+                switch (windowState)
+                {
+                    case WindowState.Minimized:
+                        MainWindowView.Hide();
+                        MainWindowView.ShowInTaskbar = false;
+                        break;
+                    default:
+                        MainWindowView.ShowInTaskbar = true;
+                        break;
+                }
+            }
+
+        }
+
         public void ShowWindowCommand()
         {
             if (App.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
             {
-                desktop.MainWindow ??= _mainWindow;
+                desktop.MainWindow ??= MainWindowView;
             }
-            _mainWindow.WindowState = WindowState.Normal;
-            _mainWindow.Show();
-            _mainWindow.BringIntoView();
-            _mainWindow.Focus();
+            MainWindowView.WindowState = WindowState.Normal;
+            MainWindowView.Show();
+            MainWindowView.BringIntoView();
+            MainWindowView.Focus();
 
         }
 

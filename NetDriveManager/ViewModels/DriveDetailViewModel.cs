@@ -2,6 +2,7 @@
 using NetMapper.Models;
 using NetMapper.Services;
 using NetMapper.Services.Helpers;
+using NetMapper.Services.Static;
 using Splat;
 using System.Collections.Generic;
 

@@ -2,6 +2,7 @@
 using NetMapper.Enums;
 using NetMapper.Models;
 using NetMapper.Services;
+using NetMapper.Services.Static;
 using Splat;
 using System;
 using System.Collections.ObjectModel;

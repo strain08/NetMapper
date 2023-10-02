@@ -2,7 +2,7 @@ using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Markup.Xaml;
 using NetMapper.Models;
-using NetMapper.Services;
+using NetMapper.Services.Static;
 using NetMapper.ViewModels;
 using System;
 

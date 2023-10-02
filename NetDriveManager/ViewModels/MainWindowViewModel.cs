@@ -1,6 +1,6 @@
 ﻿using Avalonia.Controls;
 using CommunityToolkit.Mvvm.ComponentModel;
-using NetMapper.Services;
+using NetMapper.Services.Static;
 
 namespace NetMapper.ViewModels
 {
