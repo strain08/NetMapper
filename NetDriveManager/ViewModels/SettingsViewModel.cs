@@ -19,7 +19,7 @@ namespace NetMapper.ViewModels
         public SettingsViewModel()
         {
             store = Locator.Current.GetRequiredService<IStore<AppSettingsModel>>();
-            DisplaySettings = new(StaticSettings.Settings ?? throw new ArgumentNullException("Settings null in View"));
+            DisplaySettings = (AppSettingsModel)StaticSettings.Settings?.Clone()! ?? new AppSettingsModel();
             
         }
         public void OkCommand()
@@ -27,6 +27,7 @@ namespace NetMapper.ViewModels
             StaticSettings.Settings = DisplaySettings;
             // >> place to apply settings
             var r = new RunAtStartup(DisplaySettings);
+
             r.Apply();
 
             // <<

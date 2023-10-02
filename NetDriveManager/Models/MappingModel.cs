@@ -1,25 +1,15 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using NetMapper.Enums;
 using NetMapper.Services.Helpers;
+using System;
 using System.IO;
 using System.Text.Json.Serialization;
 
 namespace NetMapper.Models;
 
-public partial class MappingModel : ObservableObject
+public partial class MappingModel : ObservableObject, ICloneable
 {
-    // CTOR
-    public MappingModel(MappingModel copyModel)
-    {
-        NetworkPath = copyModel.NetworkPath;
-        DriveLetter = copyModel.DriveLetter;
-        MappingSettings = copyModel.MappingSettings;
-    }
-
-    public MappingModel()
-    {
-        MappingSettings = new MappingSettingsModel();
-    }
+  
 
     // PUBLIC PROP
     public char DriveLetter { get; set; }
@@ -43,7 +33,7 @@ public partial class MappingModel : ObservableObject
         }
     }
 
-    public MappingSettingsModel MappingSettings { get; set; }
+    public MappingSettingsModel MappingSettings { get; set; } = new();
     
     private bool CanConnect =>
         ShareStateProp == ShareState.Available &&
@@ -59,8 +49,8 @@ public partial class MappingModel : ObservableObject
 
     public bool CanAutoDisconnect => 
         CanDisconnect && 
-        MappingSettings.AutoDisconnect;    
+        MappingSettings.AutoDisconnect;
 
-
+    public object Clone() => MemberwiseClone();
 }
 

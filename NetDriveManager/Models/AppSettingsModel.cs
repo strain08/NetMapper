@@ -1,8 +1,10 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
+using System;
+using System.Text.Json.Serialization;
 
 namespace NetMapper.Models
 {
-    public class AppSettingsModel
+    public class AppSettingsModel : ICloneable
     {
         public bool bLoadAtStartup { get; set; }
 
@@ -12,18 +14,12 @@ namespace NetMapper.Models
 
         public bool bInfoNotify { get; set; }
 
-        public Coords Coords { get; set; }
-        public AppSettingsModel()
-        {
-            
-        }
-        public AppSettingsModel(AppSettingsModel copyModel)
-        {
-            bLoadAtStartup = copyModel.bLoadAtStartup;
-            bRemoveUnmanaged = copyModel.bRemoveUnmanaged;
-            bMinimizeToTaskbar = copyModel.bMinimizeToTaskbar;
-            bInfoNotify = copyModel.bInfoNotify;            
-            Coords = copyModel.Coords;
-        }
+        
+        public double WindowHeight { get; set; } = 400;
+        public double WindowWidth { get; set; } = 225;
+        public int WinX { get; set; }
+        public int WinY { get; set; }     
+
+        public object Clone() => MemberwiseClone();
     }
 }

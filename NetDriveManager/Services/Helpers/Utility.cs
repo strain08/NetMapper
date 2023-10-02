@@ -17,7 +17,6 @@ namespace NetMapper.Services.Helpers
     public static class Utility
     {
 
-
         [DllImport("mpr.dll")]
         private static extern int WNetAddConnection2
             (ref NETRESOURCE oNetworkResource, string? sPassword,
@@ -29,7 +28,6 @@ namespace NetMapper.Services.Helpers
 
         public static ConnectResult ConnectNetworkDrive(char cDriveLetter, string sNetworkPath)
         {
-
             //Checks if the last character is \ as this causes error on mapping a drive.
             if (sNetworkPath.Substring(sNetworkPath.Length - 1, 1) == @"\")
             {
@@ -45,6 +43,7 @@ namespace NetMapper.Services.Helpers
             };
             return (ConnectResult)WNetAddConnection2(ref oNetworkResource, null, null, 0);
         }
+
         public static async Task<ConnectResult> ConnectNetworkDriveAsync(char cDriveLetter, string sNetworkPath) => 
             await Task.Run(() => ConnectNetworkDrive(cDriveLetter, sNetworkPath));
 
@@ -95,6 +94,7 @@ namespace NetMapper.Services.Helpers
             }
             return false;
         }
+
         public static void IsMachineOnline(string hostName)
         {
             using Ping pingSender = new();

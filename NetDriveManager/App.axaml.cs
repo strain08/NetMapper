@@ -34,11 +34,24 @@ namespace NetMapper
                 Bootstrapper.Register(Locator.CurrentMutable, Locator.Current);   
 
                 desktop.ShutdownMode = ShutdownMode.OnExplicitShutdown;
-                
+                desktop.ShutdownRequested += Desktop_ShutdownRequested;
+                desktop.Exit += Desktop_Exit;
                 DataContext = new ApplicationViewModel();                
 
             }
             base.OnFrameworkInitializationCompleted();
+        }
+
+        private void Desktop_Exit(object? sender, ControlledApplicationLifetimeExitEventArgs e)
+        {
+            var s = Locator.Current.GetRequiredService<IStore<AppSettingsModel>>();
+            s.Update(StaticSettings.Settings!);
+        }
+
+        private void Desktop_ShutdownRequested(object? sender, ShutdownRequestedEventArgs e)
+        {
+            var s = Locator.Current.GetRequiredService<IStore<AppSettingsModel>>();
+            s.Update(StaticSettings.Settings!);
         }
 
         public void OnTrayClicked(object sender, EventArgs e)

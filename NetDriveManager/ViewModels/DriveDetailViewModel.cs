@@ -76,7 +76,7 @@ namespace NetMapper.ViewModels
                 SelectedItem = selectedItem;
 
                 // decoupled copy of selected item
-                DisplayItem = new MappingModel(selectedItem);
+                DisplayItem = (MappingModel)selectedItem.Clone();
 
                 // add selected item letter
                 DriveLettersList.Add(selectedItem.DriveLetter);

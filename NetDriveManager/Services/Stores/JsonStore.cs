@@ -18,7 +18,6 @@ namespace NetMapper.Services
         public JsonStore(string jsonFileName)
         {             
             var strWorkPath = AppStartupFolder.GetStartupFolder();
-
             jsonFile = Path.Combine(strWorkPath, jsonFileName);
         }      
 
@@ -43,7 +42,11 @@ namespace NetMapper.Services
         {
             try
             {
-                var jsonString = JsonSerializer.Serialize(storeData, storeData.GetType());
+                var jsonOptions = new JsonSerializerOptions
+                {
+                    WriteIndented = true
+                };
+                var jsonString = JsonSerializer.Serialize(storeData, typeof(T), jsonOptions);
                 File.WriteAllText(jsonFile, jsonString);
                 return true;
             }
@@ -54,10 +57,10 @@ namespace NetMapper.Services
         }
 
         // UPDATE
-        public bool Update(T updatedList)
+        public bool Update(T updatedData)
         {
 
-            storeData = updatedList;
+            storeData = updatedData;
             return Save();
         }
 

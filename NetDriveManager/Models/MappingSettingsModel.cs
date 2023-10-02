@@ -7,8 +7,6 @@ namespace NetMapper.Models
         [ObservableProperty]
         bool autoConnect;
         [ObservableProperty]
-        bool autoDisconnect;
-        
-        Coords coords;
+        bool autoDisconnect;        
     }
 }
