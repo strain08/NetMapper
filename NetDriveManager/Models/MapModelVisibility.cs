@@ -3,7 +3,7 @@ using System.Text.Json.Serialization;
 
 namespace NetMapper.Models
 {
-    public partial class MappingModel
+    public partial class MapModel
     {
         [JsonIgnore]
         public bool ConnectCommandVisible =>

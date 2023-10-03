@@ -12,9 +12,9 @@ namespace NetMapper.ViewModels
     {
 
         [ObservableProperty]
-        MappingModel displayItem;
+        MapModel displayItem;
         [ObservableProperty]
-        MappingModel selectedItem;
+        MapModel selectedItem;
 
         public string NetworkPath
         {
@@ -53,21 +53,21 @@ namespace NetMapper.ViewModels
 
         bool isEditing;
 
-        DriveListService driveListService;
-        DriveConnectService driveConnectService;
+        readonly DriveListService driveListService;
+        readonly DriveConnectService driveConnectService;
 
         // CTOR
-        public DriveDetailViewModel(MappingModel? selectedItem = null)
+        public DriveDetailViewModel(MapModel? selectedItem = null)
         {
             driveListService = Locator.Current.GetRequiredService<DriveListService>();
             driveConnectService = Locator.Current.GetRequiredService<DriveConnectService>();
 
             LoadDriveLettersList();
-
+            DisplayItem = new();
+            SelectedItem = new();
             if (selectedItem == null)
             {
-                IsEditing = false;
-                DisplayItem = new();
+                IsEditing = false;                
             }
             else
             {
@@ -76,7 +76,7 @@ namespace NetMapper.ViewModels
                 SelectedItem = selectedItem;
 
                 // decoupled copy of selected item
-                DisplayItem = (MappingModel)selectedItem.Clone();
+                DisplayItem = selectedItem.Clone();
 
                 // add selected item letter
                 DriveLettersList.Add(selectedItem.DriveLetter);
@@ -90,7 +90,7 @@ namespace NetMapper.ViewModels
             var cAvailableLeters = new List<char>(Utility.GetAvailableDriveLetters());
 
             // remove unmapped managed drive letters
-            foreach (MappingModel d in driveListService.DriveList)
+            foreach (MapModel d in driveListService.DriveList)
                 cAvailableLeters.Remove(d.DriveLetter);
 
             foreach (char cLetter in cAvailableLeters)
@@ -119,7 +119,7 @@ namespace NetMapper.ViewModels
         }
 
 
-        public void Cancel()
+        public static void Cancel()
         {
             VMServices.MainWindowViewModel!.Content = VMServices.DriveListViewModel;
 

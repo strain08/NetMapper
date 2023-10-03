@@ -16,7 +16,7 @@ namespace NetMapper.Services
             s.Register<IStore<AppSettingsModel>>(() => new JsonStore<AppSettingsModel>("AppSettings.json"));
 
             // Json Drive List Store
-            s.Register<IStore<List<MappingModel>>>(() => new JsonStore<List<MappingModel>>("NetDriveSettings.json"));           
+            s.Register<IStore<List<MapModel>>>(() => new JsonStore<List<MapModel>>("NetDriveSettings.json"));           
 
             // Notification
             s.RegisterConstant(new ToastService());
@@ -27,7 +27,7 @@ namespace NetMapper.Services
 
             // Drive List CRUD
             s.RegisterConstant(new DriveListService(
-                r.GetRequiredService<IStore<List<MappingModel>>>()));            
+                r.GetRequiredService<IStore<List<MapModel>>>()));            
 
             // StateGenerator
             s.RegisterConstant(new DrivePoolingService(

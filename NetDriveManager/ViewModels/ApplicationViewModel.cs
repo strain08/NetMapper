@@ -3,6 +3,7 @@ using Avalonia.Controls.ApplicationLifetimes;
 using NetMapper.Interfaces;
 using NetMapper.Models;
 using NetMapper.Services;
+using NetMapper.Services.Settings;
 using NetMapper.Services.Static;
 using NetMapper.Views;
 using Splat;
@@ -18,22 +19,18 @@ namespace NetMapper.ViewModels
         {
             Store = Locator.Current.GetRequiredService<IStore<AppSettingsModel>>();
             StaticSettings.Settings = Store.GetAll();
+            RunAtStartup r = new(StaticSettings.Settings);
+            r.Apply();
 
-            MainWindowView = new MainWindow
+            MainWindowView = new()
             {
                 DataContext = VMServices.MainWindowViewModel = new MainWindowViewModel(),
-                MinWidth = 225
-
+                MinWidth = 250,
+                MinHeight = 150,
+                Width = StaticSettings.Settings?.WindowWidth ?? 225,
+                Height = StaticSettings.Settings?.WindowHeight ?? 400,
+                WindowStartupLocation = StaticSettings.PositionOK() ? WindowStartupLocation.Manual : WindowStartupLocation.CenterScreen,
             };
-
-            if (StaticSettings.PositionOK())
-            {
-                MainWindowView.WindowStartupLocation = WindowStartupLocation.Manual;
-            }
-            else 
-            { 
-                MainWindowView.WindowStartupLocation = WindowStartupLocation.CenterScreen;
-            }
 
             // hide window on close
             MainWindowView.Closing += (s, e) =>
@@ -43,15 +40,15 @@ namespace NetMapper.ViewModels
             };
             MainWindowView.Resized += (s, e) =>
             {
-                StaticSettings.Settings.WindowWidth = ((MainWindow)s!).Width;
+                StaticSettings.Settings!.WindowWidth = ((MainWindow)s!).Width;
                 StaticSettings.Settings.WindowHeight = ((MainWindow)s!).Height;
             };
-            
+
             MainWindowView.PositionChanged += (s, e) =>
-            {                
+            {
                 if (StaticSettings.WindowIsOpened)
                 {
-                    StaticSettings.Settings.WinX = ((MainWindow)s!).Position.X;
+                    StaticSettings.Settings!.WinX = ((MainWindow)s!).Position.X;
                     StaticSettings.Settings.WinY = ((MainWindow)s!).Position.Y;
                 }
 
@@ -80,7 +77,6 @@ namespace NetMapper.ViewModels
                         break;
                 }
             }
-
         }
 
         public void ShowWindowCommand()
@@ -92,7 +88,6 @@ namespace NetMapper.ViewModels
             MainWindowView.WindowState = WindowState.Normal;
             MainWindowView.Show();
             MainWindowView.BringIntoView();
-
         }
 
 

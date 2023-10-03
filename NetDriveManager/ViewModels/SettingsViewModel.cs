@@ -19,22 +19,22 @@ namespace NetMapper.ViewModels
         public SettingsViewModel()
         {
             store = Locator.Current.GetRequiredService<IStore<AppSettingsModel>>();
-            DisplaySettings = (AppSettingsModel)StaticSettings.Settings?.Clone()! ?? new AppSettingsModel();
+            DisplaySettings = StaticSettings.Settings!.Clone() ?? new AppSettingsModel();
             
         }
         public void OkCommand()
         {
-            StaticSettings.Settings = DisplaySettings;
+            StaticSettings.Settings = DisplaySettings.Clone();
             // >> place to apply settings
-            var r = new RunAtStartup(DisplaySettings);
+            var r = new RunAtStartup(StaticSettings.Settings);
 
             r.Apply();
 
             // <<
-            store.Update(DisplaySettings);
+            store.Update(StaticSettings.Settings);
             (VMServices.MainWindowViewModel ??= new()).Content = VMServices.DriveListViewModel;
         }
-        public void CancelCommand()
+        public static void CancelCommand()
         {
             (VMServices.MainWindowViewModel ??= new()).Content = VMServices.DriveListViewModel;
         }

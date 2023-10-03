@@ -7,24 +7,18 @@ namespace NetMapper.Views
 {
     public partial class MainWindow : Window
     {
-
-
         public MainWindow()
         {
             InitializeComponent();
-            Width = StaticSettings.Settings?.WindowWidth ?? 225;
-            Height = StaticSettings.Settings?.WindowHeight ?? 400;           
-
 #if DEBUG
             this.AttachDevTools();
 #endif
-
         }
 
         // window position does not update when closed
         protected override void OnOpened(EventArgs e)
         {
-            if (StaticSettings.PositionOK())
+            if (StaticSettings.PositionOK() && StaticSettings.Settings != null)
             {
                 Position = new(StaticSettings.Settings.WinX, StaticSettings.Settings.WinY);
             }

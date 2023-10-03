@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace NetMapper.Models
 {
-    public partial class MappingModel
+    public partial class MapModel
     {
         [JsonIgnore]
         [ObservableProperty]
@@ -25,6 +25,27 @@ namespace NetMapper.Models
         [NotifyPropertyChangedFor(nameof(DisconnectCommandVisible))]
         [NotifyPropertyChangedFor(nameof(VolumeLabel))]
         MappingState mappingStateProp = MappingState.Undefined;
+
+
+        [JsonIgnore]
+        private bool CanConnect =>
+            ShareStateProp == ShareState.Available &&
+            MappingStateProp == MappingState.Unmapped;
+
+        [JsonIgnore]
+        private bool CanDisconnect =>
+            ShareStateProp == ShareState.Unavailable &&
+            MappingStateProp == MappingState.Mapped;
+
+        [JsonIgnore]
+        public bool CanAutoConnect =>
+            CanConnect &&
+            Settings.AutoConnect;
+
+        [JsonIgnore]
+        public bool CanAutoDisconnect =>
+            CanDisconnect &&
+            Settings.AutoDisconnect;
 
         private void UpdateShareState()
         {

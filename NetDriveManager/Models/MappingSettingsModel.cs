@@ -1,4 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
+using System;
 
 namespace NetMapper.Models
 {
@@ -7,6 +8,11 @@ namespace NetMapper.Models
         [ObservableProperty]
         bool autoConnect;
         [ObservableProperty]
-        bool autoDisconnect;        
+        bool autoDisconnect;
+
+        public MappingSettingsModel Clone()
+        {
+            return (MappingSettingsModel)MemberwiseClone();
+        }
     }
 }

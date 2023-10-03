@@ -11,9 +11,7 @@ namespace NetMapper.Services.Settings
     {
         RegistryKey? rk;
         const string AppName = "NetMapper";
-        const string HKCU = "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run";
-
-        public RunAtStartup() : base() { }
+        const string HKCU = "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run";       
 
         public RunAtStartup(AppSettingsModel settings) : base(settings) { }
 

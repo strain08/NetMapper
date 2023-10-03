@@ -10,8 +10,7 @@ namespace ChainResp.Approvers
         public override void NotifyDriveAdded(Model m)
         {
             Console.WriteLine("Messagebox" + m.name);
-            successor?.NotifyDriveAdded(m);
-            
+            successor?.NotifyDriveAdded(m);            
         }
     }
 }

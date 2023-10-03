@@ -54,15 +54,20 @@
 				FontSize="16" 
 				FontWeight="Bold" 
 				Foreground="Gray"
-				Text="Start-up"
+				Text="General"
 				/>
 			<StackPanel Classes="detail">
 				<CheckBox
-					IsChecked="{Binding Settings.bLoadAtStartup}"
+					IsChecked="{Binding DisplaySettings.bLoadAtStartup}"
 					Content="Start with Windows"
 					ToolTip.Tip="Launch at login"/>
 			</StackPanel>
-			
+			<StackPanel Classes="detail">
+				<CheckBox
+					IsChecked="{Binding DisplaySettings.bMinimizeToTaskbar}"
+					Content="Minimize to system tray"
+					ToolTip.Tip="Launch at login"/>
+			</StackPanel>
 			<TextBlock
 				Margin="16,16,0,0"
 				FontSize="16"
@@ -70,15 +75,10 @@
 				Foreground="Gray"
 				Text="Behaviour"
 				/>
+			
 			<StackPanel Classes="detail">
 				<CheckBox
-					IsChecked="{Binding Settings.bMinimizeToTaskbar}"
-					Content="Minimize to system tray"
-					ToolTip.Tip="Launch at login"/>
-			</StackPanel>
-			<StackPanel Classes="detail">
-				<CheckBox
-					IsChecked="{Binding Settings.bRemoveUnmanaged}"
+					IsChecked="{Binding DisplaySettings.bRemoveUnmanaged}"
 					Content="Remove unmanaged drives at startup"
 					ToolTip.Tip="Remove drive mapping when connection down or share becomes unavailable."/>
 			</StackPanel>

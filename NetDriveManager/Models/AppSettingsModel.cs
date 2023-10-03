@@ -4,7 +4,7 @@ using System.Text.Json.Serialization;
 
 namespace NetMapper.Models
 {
-    public class AppSettingsModel : ICloneable
+    public class AppSettingsModel
     {
         public bool bLoadAtStartup { get; set; }
 
@@ -20,6 +20,6 @@ namespace NetMapper.Models
         public int WinX { get; set; }
         public int WinY { get; set; }     
 
-        public object Clone() => MemberwiseClone();
+        public AppSettingsModel Clone() => (AppSettingsModel)MemberwiseClone();
     }
 }

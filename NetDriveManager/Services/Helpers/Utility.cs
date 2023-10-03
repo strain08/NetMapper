@@ -148,7 +148,7 @@ namespace NetMapper.Services.Helpers
         public static string GetActualPathForLetter(char letter)
         {
             var mappedList = GetMappedDrives();
-            foreach (MappingModel item in mappedList)
+            foreach (MapModel item in mappedList)
             {
                 if (item.DriveLetter == letter)
                     return item.NetworkPath;
@@ -156,9 +156,9 @@ namespace NetMapper.Services.Helpers
             return string.Empty;
         }
 
-        public static List<MappingModel> GetMappedDrives()
+        public static List<MapModel> GetMappedDrives()
         {
-            var mappedDrives = new List<MappingModel>();
+            var mappedDrives = new List<MapModel>();
             try
             {
                 var searcher = new ManagementObjectSearcher("root\\CIMV2", $"SELECT * FROM Win32_LogicalDisk WHERE DriveType={(int)DriveType.Network}");
@@ -168,7 +168,7 @@ namespace NetMapper.Services.Helpers
                     var caption = queryObj["Caption"] as String
                         ?? throw new ApplicationException("Wmi error getting mapped drive letter.");
                     mappedDrives.Add(
-                        new MappingModel
+                        new MapModel
                         {
                             DriveLetter = caption[0],
                             NetworkPath = (string)queryObj["ProviderName"]

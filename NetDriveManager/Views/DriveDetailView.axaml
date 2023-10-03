@@ -3,6 +3,8 @@
 			 xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 			 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 			 mc:Ignorable="d" d:DesignWidth="250" d:DesignHeight="450"
+			 xmlns:vm="using:NetMapper.ViewModels"
+			 x:DataType="vm:DriveDetailViewModel"
 			 x:Class="NetMapper.Views.DriveDetailView">
 	<UserControl.Styles>
 		<Style Selector="StackPanel.detail">
@@ -76,13 +78,13 @@
 			<!-- OPTIONS -->
 			<StackPanel Classes="detail">
 				<CheckBox
-					IsChecked="{Binding DisplayItem.MappingSettings.AutoConnect}"
+					IsChecked="{Binding DisplayItem.Settings.AutoConnect}"
 					Content="Auto-connect"
 					ToolTip.Tip="Connect when share is available."/>
 			</StackPanel>
 			<StackPanel Classes="detail">
 				<CheckBox
-					IsChecked="{Binding DisplayItem.MappingSettings.AutoDisconnect}"
+					IsChecked="{Binding DisplayItem.Settings.AutoDisconnect}"
 					Content="Auto-disconnect"
 					ToolTip.Tip="Remove drive mapping when connection down or share becomes unavailable."/>
 			</StackPanel>

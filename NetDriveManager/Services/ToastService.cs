@@ -5,14 +5,14 @@ using NetMapper.Enums;
 namespace NetMapper.Services
 { 
 
-    public delegate void DelegateCanNotRemoveDrive(MappingModel mappingModel, DisconnectDriveAnswer toast);
-    public delegate void DelegateSuccessRemoveDrive(MappingModel mappingModel, AddRemoveAnswer toast);
+    public delegate void DelegateCanNotRemoveDrive(MapModel mappingModel, DisconnectDriveAnswer toast);
+    public delegate void DelegateSuccessRemoveDrive(MapModel mappingModel, AddRemoveAnswer toast);
 
     public class ToastService
     {
         DelegateCanNotRemoveDrive? _onRemoveDriveToast;
         DelegateSuccessRemoveDrive? _onAddRemoveDriveToast;
-        MappingModel? _mappingModel;
+        MapModel? _mappingModel;
 
         const string ACTION_REMOVEDRIVE = "1";
         const string ACTION_ADDREMOVE = "2";
@@ -24,7 +24,7 @@ namespace NetMapper.Services
         }
 
         // PUBLIC TOAST CALLS
-        public void ToastCanNotRemoveDrive(MappingModel m, DelegateCanNotRemoveDrive del)
+        public void ToastCanNotRemoveDrive(MapModel m, DelegateCanNotRemoveDrive del)
         {
             _onRemoveDriveToast = del;
             _mappingModel = m;     
@@ -48,7 +48,7 @@ namespace NetMapper.Services
             //ToastNotificationManagerCompat.CreateToastNotifier().Show(notif);
         }
 
-        public void ToastDriveConnected(MappingModel m, DelegateSuccessRemoveDrive del)
+        public void ToastDriveConnected(MapModel m, DelegateSuccessRemoveDrive del)
         {
             _onAddRemoveDriveToast = del;
             _mappingModel = m;
@@ -60,7 +60,7 @@ namespace NetMapper.Services
             t.Show();
         }
 
-        public void ToastDriveDisconnected(MappingModel m, DelegateSuccessRemoveDrive del)
+        public void ToastDriveDisconnected(MapModel m, DelegateSuccessRemoveDrive del)
         {
             _onAddRemoveDriveToast = del;
             _mappingModel = m;

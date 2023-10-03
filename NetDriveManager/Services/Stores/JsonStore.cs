@@ -11,7 +11,7 @@ namespace NetMapper.Services
     {
         readonly string jsonFile;
 
-        private T storeData { get; set; } = new();
+        private T? StoreData { get; set; }
 
         // CTOR
 
@@ -28,7 +28,7 @@ namespace NetMapper.Services
             try
             {
                 var jsonString = File.ReadAllText(jsonFile);
-                storeData = JsonSerializer.Deserialize<T>(jsonString) ?? throw new JsonException();
+                StoreData = JsonSerializer.Deserialize<T>(jsonString) ?? throw new JsonException("Error deserializing.");
                 return true;
             }
             catch
@@ -46,7 +46,7 @@ namespace NetMapper.Services
                 {
                     WriteIndented = true
                 };
-                var jsonString = JsonSerializer.Serialize(storeData, typeof(T), jsonOptions);
+                var jsonString = JsonSerializer.Serialize(StoreData, typeof(T), jsonOptions);
                 File.WriteAllText(jsonFile, jsonString);
                 return true;
             }
@@ -60,14 +60,15 @@ namespace NetMapper.Services
         public bool Update(T updatedData)
         {
 
-            storeData = updatedData;
+            StoreData = updatedData;
             return Save();
         }
 
         public T GetAll()
         {
+            if (StoreData != null) return StoreData;            
             Load();
-            return storeData;
+            return StoreData ?? throw new ArgumentNullException("Error loading json file.");
         }
     }
 
