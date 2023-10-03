@@ -3,7 +3,10 @@ using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Data.Core.Plugins;
 using Avalonia.Markup.Xaml;
+using NetMapper.Interfaces;
+using NetMapper.Models;
 using NetMapper.Services;
+using NetMapper.Services.Static;
 using NetMapper.ViewModels;
 using NetMapper.Views;
 using Splat;
@@ -28,19 +31,36 @@ namespace NetMapper
                 BindingPlugins.DataValidators.RemoveAt(0);
 
                 // Register services with Splat
-                Bootstrapper.Register(Locator.CurrentMutable, Locator.Current);
-                
+                Bootstrapper.Register(Locator.CurrentMutable, Locator.Current);   
+
                 desktop.ShutdownMode = ShutdownMode.OnExplicitShutdown;
-                
+                desktop.ShutdownRequested += Desktop_ShutdownRequested;
+                desktop.Exit += Desktop_Exit;
                 DataContext = new ApplicationViewModel();                
 
             }
             base.OnFrameworkInitializationCompleted();
         }
 
+        private void Desktop_Exit(object? sender, ControlledApplicationLifetimeExitEventArgs e)
+        {
+            var s = Locator.Current.GetRequiredService<IStore<AppSettingsModel>>();
+            s.Update(StaticSettings.Settings!);
+        }
+
+        private void Desktop_ShutdownRequested(object? sender, ShutdownRequestedEventArgs e)
+        {
+            var s = Locator.Current.GetRequiredService<IStore<AppSettingsModel>>();
+            s.Update(StaticSettings.Settings!);
+        }
+
         public void OnTrayClicked(object sender, EventArgs e)
         {
-            VMServices.MainWindow!.Show();
+            
+                if (VMServices.ApplicationViewModel == null) return;
+            VMServices.ApplicationViewModel.ShowWindowCommand();
+            
+            
         }
     }
 }

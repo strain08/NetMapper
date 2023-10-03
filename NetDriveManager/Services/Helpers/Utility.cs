@@ -17,7 +17,6 @@ namespace NetMapper.Services.Helpers
     public static class Utility
     {
 
-
         [DllImport("mpr.dll")]
         private static extern int WNetAddConnection2
             (ref NETRESOURCE oNetworkResource, string? sPassword,
@@ -29,7 +28,6 @@ namespace NetMapper.Services.Helpers
 
         public static ConnectResult ConnectNetworkDrive(char cDriveLetter, string sNetworkPath)
         {
-
             //Checks if the last character is \ as this causes error on mapping a drive.
             if (sNetworkPath.Substring(sNetworkPath.Length - 1, 1) == @"\")
             {
@@ -45,6 +43,7 @@ namespace NetMapper.Services.Helpers
             };
             return (ConnectResult)WNetAddConnection2(ref oNetworkResource, null, null, 0);
         }
+
         public static async Task<ConnectResult> ConnectNetworkDriveAsync(char cDriveLetter, string sNetworkPath) => 
             await Task.Run(() => ConnectNetworkDrive(cDriveLetter, sNetworkPath));
 
@@ -95,6 +94,7 @@ namespace NetMapper.Services.Helpers
             }
             return false;
         }
+
         public static void IsMachineOnline(string hostName)
         {
             using Ping pingSender = new();
@@ -145,10 +145,10 @@ namespace NetMapper.Services.Helpers
         /// </summary>
         /// <param name="letter"></param>
         /// <returns>Empty string if letter not mapped to a network drive</returns>
-        public static string GetPathForLetter(char letter)
+        public static string GetActualPathForLetter(char letter)
         {
             var mappedList = GetMappedDrives();
-            foreach (MappingModel item in mappedList)
+            foreach (MapModel item in mappedList)
             {
                 if (item.DriveLetter == letter)
                     return item.NetworkPath;
@@ -156,9 +156,9 @@ namespace NetMapper.Services.Helpers
             return string.Empty;
         }
 
-        public static List<MappingModel> GetMappedDrives()
+        public static List<MapModel> GetMappedDrives()
         {
-            var mappedDrives = new List<MappingModel>();
+            var mappedDrives = new List<MapModel>();
             try
             {
                 var searcher = new ManagementObjectSearcher("root\\CIMV2", $"SELECT * FROM Win32_LogicalDisk WHERE DriveType={(int)DriveType.Network}");
@@ -168,7 +168,7 @@ namespace NetMapper.Services.Helpers
                     var caption = queryObj["Caption"] as String
                         ?? throw new ApplicationException("Wmi error getting mapped drive letter.");
                     mappedDrives.Add(
-                        new MappingModel
+                        new MapModel
                         {
                             DriveLetter = caption[0],
                             NetworkPath = (string)queryObj["ProviderName"]

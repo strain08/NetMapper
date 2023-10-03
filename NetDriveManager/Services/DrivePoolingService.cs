@@ -1,5 +1,6 @@
 ﻿using NetMapper.Models;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net.NetworkInformation;
 using System.Threading;
 using System.Threading.Tasks;
@@ -34,9 +35,12 @@ namespace NetMapper.Services
             List<Task> taskList = new();
             while (true)
             {
-                foreach (MappingModel m in driveListService.DriveList)
+                foreach (MapModel m in driveListService.DriveList)
                 {
-                    taskList.Add(Task.Run(action: ()=>UpdateModel(m)));
+                    taskList.Add(Task.Run(action: ()=> { 
+                        UpdateModel(m);
+                        UpdateSystem(m);
+                    }));
                 }
                 await Task.WhenAll(taskList);
                 taskList.Clear();
@@ -44,10 +48,13 @@ namespace NetMapper.Services
             }
         }
 
-        private void UpdateModel(MappingModel m)
+        private void UpdateModel(MapModel m)
         {
             m.UpdateProperties();
+        }
 
+        private void UpdateSystem(MapModel m)
+        {
             if (m.CanAutoConnect)
             {
                 stateResolverService.ConnectDrive(m);
@@ -56,22 +63,21 @@ namespace NetMapper.Services
             {
                 stateResolverService.DisconnectDrive(m);
             }
-        }
+        }        
         
         private void NetworkAvailabilityChanged(object? sender, NetworkAvailabilityEventArgs e)
         {
             if (e.IsAvailable)
             {
-                foreach (MappingModel m in driveListService.DriveList)
+                foreach (MapModel m in driveListService.DriveList.Where((m)=> m.Settings.AutoConnect))
                     stateResolverService.ConnectDrive(m);
             }
             else
             {
-                foreach (MappingModel m in driveListService.DriveList)
+                foreach (MapModel m in driveListService.DriveList.Where((m) => m.Settings.AutoDisconnect))
                     stateResolverService.DisconnectDrive(m);
             }
         }
-
 
     }
 }

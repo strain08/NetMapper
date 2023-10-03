@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace NetMapper.Models
 {
-    public partial class MappingModel
+    public partial class MapModel
     {
         [JsonIgnore]
         [ObservableProperty]
@@ -26,6 +26,27 @@ namespace NetMapper.Models
         [NotifyPropertyChangedFor(nameof(VolumeLabel))]
         MappingState mappingStateProp = MappingState.Undefined;
 
+
+        [JsonIgnore]
+        private bool CanConnect =>
+            ShareStateProp == ShareState.Available &&
+            MappingStateProp == MappingState.Unmapped;
+
+        [JsonIgnore]
+        private bool CanDisconnect =>
+            ShareStateProp == ShareState.Unavailable &&
+            MappingStateProp == MappingState.Mapped;
+
+        [JsonIgnore]
+        public bool CanAutoConnect =>
+            CanConnect &&
+            Settings.AutoConnect;
+
+        [JsonIgnore]
+        public bool CanAutoDisconnect =>
+            CanDisconnect &&
+            Settings.AutoDisconnect;
+
         private void UpdateShareState()
         {
             ShareStateProp = Directory.Exists(NetworkPath) ? ShareState.Available : ShareState.Unavailable;
@@ -33,9 +54,8 @@ namespace NetMapper.Models
 
         private void UpdateMappingState()
         {
-            // if it is a network drive mapped to this path -> Mapped
-            string testPath = Utility.GetPathForLetter(DriveLetter);
-            if (testPath == NetworkPath)
+            // if it is a network drive mapped to this path -> Mapped            
+            if (Utility.GetActualPathForLetter(DriveLetter) == NetworkPath)
             {
                 MappingStateProp = MappingState.Mapped;
                 return;

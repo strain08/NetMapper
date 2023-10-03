@@ -1,4 +1,5 @@
 ﻿using NetMapper.Interfaces;
+using NetMapper.Services.Helpers;
 using System;
 using System.Diagnostics;
 using System.IO;
@@ -8,21 +9,16 @@ namespace NetMapper.Services
 {
     public class JsonStore<T> : IStore<T> where T : new()
     {
-        readonly string jsonSettingsFile;
+        readonly string jsonFile;
 
-        private T ItemsList { get; set; } = new();
+        private T? StoreData { get; set; }
 
         // CTOR
 
-        public JsonStore(string jsonFile)
-        {
-            string strExeFilePath = Process.GetCurrentProcess()?.MainModule?.FileName
-                ?? throw new ApplicationException("Process.GetCurrentProcess()?.MainModule?.FileName null");
-
-            string strWorkPath = Path.GetDirectoryName(strExeFilePath)
-                ?? throw new ApplicationException("Path.GetDirectoryName(strExeFilePath) null");
-
-            jsonSettingsFile = Path.Combine(strWorkPath, jsonFile);
+        public JsonStore(string jsonFileName)
+        {             
+            var strWorkPath = AppStartupFolder.GetStartupFolder();
+            jsonFile = Path.Combine(strWorkPath, jsonFileName);
         }      
 
 
@@ -31,8 +27,8 @@ namespace NetMapper.Services
         {
             try
             {
-                var jsonString = File.ReadAllText(jsonSettingsFile);
-                ItemsList = JsonSerializer.Deserialize<T>(jsonString) ?? throw new JsonException();
+                var jsonString = File.ReadAllText(jsonFile);
+                StoreData = JsonSerializer.Deserialize<T>(jsonString) ?? throw new JsonException("Error deserializing.");
                 return true;
             }
             catch
@@ -46,29 +42,33 @@ namespace NetMapper.Services
         {
             try
             {
-                var jsonString = JsonSerializer.Serialize(ItemsList, ItemsList.GetType());
-                File.WriteAllText(jsonSettingsFile, jsonString);
+                var jsonOptions = new JsonSerializerOptions
+                {
+                    WriteIndented = true
+                };
+                var jsonString = JsonSerializer.Serialize(StoreData, typeof(T), jsonOptions);
+                File.WriteAllText(jsonFile, jsonString);
                 return true;
             }
             catch
             {
                 return false;
-
             }
         }
 
         // UPDATE
-        public bool Update(T updatedList)
+        public bool Update(T updatedData)
         {
 
-            ItemsList = updatedList;
+            StoreData = updatedData;
             return Save();
         }
 
         public T GetAll()
         {
+            if (StoreData != null) return StoreData;            
             Load();
-            return ItemsList;
+            return StoreData ?? throw new ArgumentNullException("Error loading json file.");
         }
     }
 

@@ -2,6 +2,7 @@
 using NetMapper.Enums;
 using NetMapper.Models;
 using NetMapper.Services;
+using NetMapper.Services.Static;
 using Splat;
 using System;
 using System.Collections.ObjectModel;
@@ -11,16 +12,18 @@ namespace NetMapper.ViewModels
     public partial class DriveListViewModel : ViewModelBase
     {
         // PROP
-        public ObservableCollection<MappingModel>?
+        public ObservableCollection<MapModel>?
             DriveList
         { get; set; }
 
         [ObservableProperty]
-        MappingModel?
+        MapModel?
             selectedItem;
 
         readonly DriveListService driveListService;
         readonly DriveConnectService stateResolverService;
+
+
 
         // CTOR
         public DriveListViewModel()
@@ -37,19 +40,19 @@ namespace NetMapper.ViewModels
         // COMMS        
         public void DisconnectDriveCommand(object commandParameter)
         {
-            var model = (MappingModel)commandParameter
+            var m = (MapModel)commandParameter
                 ?? throw new InvalidOperationException("Error getting command parameter for DisconnectDriveCommand");
-            model.MappingStateProp = MappingState.Undefined;
-            model.MappingSettings.AutoConnect = false; // prevent auto reconnection in Mapping Loop
-            stateResolverService.DisconnectDrive(model);
+            m.MappingStateProp = MappingState.Undefined;
+            m.Settings.AutoConnect = false; // prevent auto reconnection in Mapping Loop
+            stateResolverService.DisconnectDrive(m);
         }
 
         public void ConnectDriveCommand(object commandParameter)
         {
-            var model = (MappingModel)commandParameter
+            var m = (MapModel)commandParameter
                 ?? throw new InvalidOperationException("Error getting command parameter for ConnectDriveCommand");
-            model.MappingStateProp = MappingState.Undefined;
-            stateResolverService.ConnectDrive(model);
+            m.MappingStateProp = MappingState.Undefined;
+            stateResolverService.ConnectDrive(m);
         }
 
         public void RemoveItem()
@@ -60,17 +63,18 @@ namespace NetMapper.ViewModels
             }
         }
 
-        public void AddItem()
+        public static void AddItem()
         {
             VMServices.MainWindowViewModel!.Content = new DriveDetailViewModel();
         }
-        public void Info()
+        public static void Info()
         {
 
         }
-        public void Settings()
+        public static void Settings()
         {
             VMServices.MainWindowViewModel!.Content = new SettingsViewModel();
         }
+        
     }
 }

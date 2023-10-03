@@ -2,23 +2,24 @@
 using NetMapper.Enums;
 using NetMapper.Models;
 using NetMapper.Services.Helpers;
+using NetMapper.Services.Static;
 using System.Threading.Tasks;
 
 namespace NetMapper.Services
 {
     public class DriveConnectService
     {
-        private readonly ToastService toastService;        
+        private readonly ToastService toastService;
         //CTOR
-        public DriveConnectService( ToastService toastService)
+        public DriveConnectService(ToastService toastService)
         {
             if (Avalonia.Controls.Design.IsDesignMode) return; // design mode bypass            
 
-            this.toastService = toastService;            
+            this.toastService = toastService;
 
         }
 
-        public void ConnectDrive(MappingModel m)
+        public void ConnectDrive(MapModel m)
         {
             Task.Run(() =>
             {
@@ -31,7 +32,7 @@ namespace NetMapper.Services
             });
         }
 
-        public void DisconnectDrive(MappingModel m)
+        public void DisconnectDrive(MapModel m)
         {
             Task.Run(() =>
             {
@@ -46,13 +47,13 @@ namespace NetMapper.Services
                 }
                 else
                 {
-                    toastService.ToastCanNotRemoveDrive(m, CanNotUnmapDriveCallback);
+                    toastService.ToastCanNotRemoveDrive(m, UnableToDisconnectCallback);
                 }
 
             });
         }
 
-        private void CanNotUnmapDriveCallback(MappingModel m, DisconnectDriveAnswer answer)
+        private void UnableToDisconnectCallback(MapModel m, DisconnectDriveAnswer answer)
         {
 
             switch (answer)
@@ -63,11 +64,14 @@ namespace NetMapper.Services
                     break;
 
                 case DisconnectDriveAnswer.Force:
-                    CancelConnection error = Utility.DisconnectNetworkDrive(m.DriveLetter, true);
-                    if (error == CancelConnection.DISCONNECT_SUCCESS)
+                    Task.Run(() =>
                     {
-                        toastService.ToastDriveDisconnected(m, ToastClickedCallback);
-                    }
+                        CancelConnection error = Utility.DisconnectNetworkDrive(m.DriveLetter, true);
+                        if (error == CancelConnection.DISCONNECT_SUCCESS)
+                        {
+                            toastService.ToastDriveDisconnected(m, ToastClickedCallback);
+                        }
+                    });
                     break;
 
                 case DisconnectDriveAnswer.ShowWindow:
@@ -76,17 +80,16 @@ namespace NetMapper.Services
             }
         }
 
-        private void ToastClickedCallback(MappingModel mappingModel, AddRemoveAnswer toast)
+        private void ToastClickedCallback(MapModel mappingModel, AddRemoveAnswer toast)
         {
             ShowMainWindow();
         }
 
-        private void ShowMainWindow()
+        private static void ShowMainWindow()
         {
             Dispatcher.UIThread.Post(() =>
             {
-                VMServices.MainWindow!.WindowState = Avalonia.Controls.WindowState.Normal;
-                VMServices.MainWindow.Show();
+                VMServices.ApplicationViewModel?.ShowWindowCommand();
             });
         }
     }

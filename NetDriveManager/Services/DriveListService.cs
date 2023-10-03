@@ -10,45 +10,45 @@ namespace NetMapper.Services
 
     public class DriveListService
     {
-        public ObservableCollection<MappingModel> DriveList { get; set; }
+        public ObservableCollection<MapModel> DriveList { get; set; }
 
-        private readonly IStore<List<MappingModel>> store;
+        private readonly IStore<List<MapModel>> store;
 
         // CTOR
-        public DriveListService(IStore<List<MappingModel>> storeService)
+        public DriveListService(IStore<List<MapModel>> storeService)
         {
             store = storeService;
-            DriveList = new ObservableCollection<MappingModel>(store.GetAll());
+            DriveList = new ObservableCollection<MapModel>(store.GetAll());
 
         }
         // DTOR
         ~DriveListService()
         {
-            if (!store.Update(new List<MappingModel>(DriveList)))
+            if (!store.Update(new List<MapModel>(DriveList)))
                 throw new ApplicationException("Can not write settings file.");
         }
 
-        public void AddDrive(MappingModel model)
+        public void AddDrive(MapModel model)
         {
             DriveList.Add(model);
-            if (!store.Update(new List<MappingModel>(DriveList)))
+            if (!store.Update(new List<MapModel>(DriveList)))
                 throw new ApplicationException("Can not write settings file.");
         }
 
-        public void RemoveDrive(MappingModel model)
+        public void RemoveDrive(MapModel model)
         {
             var i = DriveList.IndexOf(model);
             DriveList.RemoveAt(i);
-            if (!store.Update(new List<MappingModel>(DriveList)))
+            if (!store.Update(new List<MapModel>(DriveList)))
                 throw new ApplicationException("Can not write settings file.");
         }        
 
-        public void EditDrive(MappingModel oldModel, MappingModel newModel)
+        public void EditDrive(MapModel oldModel, MapModel newModel)
         {
             var i = DriveList.IndexOf(oldModel);
             DriveList.RemoveAt(i);
             DriveList.Insert(i, newModel);
-            if (!store.Update(new List<MappingModel>(DriveList))) 
+            if (!store.Update(new List<MapModel>(DriveList))) 
                 throw new ApplicationException("Can not write settings file.");
         }
     }

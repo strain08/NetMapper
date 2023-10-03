@@ -1,21 +1,17 @@
 ﻿using Avalonia.Controls;
 using CommunityToolkit.Mvvm.ComponentModel;
-using NetMapper.Services;
+using NetMapper.Services.Static;
 
 namespace NetMapper.ViewModels
 {
     public partial class MainWindowViewModel : ViewModelBase
     {
         [ObservableProperty]
-        ViewModelBase content;
-
-        [ObservableProperty]
-        DriveListViewModel driveListViewModel;        
+        ViewModelBase content; 
 
         public MainWindowViewModel()
         {            
-            VMServices.DriveListViewModel = new DriveListViewModel();
-            Content = driveListViewModel = VMServices.DriveListViewModel;            
+            Content = VMServices.DriveListViewModel = new DriveListViewModel();
         }
     }
 }

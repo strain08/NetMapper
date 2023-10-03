@@ -2,35 +2,41 @@
 using NetMapper.Interfaces;
 using NetMapper.Models;
 using NetMapper.Services;
+using NetMapper.Services.Settings;
+using NetMapper.Services.Static;
 using Splat;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace NetMapper.ViewModels
 {
-    public partial class SettingsViewModel:ViewModelBase
+    public partial class SettingsViewModel : ViewModelBase
     {
         [ObservableProperty]
-        AppSettingsModel settings;
-        
+        AppSettingsModel displaySettings;
+
         readonly IStore<AppSettingsModel> store;
 
         public SettingsViewModel()
         {
             store = Locator.Current.GetRequiredService<IStore<AppSettingsModel>>();
-            settings = store.GetAll();
+            DisplaySettings = StaticSettings.Settings!.Clone() ?? new AppSettingsModel();
+            
         }
         public void OkCommand()
         {
-            store.Update(Settings);
-            (VMServices.MainWindowViewModel??=new()).Content = VMServices.DriveListViewModel;
+            StaticSettings.Settings = DisplaySettings.Clone();
+            // >> place to apply settings
+            var r = new RunAtStartup(StaticSettings.Settings);
+
+            r.Apply();
+
+            // <<
+            store.Update(StaticSettings.Settings);
+            (VMServices.MainWindowViewModel ??= new()).Content = VMServices.DriveListViewModel;
         }
-        public void CancelCommand()
+        public static void CancelCommand()
         {
-            (VMServices.MainWindowViewModel??=new()).Content = VMServices.DriveListViewModel;
+            (VMServices.MainWindowViewModel ??= new()).Content = VMServices.DriveListViewModel;
         }
     }
 }
