@@ -14,7 +14,7 @@ namespace NetMapper.Services.Settings
         }
         public abstract void Apply();
 
-        public abstract void Configure(ref object obj);
+        public abstract void Apply(object obj);
         
     }
 }

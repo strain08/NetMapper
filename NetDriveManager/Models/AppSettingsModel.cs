@@ -35,6 +35,10 @@ namespace NetMapper.Models
             if (WinY > 0 && WinY > 0) return true;
             return false;
         }
+        
+        [JsonIgnore]
+        public bool WindowIsOpened = false;
+
         public AppSettingsModel Clone() => (AppSettingsModel)MemberwiseClone();
     }
 }

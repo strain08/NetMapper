@@ -69,7 +69,7 @@ namespace NetMapper.Services.Settings
             }
         }
 
-        public override void Configure(ref object obj)
+        public override void Apply(object obj)
         {
             throw new NotImplementedException();
         }

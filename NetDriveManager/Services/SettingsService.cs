@@ -18,7 +18,6 @@ namespace NetMapper.Services
         public AppSettingsModel Settings;
 
         public List<ISetting> SettingsList = new();
-        internal bool WindowIsOpened;
 
 
         public SettingsService(IStore<AppSettingsModel> store)
@@ -26,6 +25,8 @@ namespace NetMapper.Services
             SettingsStore = store;
             Settings = store.GetAll();
             SettingsList.Add(new RunAtStartup(Settings));
+            SettingsList.Add(new MinimizeTaskbar(Settings));
+            SettingsList.Add(new SetupWindow(Settings));
 
             //var a= SettingsList.Find((s)=>s.GetType()==typeof(RunAtStartup));
             //SettingsList.GetSetting(typeof(RunAtStartup));
