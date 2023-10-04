@@ -46,7 +46,7 @@ namespace NetMapper.Services
                 {
                     WriteIndented = true
                 };
-                var jsonString = JsonSerializer.Serialize(StoreData, typeof(T), jsonOptions);
+                var jsonString = JsonSerializer.Serialize(StoreData ?? new(), typeof(T), jsonOptions);
                 File.WriteAllText(jsonFile, jsonString);
                 return true;
             }

@@ -13,8 +13,7 @@ namespace NetMapper.Services
         //CTOR
         public DriveConnectService(ToastService toastService)
         {
-            if (Avalonia.Controls.Design.IsDesignMode) return; // design mode bypass            
-
+            //if (Avalonia.Controls.Design.IsDesignMode) return; // design mode bypass
             this.toastService = toastService;
 
         }

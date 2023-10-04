@@ -1,17 +1,15 @@
 ﻿using Microsoft.Win32;
-using NetMapper.Interfaces;
 using NetMapper.Models;
 using NetMapper.Services.Helpers;
-using ReactiveUI;
 using System;
 
 namespace NetMapper.Services.Settings
 {
-    internal class RunAtStartup : ASettings<bool>
+    internal class RunAtStartup : SettingBase
     {
         RegistryKey? rk;
-        const string AppName = "NetMapper";
-        const string HKCU = "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run";       
+        const string APP_NAME = "NetMapper";
+        const string RK_RUN = "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run";       
 
         public RunAtStartup(AppSettingsModel settings) : base(settings) { }
 
@@ -19,8 +17,8 @@ namespace NetMapper.Services.Settings
         {
             try
             {
-                rk = Registry.CurrentUser.OpenSubKey(HKCU, true) ?? throw new ArgumentNullException();
-                rk.SetValue(AppName, AppStartupFolder.GetProcessFullPath());
+                rk = Registry.CurrentUser.OpenSubKey(RK_RUN, true) ?? throw new ArgumentNullException();
+                rk.SetValue(APP_NAME, AppStartupFolder.GetProcessFullPath());
             }
             catch
             {                
@@ -32,9 +30,9 @@ namespace NetMapper.Services.Settings
         {
             try
             {
-                rk = Registry.CurrentUser.OpenSubKey(HKCU, true);
+                rk = Registry.CurrentUser.OpenSubKey(RK_RUN, true);
                 if (rk == null) return false;
-                string? startKey = rk.GetValue(AppName, null)?.ToString();
+                string? startKey = rk.GetValue(APP_NAME, null)?.ToString();
                 if (startKey == null) return false;
                 if (startKey != AppStartupFolder.GetProcessFullPath()) return false;
                 return true;
@@ -49,8 +47,8 @@ namespace NetMapper.Services.Settings
         {
             try
             {
-                rk = Registry.CurrentUser.OpenSubKey(HKCU, true) ?? throw new ArgumentNullException();
-                rk.DeleteValue(AppName, false);
+                rk = Registry.CurrentUser.OpenSubKey(RK_RUN, true) ?? throw new ArgumentNullException();
+                rk.DeleteValue(APP_NAME, false);
             }
             catch
             {
@@ -71,9 +69,9 @@ namespace NetMapper.Services.Settings
             }
         }
 
-        public override bool Get()
+        public override void Configure(ref object obj)
         {
-            return settings.bLoadAtStartup;
+            throw new NotImplementedException();
         }
     }
 }

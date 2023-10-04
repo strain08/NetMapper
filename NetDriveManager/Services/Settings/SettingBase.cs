@@ -2,17 +2,19 @@
 using NetMapper.Services;
 using Splat;
 
-namespace NetMapper.Interfaces
+namespace NetMapper.Services.Settings
 {
-    internal abstract class ASettings<T>
+    internal abstract class SettingBase : ISetting
     {
         protected AppSettingsModel settings;
 
-        protected ASettings(AppSettingsModel settings)
+        protected SettingBase(AppSettingsModel settings)
         {
             this.settings = settings;
         }
         public abstract void Apply();
-        public abstract T Get();
+
+        public abstract void Configure(ref object obj);
+        
     }
 }

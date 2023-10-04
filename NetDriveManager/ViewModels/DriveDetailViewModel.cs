@@ -28,8 +28,7 @@ namespace NetMapper.ViewModels
             set => DisplayItem.DriveLetter = value;
         }
 
-        public List<char> DriveLettersList
-        { get; set; } = new();
+        public List<char> DriveLettersList { get; set; } = new();
 
         [ObservableProperty]
         string? operationTitle;

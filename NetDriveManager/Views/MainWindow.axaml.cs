@@ -16,15 +16,7 @@ namespace NetMapper.Views
         }
 
         // window position does not update when closed
-        protected override void OnOpened(EventArgs e)
-        {
-            if (StaticSettings.PositionOK() && StaticSettings.Settings != null)
-            {
-                Position = new(StaticSettings.Settings.WinX, StaticSettings.Settings.WinY);
-            }
-            StaticSettings.WindowIsOpened = true;
-            base.OnOpened(e);
-        }
+
         protected override void OnClosed(EventArgs e)
         {
             StaticSettings.WindowIsOpened = false;

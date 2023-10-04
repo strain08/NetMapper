@@ -1,26 +1,20 @@
-﻿using NetMapper.Interfaces;
-using NetMapper.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using NetMapper.Models;
 
 namespace NetMapper.Services.Settings
 {
-    internal class MinimizeTaskbar : ASettings<bool>
+    internal class MinimizeTaskbar : SettingBase
     {       
 
         public MinimizeTaskbar(AppSettingsModel settings) : base(settings) { }
 
         public override void Apply()
         {
-            throw new NotImplementedException();
+            
         }
 
-        public override bool Get()
+        public override void Configure(ref object obj)
         {
-            return settings.bMinimizeToTaskbar;
+            throw new System.NotImplementedException();
         }
     }
 }
