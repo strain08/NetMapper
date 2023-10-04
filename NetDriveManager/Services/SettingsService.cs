@@ -12,20 +12,20 @@ namespace NetMapper.Services
 {
     internal class SettingsService
     {
-        public IStore<AppSettingsModel> settingsStore { get; set; }
+        public IStore<AppSettingsModel> SettingsStore { get; set; }
 
-        public AppSettingsModel settings;
+        public AppSettingsModel Settings;
         
         public PixelPoint WindowPosition
         {
             get
             {
-                return new PixelPoint(settings.WinX, settings.WinY);
+                return new PixelPoint(Settings.WinX, Settings.WinY);
             }
             set 
             { 
-                settings.WinX = value.X;
-                settings.WinY = value.Y;
+                Settings.WinX = value.X;
+                Settings.WinY = value.Y;
             }
         }
 
@@ -33,9 +33,9 @@ namespace NetMapper.Services
 
         public SettingsService(IStore<AppSettingsModel> store)
         {
-            settingsStore = store;
-            settings = store.GetAll();
-            runAtStartup = new (settings);
+            SettingsStore = store;
+            Settings = store.GetAll();
+            runAtStartup = new (Settings);
             AppIsStarting();
         }
         public void AppIsStarting()
@@ -45,7 +45,7 @@ namespace NetMapper.Services
         }
         public void AppIsClosing()
         {
-            settingsStore.Update(settings);
+            SettingsStore.Update(Settings);
         }
     }
 }
