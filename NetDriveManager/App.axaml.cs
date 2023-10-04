@@ -32,9 +32,10 @@ namespace NetMapper
                 desktop.ShutdownMode = ShutdownMode.OnExplicitShutdown;
                 desktop.ShutdownRequested += Desktop_ShutdownRequested;
                 desktop.Exit += Desktop_Exit;
-                DataContext = new ApplicationViewModel();
-
             }
+            
+            DataContext = new ApplicationViewModel();
+
             base.OnFrameworkInitializationCompleted();
         }
 

@@ -14,13 +14,5 @@ namespace NetMapper.Views
             this.AttachDevTools();
 #endif
         }
-
-        // window position does not update when closed
-
-        protected override void OnClosed(EventArgs e)
-        {
-            StaticSettings.WindowIsOpened = false;
-            base.OnClosed(e);
-        }
     }
 }

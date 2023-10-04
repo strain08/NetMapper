@@ -1,4 +1,5 @@
-﻿using NetMapper.Models;
+﻿using NetMapper.Interfaces;
+using NetMapper.Models;
 using NetMapper.Services;
 using Splat;
 
@@ -13,8 +14,6 @@ namespace NetMapper.Services.Settings
             this.settings = settings;
         }
         public abstract void Apply();
-
-        public abstract void Apply(object obj);
         
     }
 }

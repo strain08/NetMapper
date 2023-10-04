@@ -1,81 +1,86 @@
-﻿using Avalonia.Controls;
+﻿using Avalonia;
+using Avalonia.Controls;
 using NetMapper.Models;
-using NetMapper.Services.Static;
-using NetMapper.ViewModels;
 using NetMapper.Views;
 using System;
-using Windows.ApplicationModel.Background;
+using System.Diagnostics;
 
 namespace NetMapper.Services.Settings
 {
     internal class SetupWindow : SettingBase
     {
-        public SetupWindow(AppSettingsModel settings) : base(settings)
+        readonly MainWindow MainWindowView;        
+        public SetupWindow(AppSettingsModel settings, MainWindow MainWindowView) : base(settings)
         {
+            this.MainWindowView = MainWindowView;
         }
 
         public override void Apply()
         {
-        }
-
-        public override void Apply(object obj)
-        {
-            MainWindow? MainWindowView = (MainWindow)obj;
             MainWindowView.MinWidth = 250;
             MainWindowView.MinHeight = 150;
             MainWindowView.Width = settings.WindowWidth;
             MainWindowView.Height = settings.WindowHeight;
-            MainWindowView.WindowStartupLocation = settings.PositionOK() ? 
+            MainWindowView.WindowStartupLocation = settings.PositionOK() ?
                 WindowStartupLocation.Manual : WindowStartupLocation.CenterScreen;
-            
-            // hide window on close
-            MainWindowView.Closing += (s, e) =>
+            if (!settings.EventsInitialized)
             {
-                ((Window)s!).Hide();
-                e.Cancel = true;
-            };
-            MainWindowView.Resized += (s, e) =>
-            {
-                settings.WindowWidth = ((MainWindow)s!).Width;
-                settings.WindowHeight = ((MainWindow)s!).Height;
-            };
+                MainWindowView.Opened += MainWindowView_Opened;
+                MainWindowView.Closing += MainWindowView_Closing;
+                MainWindowView.Resized += MainWindowView_Resized;
+                MainWindowView.PositionChanged += MainWindowView_PositionChanged;                
+                MainWindowView.PropertyChanged += MainWindowView_PropertyChanged;
+                settings.EventsInitialized = true;
+            }
+        }
 
-            MainWindowView.PositionChanged += (s, e) =>
+        void MainWindowView_PropertyChanged(object? sender, AvaloniaPropertyChangedEventArgs e)
+        {
+            if (!settings.bMinimizeToTaskbar) return;
+
+            if (e.NewValue is WindowState windowState)
             {
-                if (settings.WindowIsOpened)
+                switch (windowState)
                 {
-                    settings.WindowPosition = MainWindowView.Position;
+                    case WindowState.Minimized:
+                        MainWindowView.Hide();
+                        MainWindowView.ShowInTaskbar = false;
+                        break;
+                    default:
+                        MainWindowView.ShowInTaskbar = true;
+                        break;
                 }
+            }
+        }
 
-            };
-            MainWindowView.Opened += (s, e) =>
+        void MainWindowView_Opened(object? sender, EventArgs e)
+        {
+            if (settings.PositionOK())
             {
-                if (settings.PositionOK())
-                {
-                    ((Window)s!).Position = settings.WindowPosition;
-                }
-                settings.WindowIsOpened = true;
+                ((Window)sender!).Position = settings.WindowPosition;
+            }
+            settings.WindowIsOpened = true;
+        }
 
-            };
-
-            MainWindowView.PropertyChanged += (s, e) =>
+        void MainWindowView_PositionChanged(object? sender, PixelPointEventArgs e)
+        {
+            if (settings.WindowIsOpened)
             {
-                if (!settings.bMinimizeToTaskbar) return;
+                settings.WindowPosition = e.Point;
+            }
+        }
 
-                if (e.NewValue is WindowState windowState)
-                {
-                    switch (windowState)
-                    {
-                        case WindowState.Minimized:
-                            MainWindowView.Hide();
-                            MainWindowView.ShowInTaskbar = false;
-                            break;
-                        default:
-                            MainWindowView.ShowInTaskbar = true;
-                            break;
-                    }
-                }
-            };
+        void MainWindowView_Resized(object? sender, WindowResizedEventArgs e)
+        {
+            settings.WindowWidth = ((Window)sender!).Width;
+            settings.WindowHeight = ((Window)sender!).Height;
+        }
+
+        void MainWindowView_Closing(object? sender, WindowClosingEventArgs e)
+        {
+            ((Window)sender!).Hide();
+            e.Cancel = true;
         }
     }
 }
+

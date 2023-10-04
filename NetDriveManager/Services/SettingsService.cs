@@ -26,11 +26,15 @@ namespace NetMapper.Services
             Settings = store.GetAll();
             SettingsList.Add(new RunAtStartup(Settings));
             SettingsList.Add(new MinimizeTaskbar(Settings));
-            SettingsList.Add(new SetupWindow(Settings));
 
             //var a= SettingsList.Find((s)=>s.GetType()==typeof(RunAtStartup));
             //SettingsList.GetSetting(typeof(RunAtStartup));
         }
+        public void Add(ISetting setting)
+        {
+            SettingsList.Add(setting);
+        }
+
         public void ApplyAll()
         {
             foreach (var setting in SettingsList)

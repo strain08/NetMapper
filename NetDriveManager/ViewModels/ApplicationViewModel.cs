@@ -1,12 +1,10 @@
-﻿using Avalonia;
-using Avalonia.Controls;
+﻿using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using NetMapper.Services;
+using NetMapper.Services.Settings;
 using NetMapper.Services.Static;
-using NetMapper.Extensions;
 using NetMapper.Views;
 using Splat;
-using NetMapper.Services.Settings;
 
 namespace NetMapper.ViewModels
 {
@@ -20,12 +18,10 @@ namespace NetMapper.ViewModels
             VMServices.ApplicationViewModel = this;
 
             settingsService = Locator.Current.GetRequiredService<SettingsService>();
+            settingsService.Add(new SetupWindow(settingsService.Settings, MainWindowView));
             settingsService.ApplyAll();
 
-            var w = settingsService.SettingsList.GetSetting(typeof(SetupWindow));
-            w?.Apply(MainWindowView);
-
-            MainWindowView!.DataContext = VMServices.MainWindowViewModel = new MainWindowViewModel();
+            MainWindowView.DataContext = VMServices.MainWindowViewModel = new MainWindowViewModel();
 
         }
 
@@ -38,7 +34,6 @@ namespace NetMapper.ViewModels
                 desktop.MainWindow.Show();
                 desktop.MainWindow.BringIntoView();
             }
-
         }
 
 

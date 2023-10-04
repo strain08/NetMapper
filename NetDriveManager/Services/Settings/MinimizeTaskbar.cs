@@ -11,10 +11,5 @@ namespace NetMapper.Services.Settings
         {
             
         }
-
-        public override void Apply(object obj)
-        {
-            throw new System.NotImplementedException();
-        }
     }
 }

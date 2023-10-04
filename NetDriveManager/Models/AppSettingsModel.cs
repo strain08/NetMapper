@@ -38,6 +38,8 @@ namespace NetMapper.Models
         
         [JsonIgnore]
         public bool WindowIsOpened = false;
+        [JsonIgnore]
+        public bool EventsInitialized = false;
 
         public AppSettingsModel Clone() => (AppSettingsModel)MemberwiseClone();
     }
