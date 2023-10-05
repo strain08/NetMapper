@@ -20,7 +20,7 @@ namespace NetMapper.Services
 
             NetworkChange.NetworkAvailabilityChanged += NetworkAvailabilityChanged;
 
-            // Get share and mapping states into model, at regular intervals
+            // Get share and mapping states into model at regular intervals
             Task.Run(() => StateLoop(5000));
 
         }

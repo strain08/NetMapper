@@ -1,4 +1,5 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+﻿using Avalonia.Controls;
+using CommunityToolkit.Mvvm.ComponentModel;
 using NetMapper.Enums;
 using NetMapper.Models;
 using NetMapper.Services;
@@ -12,7 +13,7 @@ namespace NetMapper.ViewModels
     public partial class DriveListViewModel : ViewModelBase
     {
         // PROP
-        public ObservableCollection<MapModel>?
+        public ObservableCollection<MapModel>
             DriveList
         { get; set; }
 
@@ -23,13 +24,10 @@ namespace NetMapper.ViewModels
         readonly DriveListService driveListService;
         readonly DriveConnectService driveConnectService;
 
-
-
         // CTOR
         public DriveListViewModel()
         {
-
-            if (Avalonia.Controls.Design.IsDesignMode) return; // design mode bypass            
+            if (Design.IsDesignMode) return; // design mode bypass            
             
             driveListService = Locator.Current.GetRequiredService<DriveListService>();
             driveConnectService = Locator.Current.GetRequiredService<DriveConnectService>();

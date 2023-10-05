@@ -1,4 +1,5 @@
-﻿using NetMapper.Interfaces;
+﻿using Avalonia.Controls;
+using NetMapper.Interfaces;
 using NetMapper.Models;
 using Splat;
 using System;
@@ -9,7 +10,7 @@ namespace NetMapper.Services
     public static class Bootstrapper
     {
         public static void Register(IMutableDependencyResolver s, IReadonlyDependencyResolver r)
-        {
+        {            
             // Json Settings Store
             s.Register<IStore<AppSettingsModel>>(() => new JsonStore<AppSettingsModel>("AppSettings.json"));
 
@@ -37,9 +38,7 @@ namespace NetMapper.Services
 
 
         }
-
-
-
+        
         public static TService GetRequiredService<TService>(this IReadonlyDependencyResolver resolver)
         {
 

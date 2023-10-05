@@ -14,14 +14,15 @@ namespace NetMapper.ViewModels
         readonly SettingsService settingsService;
 
         public ApplicationViewModel()
-        {
+        {            
+            if (Design.IsDesignMode) return;
+
             VMServices.ApplicationViewModel = this;
+            MainWindowView.DataContext = VMServices.MainWindowViewModel = new MainWindowViewModel();
 
             settingsService = Locator.Current.GetRequiredService<SettingsService>();
             settingsService.Add(new SetupWindow(settingsService.Settings, MainWindowView));
-            settingsService.ApplyAll();
-
-            MainWindowView.DataContext = VMServices.MainWindowViewModel = new MainWindowViewModel();
+            settingsService.ApplyAll();           
 
         }
 

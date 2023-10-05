@@ -1,4 +1,5 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+﻿using Avalonia.Controls;
+using CommunityToolkit.Mvvm.ComponentModel;
 using NetMapper.Models;
 using NetMapper.Services;
 using NetMapper.Services.Helpers;
@@ -58,6 +59,7 @@ namespace NetMapper.ViewModels
         // CTOR
         public DriveDetailViewModel(MapModel? selectedItem = null)
         {
+            if (Design.IsDesignMode) return;
             driveListService = Locator.Current.GetRequiredService<DriveListService>();
             driveConnectService = Locator.Current.GetRequiredService<DriveConnectService>();
 

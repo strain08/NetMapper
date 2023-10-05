@@ -1,4 +1,5 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+﻿using Avalonia.Controls;
+using CommunityToolkit.Mvvm.ComponentModel;
 using NetMapper.Models;
 using NetMapper.Services;
 using NetMapper.Services.Static;
@@ -15,6 +16,7 @@ namespace NetMapper.ViewModels
 
         public SettingsViewModel()
         {
+            if (Design.IsDesignMode) return; // design mode bypass            
             settingsService = Locator.Current.GetRequiredService<SettingsService>();
             DisplaySettings = settingsService.Settings.Clone();
         }

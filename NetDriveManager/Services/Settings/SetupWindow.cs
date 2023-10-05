@@ -9,11 +9,12 @@ namespace NetMapper.Services.Settings
 {
     internal class SetupWindow : SettingBase
     {
-        readonly MainWindow MainWindowView;        
+        readonly MainWindow MainWindowView;
+        bool EventsInitialized;
         public SetupWindow(AppSettingsModel settings, MainWindow MainWindowView) : base(settings)
         {
             this.MainWindowView = MainWindowView;
-        }
+        }     
 
         public override void Apply()
         {
