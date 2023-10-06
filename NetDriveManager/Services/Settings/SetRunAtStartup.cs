@@ -5,13 +5,12 @@ using System;
 
 namespace NetMapper.Services.Settings
 {
-    internal class RunAtStartup : SettingBase
+    internal class SetRunAtStartup : SettingBase
     {
         RegistryKey? rk;
         const string APP_NAME = "NetMapper";
-        const string RK_RUN = "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run";       
-
-        public RunAtStartup(AppSettingsModel settings) : base(settings) { }
+        const string RK_RUN = "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run";
+        
 
         private bool SetRunAtStartup()
         {
@@ -58,8 +57,9 @@ namespace NetMapper.Services.Settings
         }
 
         public override void Apply()
-        {
-            if (settings.bLoadAtStartup)
+        {            
+            
+            if (GetAppSettings().bLoadAtStartup)
             {                
                 SetRunAtStartup();
             }

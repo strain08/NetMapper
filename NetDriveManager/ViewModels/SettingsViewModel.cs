@@ -16,13 +16,13 @@ namespace NetMapper.ViewModels
 
         public SettingsViewModel()
         {
-            if (Design.IsDesignMode) return; // design mode bypass            
+            //if (Design.IsDesignMode) return; // design mode bypass            
             settingsService = Locator.Current.GetRequiredService<SettingsService>();
-            DisplaySettings = settingsService.Settings.Clone();
+            DisplaySettings = settingsService.AppSettings.Clone();
         }
         public void OkCommand()
         {
-            settingsService.Settings = DisplaySettings.Clone();
+            settingsService.AppSettings = DisplaySettings.Clone();
             settingsService.ApplyAll();
             settingsService.SaveAll();
             (VMServices.MainWindowViewModel ??= new()).Content = VMServices.DriveListViewModel;

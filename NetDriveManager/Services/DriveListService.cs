@@ -1,8 +1,9 @@
-﻿using NetMapper.Interfaces;
-using NetMapper.Models;
+﻿using NetMapper.Models;
+using NetMapper.Services.Stores;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Linq;
 
 namespace NetMapper.Services
@@ -20,12 +21,6 @@ namespace NetMapper.Services
             store = storeService;
             DriveList = new ObservableCollection<MapModel>(store.GetAll());
 
-        }
-        // DTOR
-        ~DriveListService()
-        {
-            if (!store.Update(new List<MapModel>(DriveList)))
-                throw new ApplicationException("Can not write settings file.");
         }
 
         public void AddDrive(MapModel model)
@@ -50,9 +45,7 @@ namespace NetMapper.Services
             DriveList.Insert(i, newModel);
             if (!store.Update(new List<MapModel>(DriveList))) 
                 throw new ApplicationException("Can not write settings file.");
-        }
+        }        
     }
-
-
 }
 

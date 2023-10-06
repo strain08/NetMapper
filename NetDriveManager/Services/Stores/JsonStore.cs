@@ -1,5 +1,5 @@
-﻿using NetMapper.Interfaces;
-using NetMapper.Services.Helpers;
+﻿using NetMapper.Services.Helpers;
+using NetMapper.Services.Stores;
 using System;
 using System.Diagnostics;
 using System.IO;

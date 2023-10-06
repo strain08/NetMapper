@@ -1,6 +1,6 @@
 ﻿using Avalonia.Controls;
-using NetMapper.Interfaces;
 using NetMapper.Models;
+using NetMapper.Services.Stores;
 using Splat;
 using System;
 using System.Collections.Generic;
@@ -26,7 +26,6 @@ namespace NetMapper.Services
             // Connect service
             s.RegisterConstant(new DriveConnectService(
                 r.GetRequiredService<ToastService>()));
-
             // Drive List CRUD
             s.RegisterConstant(new DriveListService(
                 r.GetRequiredService<IStore<List<MapModel>>>()));
@@ -39,10 +38,10 @@ namespace NetMapper.Services
 
         }
         
-        public static TService GetRequiredService<TService>(this IReadonlyDependencyResolver resolver)
+        public static TService GetRequiredService<TService>(this IReadonlyDependencyResolver resolver) where TService : class
         {
 
-            TService service = resolver.GetService<TService>() ??
+            TService service = resolver.GetService<TService>() ?? 
                 throw new InvalidOperationException($"Splat failed to resolve object of type {typeof(TService)}"); // throw error with detailed description
 
             return service; // return instance if not null

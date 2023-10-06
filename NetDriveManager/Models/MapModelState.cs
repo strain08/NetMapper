@@ -46,6 +46,12 @@ namespace NetMapper.Models
         public bool CanAutoDisconnect =>
             CanDisconnect &&
             Settings.AutoDisconnect;
+        
+        public void UpdateProperties()
+        {
+            UpdateShareState();
+            UpdateMappingState();
+        }
 
         private void UpdateShareState()
         {
@@ -72,10 +78,6 @@ namespace NetMapper.Models
 
         }
 
-        public void UpdateProperties()
-        {
-            UpdateShareState();
-            UpdateMappingState();
-        }
+       
     }
 }

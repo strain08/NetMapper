@@ -1,19 +1,20 @@
-﻿using NetMapper.Interfaces;
-using NetMapper.Models;
-using NetMapper.Services;
-using Splat;
+﻿using NetMapper.Models;
+using System;
 
 namespace NetMapper.Services.Settings
 {
     internal abstract class SettingBase : ISetting
     {
-        protected AppSettingsModel settings;
+        public AppSettingsModel 
+            GetAppSettings() => appSettings ?? throw new ArgumentNullException();
 
-        protected SettingBase(AppSettingsModel settings)
-        {
-            this.settings = settings;
-        }
+        public void 
+            SetAppSettings(AppSettingsModel value) => appSettings = value;
+
+        private AppSettingsModel? 
+            appSettings;
+
         public abstract void Apply();
-        
+
     }
 }

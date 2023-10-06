@@ -1,13 +1,10 @@
-﻿using Avalonia;
-using NetMapper.Interfaces;
-using NetMapper.Models;
-using NetMapper.Services.Settings;
+﻿using NetMapper.Models;
 using NetMapper.Extensions;
+
+using NetMapper.Services.Settings;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using NetMapper.Services.Stores;
 
 namespace NetMapper.Services
 {
@@ -15,24 +12,33 @@ namespace NetMapper.Services
     {
         public IStore<AppSettingsModel> SettingsStore;
 
-        public AppSettingsModel Settings;
+        public AppSettingsModel AppSettings;
 
         public List<ISetting> SettingsList = new();
 
-
+        //CTOR
         public SettingsService(IStore<AppSettingsModel> store)
         {            
             SettingsStore = store;
-            Settings = store.GetAll();
-            SettingsList.Add(new RunAtStartup(Settings));
-            SettingsList.Add(new MinimizeTaskbar(Settings));
+            AppSettings = store.GetAll();            
 
             //var a= SettingsList.Find((s)=>s.GetType()==typeof(RunAtStartup));
             //SettingsList.GetSetting(typeof(RunAtStartup));
         }
         public void Add(ISetting setting)
         {
-            SettingsList.Add(setting);
+            if (SettingsList.Find((s) => s.GetType() == setting.GetType()) == null)
+            {
+                setting.SetAppSettings(AppSettings);
+                SettingsList.Add(setting);
+            }
+            else throw new InvalidOperationException($"{ToString} : Duplicate setting: {setting.GetType()}");
+        }
+
+        public ISetting Get(Type settingType)
+        {            
+            return SettingsList.Find((s) => s.GetType() == settingType) ?? 
+                throw new InvalidOperationException($"{ToString} : Can not find {settingType} in SettingsList.");
         }
 
         public void ApplyAll()
@@ -44,7 +50,7 @@ namespace NetMapper.Services
         }
         public void SaveAll()
         {
-            SettingsStore.Update(Settings);
+            SettingsStore.Update(AppSettings);
         }
     }
 }

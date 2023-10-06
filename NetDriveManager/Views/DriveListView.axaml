@@ -5,8 +5,8 @@
 			 xmlns:vm="using:NetMapper.ViewModels"
 			 xmlns:converters="using:NetMapper.Converters"
 			 mc:Ignorable="d"
-			 d:DesignWidth="350"
-			 d:DesignHeight="350"
+			 d:DesignWidth="250"
+			 d:DesignHeight="450"
 			 x:DataType="vm:DriveListViewModel"
 			 x:Class="NetMapper.Views.DriveListView">
 	<Design.DataContext>

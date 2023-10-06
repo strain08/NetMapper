@@ -7,48 +7,47 @@ using System.Diagnostics;
 
 namespace NetMapper.Services.Settings
 {
-    internal class SetupWindow : SettingBase
+    internal class SetMainWindow : SettingBase
     {
         readonly MainWindow MainWindowView;
-        bool EventsInitialized;
-        public SetupWindow(AppSettingsModel settings, MainWindow MainWindowView) : base(settings)
+        public SetMainWindow(MainWindow MainWindowView)
         {
             this.MainWindowView = MainWindowView;
         }     
 
         public override void Apply()
         {
-            MainWindowView.MinWidth = 250;
+            MainWindowView.MinWidth = 250;            
             MainWindowView.MinHeight = 150;
-            MainWindowView.Width = settings.WindowWidth;
-            MainWindowView.Height = settings.WindowHeight;
-            MainWindowView.WindowStartupLocation = settings.PositionOK() ?
+            MainWindowView.Width = GetAppSettings().WindowWidth;
+            MainWindowView.Height = GetAppSettings().WindowHeight;
+            MainWindowView.WindowStartupLocation = GetAppSettings().PositionOK() ?
                 WindowStartupLocation.Manual : WindowStartupLocation.CenterScreen;
-            if (!settings.EventsInitialized)
+            if (!GetAppSettings().EventsInitialized)
             {
                 MainWindowView.Opened += MainWindowView_Opened;
                 MainWindowView.Closing += MainWindowView_Closing;
                 MainWindowView.Resized += MainWindowView_Resized;
                 MainWindowView.PositionChanged += MainWindowView_PositionChanged;                
                 MainWindowView.PropertyChanged += MainWindowView_PropertyChanged;
-                settings.EventsInitialized = true;
+                GetAppSettings().EventsInitialized = true;
             }
         }
 
         void MainWindowView_PropertyChanged(object? sender, AvaloniaPropertyChangedEventArgs e)
         {
-            if (!settings.bMinimizeToTaskbar) return;
+            if (!GetAppSettings().bMinimizeToTaskbar) return;
 
-            if (e.NewValue is WindowState windowState)
+            if (e.NewValue is WindowState windowState && sender is Window window)
             {
                 switch (windowState)
                 {
                     case WindowState.Minimized:
-                        MainWindowView.Hide();
-                        MainWindowView.ShowInTaskbar = false;
+                        window.Hide();
+                        window.ShowInTaskbar = false;
                         break;
                     default:
-                        MainWindowView.ShowInTaskbar = true;
+                        window.ShowInTaskbar = true;
                         break;
                 }
             }
@@ -56,31 +55,39 @@ namespace NetMapper.Services.Settings
 
         void MainWindowView_Opened(object? sender, EventArgs e)
         {
-            if (settings.PositionOK())
+            if (GetAppSettings().PositionOK() && sender is Window window)
             {
-                ((Window)sender!).Position = settings.WindowPosition;
+                window.Position = GetAppSettings().WindowPosition;
+                GetAppSettings().WindowIsOpened = true;
             }
-            settings.WindowIsOpened = true;
+            
         }
 
         void MainWindowView_PositionChanged(object? sender, PixelPointEventArgs e)
         {
-            if (settings.WindowIsOpened)
+            if (GetAppSettings().WindowIsOpened)
             {
-                settings.WindowPosition = e.Point;
+                GetAppSettings().WindowPosition = e.Point;
             }
         }
 
         void MainWindowView_Resized(object? sender, WindowResizedEventArgs e)
         {
-            settings.WindowWidth = ((Window)sender!).Width;
-            settings.WindowHeight = ((Window)sender!).Height;
+            if (sender is Window window)
+            {
+                GetAppSettings().WindowWidth = window.Width;
+                GetAppSettings().WindowHeight = window.Height;
+            }
         }
 
         void MainWindowView_Closing(object? sender, WindowClosingEventArgs e)
         {
-            ((Window)sender!).Hide();
-            e.Cancel = true;
+            if (sender is Window window)
+            {
+                window.Hide();
+                e.Cancel = true;
+            }
+                
         }
     }
 }

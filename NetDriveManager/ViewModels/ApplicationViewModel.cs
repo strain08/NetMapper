@@ -1,16 +1,19 @@
-﻿using Avalonia.Controls;
+﻿using Avalonia;
+using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
+using Avalonia.Logging;
 using NetMapper.Services;
 using NetMapper.Services.Settings;
 using NetMapper.Services.Static;
 using NetMapper.Views;
 using Splat;
+using System.Diagnostics;
 
 namespace NetMapper.ViewModels
 {
     public class ApplicationViewModel : ViewModelBase
     {
-        public MainWindow MainWindowView = new();
+        public MainWindow MainWindowView;
         readonly SettingsService settingsService;
 
         public ApplicationViewModel()
@@ -18,32 +21,38 @@ namespace NetMapper.ViewModels
             if (Design.IsDesignMode) return;
 
             VMServices.ApplicationViewModel = this;
-            MainWindowView.DataContext = VMServices.MainWindowViewModel = new MainWindowViewModel();
-
             settingsService = Locator.Current.GetRequiredService<SettingsService>();
-            settingsService.Add(new SetupWindow(settingsService.Settings, MainWindowView));
-            settingsService.ApplyAll();           
-
+            settingsService.Add(new SetRunAtStartup());
+            settingsService.Add(new SetMinimizeTaskbar());
+            MainWindowView = new()
+            {
+                DataContext = VMServices.MainWindowViewModel = new MainWindowViewModel()
+            };
+            settingsService.Add(new SetMainWindow(MainWindowView));
+            settingsService.ApplyAll();
         }
 
         public void ShowWindowCommand()
         {
-            if (App.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
+            if (App.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime application)
             {
-                desktop.MainWindow ??= MainWindowView;
-                desktop.MainWindow.WindowState = WindowState.Normal;
-                desktop.MainWindow.Show();
-                desktop.MainWindow.BringIntoView();
+                application.MainWindow ??= MainWindowView;
+                application.MainWindow.WindowState = WindowState.Normal;
+                application.MainWindow.Show();
+                application.MainWindow.BringIntoView();                
             }
         }
 
 
         public static void ExitCommand()
-        {
+        {         
+
             if (App.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime application)
             {
                 application.Shutdown();
             }
+
+            
         }
     }
 }
