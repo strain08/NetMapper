@@ -68,6 +68,7 @@
 					Content="Minimize to system tray"
 					ToolTip.Tip="Launch at login"/>
 			</StackPanel>
+			<!--
 			<TextBlock
 				Margin="16,16,0,0"
 				FontSize="16"
@@ -82,6 +83,7 @@
 					Content="Remove unmanaged drives at startup"
 					ToolTip.Tip="Remove drive mapping when connection down or share becomes unavailable."/>
 			</StackPanel>
+			-->
 		</StackPanel>
 	</DockPanel>
 </UserControl>

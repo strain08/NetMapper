@@ -7,6 +7,7 @@ using NetMapper.Services.Static;
 using Splat;
 using System;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 
 namespace NetMapper.ViewModels
 {
@@ -27,12 +28,13 @@ namespace NetMapper.ViewModels
         // CTOR
         public DriveListViewModel()
         {
-           if (Design.IsDesignMode) return; // design mode bypass            
+           //if (Design.IsDesignMode) return; // design mode bypass            
             
             driveListService = Locator.Current.GetRequiredService<DriveListService>();
             driveConnectService = Locator.Current.GetRequiredService<DriveConnectService>();
 
             DriveList = driveListService.DriveList;
+      
         }
 
         // COMMS        

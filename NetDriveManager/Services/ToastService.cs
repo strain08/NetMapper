@@ -1,96 +1,108 @@
 ﻿using Microsoft.Toolkit.Uwp.Notifications;
 using NetMapper.Models;
-using NetMapper.Enums;
+using System;
 
 namespace NetMapper.Services
-{ 
+{
+    public enum ToastActionsDisconnect
+    {
+        Force,
+        Retry,
+        ShowWindow
+    }
+    public enum ToastActionsSimple
+    {
+        ShowWindow
+    }
 
-    public delegate void DelegateCanNotRemoveDrive(MapModel mappingModel, DisconnectDriveAnswer toast);
-    public delegate void DelegateSuccessRemoveDrive(MapModel mappingModel, AddRemoveAnswer toast);
+    public delegate void ToastAnswerDelegate<T>(MapModel m, T answer) where T:struct, Enum;
 
     public class ToastService
     {
-        DelegateCanNotRemoveDrive? _onRemoveDriveToast;
-        DelegateSuccessRemoveDrive? _onAddRemoveDriveToast;
-        MapModel? _mappingModel;
+        ToastAnswerDelegate<ToastActionsDisconnect>? _onToastActionsDisconnect;
+        ToastAnswerDelegate<ToastActionsSimple>? _onToastActionsSimple;
+        MapModel? _mapModel;
 
-        const string ACTION_REMOVEDRIVE = "1";
-        const string ACTION_ADDREMOVE = "2";
+        const string ACTION_DISCONNECT = "1";
+        const string ACTION_SIMPLE = "2";
 
         // CTOR
         public ToastService()
         {
-            ToastNotificationManagerCompat.OnActivated += ToastAction;
+            ToastNotificationManagerCompat.OnActivated += (e) =>
+            {
+                if (_mapModel == null) return;
+                ToastArguments args = ToastArguments.Parse(e.Argument);
+
+                if (args.Contains(ACTION_DISCONNECT))
+                {
+                    _onToastActionsDisconnect?.Invoke(_mapModel, args.GetEnum<ToastActionsDisconnect>(ACTION_DISCONNECT));
+                }
+                if (args.Contains(ACTION_SIMPLE))
+                {
+                    _onToastActionsSimple?.Invoke(_mapModel, args.GetEnum<ToastActionsSimple>(ACTION_SIMPLE));
+                }
+
+            };
+
         }
 
         // PUBLIC TOAST CALLS
-        public void ToastCanNotRemoveDrive(MapModel m, DelegateCanNotRemoveDrive del)
+        public void ToastDriveConnected(MapModel m, ToastAnswerDelegate<ToastActionsSimple> del)
         {
-            _onRemoveDriveToast = del;
-            _mappingModel = m;     
+            _onToastActionsSimple = del;
+            _mapModel = m;
+            var t = new ToastContentBuilder()
+                .AddArgument(ACTION_SIMPLE, ToastActionsDisconnect.ShowWindow)
+                .AddText($"Drive {m.DriveLetterColon} connected.")
+                .SetToastScenario(ToastScenario.Reminder);
 
-            var t = new ToastContentBuilder() 
+            t.Show();
+        }
+
+        public void ToastDriveDisconnected(MapModel m, ToastAnswerDelegate<ToastActionsSimple> del)
+        {
+            _onToastActionsSimple = del;
+            _mapModel = m;
+            var t = new ToastContentBuilder()
+                .AddArgument(ACTION_SIMPLE, ToastActionsDisconnect.ShowWindow)
+                .AddText($"Drive {m.DriveLetterColon} disconnected.")
+                .SetToastScenario(ToastScenario.Reminder);
+            t.Show();
+        }
+
+        public void ToastBadLogin(MapModel m, ToastAnswerDelegate<ToastActionsSimple> del)
+        {
+            _onToastActionsSimple = del;
+            _mapModel = m;
+            var t = new ToastContentBuilder()
+                .AddArgument(ACTION_SIMPLE, ToastActionsDisconnect.ShowWindow)
+                .AddText($"Login failure connecting to {m.NetworkPath}.")
+                .AddText($"Please connect the share in windows or delete the mapping.")
+                .SetToastScenario(ToastScenario.Reminder);
+
+            t.Show();
+        }
+        public void ToastDriveDisconnectError(MapModel m, ToastAnswerDelegate<ToastActionsDisconnect> del)
+        {
+            _onToastActionsDisconnect = del;
+            _mapModel = m;
+
+            var t = new ToastContentBuilder()
                 .AddText($"Cannot remove network drive {m.DriveLetterColon}")
                 .AddText($"Close all files in use on drive {m.DriveLetterColon} and retry.")
                 .AddButton(new ToastButton()
                             .SetContent("Retry")
-                            .AddArgument(ACTION_REMOVEDRIVE, DisconnectDriveAnswer.Retry))
+                            .AddArgument(ACTION_DISCONNECT, ToastActionsDisconnect.Retry))
                 .AddButton(new ToastButton()
                             .SetContent("Force")
-                            .AddArgument(ACTION_REMOVEDRIVE, DisconnectDriveAnswer.Force))
+                            .AddArgument(ACTION_DISCONNECT, ToastActionsDisconnect.Force))
                 .AddButton(new ToastButtonDismiss())
-                .AddArgument(ACTION_REMOVEDRIVE, DisconnectDriveAnswer.ShowWindow)
-                .SetToastScenario(ToastScenario.Reminder);
-            
-            t.Show();
-
-            //var notif = new ToastNotification(t.GetXml()) { Tag = "remove"};
-            //ToastNotificationManagerCompat.CreateToastNotifier().Show(notif);
-        }
-
-        public void ToastDriveConnected(MapModel m, DelegateSuccessRemoveDrive del)
-        {
-            _onAddRemoveDriveToast = del;
-            _mappingModel = m;
-            var t = new ToastContentBuilder()
-                .AddArgument(ACTION_ADDREMOVE, DisconnectDriveAnswer.ShowWindow)
-                .AddText($"Drive {m.DriveLetterColon} connected.")
-                .SetToastScenario(ToastScenario.Reminder);            
-            
-            t.Show();
-        }
-
-        public void ToastDriveDisconnected(MapModel m, DelegateSuccessRemoveDrive del)
-        {
-            _onAddRemoveDriveToast = del;
-            _mappingModel = m;
-            var t = new ToastContentBuilder()
-                .AddArgument(ACTION_ADDREMOVE, DisconnectDriveAnswer.ShowWindow)
-                .AddText($"Drive {m.DriveLetterColon} disconnected.")
+                .AddArgument(ACTION_DISCONNECT, ToastActionsDisconnect.ShowWindow)
                 .SetToastScenario(ToastScenario.Reminder);
 
             t.Show();
         }
-
-        // TOAST USER ACTION SELECTOR
-        private void ToastAction(ToastNotificationActivatedEventArgsCompat e)
-        {
-            if (_mappingModel == null) return;
-
-            ToastArguments args = ToastArguments.Parse(e.Argument);
-
-            if (args.Contains(ACTION_REMOVEDRIVE))
-            {       
-                // callback with user answer
-                _onRemoveDriveToast?.Invoke(_mappingModel, args.GetEnum<DisconnectDriveAnswer>(ACTION_REMOVEDRIVE));
-            }
-
-            if (args.Contains(ACTION_ADDREMOVE))
-            {                
-                // callback with user answer
-                _onAddRemoveDriveToast?.Invoke(_mappingModel, args.GetEnum<AddRemoveAnswer>(ACTION_ADDREMOVE));
-            }
-        }        
 
     }
 }

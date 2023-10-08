@@ -30,6 +30,8 @@ namespace NetMapper.ViewModels
         public static void CancelCommand()
         {
             (VMServices.MainWindowViewModel ??= new()).Content = VMServices.DriveListViewModel;
+
+            
         }
     }
 }

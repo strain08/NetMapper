@@ -22,10 +22,11 @@ namespace NetMapper
         // Avalonia configuration, don't remove; also used by visual designer.
         public static AppBuilder BuildAvaloniaApp()
         {
-            // SVG Preview
-            GC.KeepAlive(typeof(SvgImageExtension).Assembly);
-            GC.KeepAlive(typeof(Avalonia.Svg.Skia.Svg).Assembly);
-
+          
+                // SVG Preview
+                //GC.KeepAlive(typeof(SvgImageExtension).Assembly);
+                //GC.KeepAlive(typeof(Avalonia.Svg.Skia.Svg).Assembly);
+            
             return   AppBuilder.Configure<App>()
                 .UsePlatformDetect()
                 .LogToTrace();

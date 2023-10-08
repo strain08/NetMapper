@@ -14,29 +14,22 @@ namespace NetMapper.Converters
         {
             if (value is ShareState shareState && targetType.IsAssignableTo(typeof(IBrush)))
             {
-                switch (shareState)
+                return shareState switch
                 {
-                    case ShareState.Available:
-                        return new SolidColorBrush() { Color = Colors.DarkGreen };
-                    case ShareState.Unavailable:
-                        return new SolidColorBrush() { Color = Colors.Chocolate };
-                    default:
-                        return new SolidColorBrush() { Color = Colors.Chocolate };
-                }
+                    ShareState.Available => new SolidColorBrush() { Color = Colors.DarkGreen },
+                    ShareState.Unavailable => new SolidColorBrush() { Color = Colors.Chocolate },
+                    _ => new SolidColorBrush() { Color = Colors.Chocolate },
+                };
             }
             if (value is MappingState mappingState && targetType.IsAssignableTo(typeof(IBrush)))
             {
-                switch (mappingState)
+                return mappingState switch
                 {
-                    case MappingState.Mapped:
-                        return new SolidColorBrush() { Color = Colors.DarkGreen };
-                    case MappingState.Unmapped:
-                        return new SolidColorBrush() { Color = Colors.Chocolate };
-                    case MappingState.LetterUnavailable:
-                        return new SolidColorBrush() { Color = Colors.DarkRed };
-                    default:
-                        return new SolidColorBrush() { Color = Colors.Chocolate };
-                }
+                    MappingState.Mapped => new SolidColorBrush() { Color = Colors.DarkGreen },
+                    MappingState.Unmapped => new SolidColorBrush() { Color = Colors.Chocolate },
+                    MappingState.LetterUnavailable => new SolidColorBrush() { Color = Colors.DarkRed },
+                    _ => new SolidColorBrush() { Color = Colors.Chocolate },
+                };
             }
             return new BindingNotification(new InvalidCastException(), BindingErrorType.Error);
         }

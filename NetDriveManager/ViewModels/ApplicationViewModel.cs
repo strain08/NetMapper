@@ -1,13 +1,9 @@
-﻿using Avalonia;
-using Avalonia.Controls;
-using Avalonia.Controls.ApplicationLifetimes;
-using Avalonia.Logging;
+﻿using Avalonia.Controls;
 using NetMapper.Services;
 using NetMapper.Services.Settings;
 using NetMapper.Services.Static;
 using NetMapper.Views;
 using Splat;
-using System.Diagnostics;
 
 namespace NetMapper.ViewModels
 {
@@ -17,42 +13,43 @@ namespace NetMapper.ViewModels
         readonly SettingsService settingsService;
 
         public ApplicationViewModel()
-        {            
+        {
             if (Design.IsDesignMode) return;
 
-            VMServices.ApplicationViewModel = this;
+
             settingsService = Locator.Current.GetRequiredService<SettingsService>();
             settingsService.Add(new SetRunAtStartup());
             settingsService.Add(new SetMinimizeTaskbar());
+
             MainWindowView = new()
             {
                 DataContext = VMServices.MainWindowViewModel = new MainWindowViewModel()
             };
             settingsService.Add(new SetMainWindow(MainWindowView));
+
             settingsService.ApplyAll();
+
+            VMServices.ApplicationViewModel = this;
         }
 
         public void ShowWindowCommand()
         {
-            if (App.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime application)
+            App.AppContext((application) =>
             {
                 application.MainWindow ??= MainWindowView;
                 application.MainWindow.WindowState = WindowState.Normal;
                 application.MainWindow.Show();
-                application.MainWindow.BringIntoView();                
-            }
+                application.MainWindow.BringIntoView();
+                application.MainWindow.Focus();
+            });
         }
 
-
         public static void ExitCommand()
-        {         
-
-            if (App.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime application)
+        {
+            App.AppContext((application) =>
             {
                 application.Shutdown();
-            }
-
-            
+            });
         }
     }
 }

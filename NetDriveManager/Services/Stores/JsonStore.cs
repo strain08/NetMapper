@@ -68,7 +68,7 @@ namespace NetMapper.Services
         {
             if (StoreData != null) return StoreData;            
             Load();
-            return StoreData ?? throw new ArgumentNullException("Error loading json file.");
+            return StoreData ?? new();
         }
     }
 

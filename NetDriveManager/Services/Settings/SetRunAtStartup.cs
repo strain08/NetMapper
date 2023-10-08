@@ -12,7 +12,7 @@ namespace NetMapper.Services.Settings
         const string RK_RUN = "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run";
         
 
-        private bool SetRunAtStartup()
+        private bool AddRunAtStartup()
         {
             try
             {
@@ -25,6 +25,21 @@ namespace NetMapper.Services.Settings
             }
             return true;
         }
+
+        private bool RemoveRunAtStartup()
+        {
+            try
+            {
+                rk = Registry.CurrentUser.OpenSubKey(RK_RUN, true) ?? throw new ArgumentNullException();
+                rk.DeleteValue(APP_NAME, false);
+            }
+            catch
+            {
+
+            }
+            return true;
+        }
+
         public bool Validate() 
         {
             try
@@ -41,27 +56,14 @@ namespace NetMapper.Services.Settings
             { 
                 return false; 
             }
-        }
-        private bool RemoveRunAtStartup()
-        {
-            try
-            {
-                rk = Registry.CurrentUser.OpenSubKey(RK_RUN, true) ?? throw new ArgumentNullException();
-                rk.DeleteValue(APP_NAME, false);
-            }
-            catch
-            {
-                
-            }
-            return true;
-        }
+        }        
 
         public override void Apply()
         {            
             
             if (GetAppSettings().bLoadAtStartup)
             {                
-                SetRunAtStartup();
+                AddRunAtStartup();
             }
             else
             {

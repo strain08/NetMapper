@@ -1,21 +1,24 @@
 ﻿using Avalonia.Threading;
+
 using NetMapper.Enums;
 using NetMapper.Models;
 using NetMapper.Services.Helpers;
 using NetMapper.Services.Static;
+using NetMapper.Services.Toasts;
+using NetMapper.ViewModels;
+using System;
 using System.Threading.Tasks;
 
 namespace NetMapper.Services
 {
     public class DriveConnectService
     {
+        //IDisposable? a;
         private readonly ToastService toastService;
         //CTOR
         public DriveConnectService(ToastService toastService)
         {
-            //if (Avalonia.Controls.Design.IsDesignMode) return; // design mode bypass
             this.toastService = toastService;
-
         }
 
         public void ConnectDrive(MapModel m)
@@ -24,62 +27,73 @@ namespace NetMapper.Services
             {
                 var result = Utility.ConnectNetworkDrive(m.DriveLetter, m.NetworkPath);
 
-                if (result == ConnectResult.Success)
+                switch(result)
                 {
-                    toastService.ToastDriveConnected(m, ToastClickedCallback);
+                    case ConnectResult.Success:
+                        //toastService.ToastDriveConnected(m, ToastClickedCallback);
+                        _ = new ToastDriveConnected(m, ToastClickedCallback);
+                        break;
+                    case ConnectResult.LoginFailure | ConnectResult.InvalidCredentials :
+                        toastService.ToastBadLogin(m, ToastClickedCallback);
+                        break;
                 }
+                GC.Collect();
+                
             });
         }
 
         public void DisconnectDrive(MapModel m)
         {
-            Task.Run(() =>
+            _ = Task.Run(() =>
             {
-                // regular drive, do nothing
+                // not a network drive, do nothing
                 if (Utility.IsRegularDriveMapped(m.DriveLetter)) return;
 
                 var result = Utility.DisconnectNetworkDrive(m.DriveLetter);
 
-                if (result == CancelConnection.DISCONNECT_SUCCESS)
+                switch (result)
                 {
-                    toastService.ToastDriveDisconnected(m, ToastClickedCallback);
-                }
-                else
-                {
-                    toastService.ToastCanNotRemoveDrive(m, UnableToDisconnectCallback);
-                }
+                    case CancelConnection.DISCONNECT_SUCCESS:
+                        //toastService.ToastDriveDisconnected(m, ToastClickedCallback);
+                        _ = new ToastDriveDisconnected(m, ToastClickedCallback);
 
+                        break;
+                    default:
+                        toastService.ToastDriveDisconnectError(m, UnableToDisconnectCallback);
+                       // a = new ToastCanNotRemoveDrive(m, UnableToDisconnectCallback);
+                        break;
+                }
             });
         }
 
-        private void UnableToDisconnectCallback(MapModel m, DisconnectDriveAnswer answer)
+        private void UnableToDisconnectCallback(MapModel m, ToastActionsDisconnect answer)
         {
-
             switch (answer)
             {
-                case DisconnectDriveAnswer.Retry:
-                    m.MappingStateProp = MappingState.Undefined;
+                case ToastActionsDisconnect.Retry:
+                    //m.MappingStateProp = MappingState.Undefined;
                     DisconnectDrive(m);
                     break;
 
-                case DisconnectDriveAnswer.Force:
+                case ToastActionsDisconnect.Force:
                     Task.Run(() =>
                     {
                         CancelConnection error = Utility.DisconnectNetworkDrive(m.DriveLetter, true);
                         if (error == CancelConnection.DISCONNECT_SUCCESS)
                         {
                             toastService.ToastDriveDisconnected(m, ToastClickedCallback);
+                           // _ = new ToastDriveDisconnected(m, ToastClickedCallback);
                         }
                     });
                     break;
 
-                case DisconnectDriveAnswer.ShowWindow:
+                case ToastActionsDisconnect.ShowWindow:
                     ShowMainWindow();
                     break;
             }
         }
 
-        private void ToastClickedCallback(MapModel mappingModel, AddRemoveAnswer toast)
+        private void ToastClickedCallback(MapModel m, ToastActionsSimple answer)
         {
             ShowMainWindow();
         }
@@ -88,6 +102,9 @@ namespace NetMapper.Services
         {
             Dispatcher.UIThread.Post(() =>
             {
+                //App.AppContext((app) => {
+                //    app.MainWindow?.Show(); ;
+                //});
                 VMServices.ApplicationViewModel?.ShowWindowCommand();
             });
         }

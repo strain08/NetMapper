@@ -1,9 +1,7 @@
 ﻿using Avalonia;
 using Avalonia.Controls;
-using NetMapper.Models;
 using NetMapper.Views;
 using System;
-using System.Diagnostics;
 
 namespace NetMapper.Services.Settings
 {
@@ -13,25 +11,30 @@ namespace NetMapper.Services.Settings
         public SetMainWindow(MainWindow MainWindowView)
         {
             this.MainWindowView = MainWindowView;
-        }     
+        }
 
         public override void Apply()
         {
-            MainWindowView.MinWidth = 250;            
+            MainWindowView.MinWidth = 250;
             MainWindowView.MinHeight = 150;
             MainWindowView.Width = GetAppSettings().WindowWidth;
             MainWindowView.Height = GetAppSettings().WindowHeight;
             MainWindowView.WindowStartupLocation = GetAppSettings().PositionOK() ?
                 WindowStartupLocation.Manual : WindowStartupLocation.CenterScreen;
-            if (!GetAppSettings().EventsInitialized)
-            {
-                MainWindowView.Opened += MainWindowView_Opened;
-                MainWindowView.Closing += MainWindowView_Closing;
-                MainWindowView.Resized += MainWindowView_Resized;
-                MainWindowView.PositionChanged += MainWindowView_PositionChanged;                
-                MainWindowView.PropertyChanged += MainWindowView_PropertyChanged;
-                GetAppSettings().EventsInitialized = true;
-            }
+
+            MainWindowView.Opened -= MainWindowView_Opened;
+            MainWindowView.Closing -= MainWindowView_Closing;
+            MainWindowView.Resized -= MainWindowView_Resized;
+            MainWindowView.PositionChanged -= MainWindowView_PositionChanged;
+            MainWindowView.PropertyChanged -= MainWindowView_PropertyChanged;
+
+            MainWindowView.Opened += MainWindowView_Opened;
+            MainWindowView.Closing += MainWindowView_Closing;
+            MainWindowView.Resized += MainWindowView_Resized;
+            MainWindowView.PositionChanged += MainWindowView_PositionChanged;
+            MainWindowView.PropertyChanged += MainWindowView_PropertyChanged;
+
+
         }
 
         void MainWindowView_PropertyChanged(object? sender, AvaloniaPropertyChangedEventArgs e)
@@ -60,7 +63,7 @@ namespace NetMapper.Services.Settings
                 window.Position = GetAppSettings().WindowPosition;
                 GetAppSettings().WindowIsOpened = true;
             }
-            
+
         }
 
         void MainWindowView_PositionChanged(object? sender, PixelPointEventArgs e)
@@ -87,7 +90,7 @@ namespace NetMapper.Services.Settings
                 window.Hide();
                 e.Cancel = true;
             }
-                
+
         }
     }
 }

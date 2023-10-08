@@ -3,7 +3,7 @@ using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Data.Core.Plugins;
 using Avalonia.Markup.Xaml;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Microsoft.Toolkit.Uwp.Notifications;
 using NetMapper.Services;
 using NetMapper.Services.Static;
 using NetMapper.ViewModels;
@@ -18,7 +18,14 @@ namespace NetMapper
         {
             AvaloniaXamlLoader.Load(this);
         }
-       
+        
+        public static void AppContext(Action<IClassicDesktopStyleApplicationLifetime> command)
+        {
+            if (App.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime application)
+            {
+                command.Invoke(application);
+            }
+        }
         public override void OnFrameworkInitializationCompleted()
         {
             if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
@@ -41,12 +48,14 @@ namespace NetMapper
 
         private void Desktop_Exit(object? sender, ControlledApplicationLifetimeExitEventArgs e)
         {
+            ToastNotificationManagerCompat.Uninstall();
             var s = Locator.Current.GetRequiredService<SettingsService>();
             s.SaveAll();
         }
 
         private void Desktop_ShutdownRequested(object? sender, ShutdownRequestedEventArgs e)
         {
+            ToastNotificationManagerCompat.Uninstall();
             var s = Locator.Current.GetRequiredService<SettingsService>();
             s.SaveAll();
         }

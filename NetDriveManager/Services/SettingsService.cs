@@ -14,20 +14,19 @@ namespace NetMapper.Services
 
         public AppSettingsModel AppSettings;
 
-        public List<ISetting> SettingsList = new();
+        public List<ISetting> SettingsList = new(); //SettingsList.GetSetting(typeof(RunAtStartup));
 
         //CTOR
         public SettingsService(IStore<AppSettingsModel> store)
-        {            
+        {
             SettingsStore = store;
-            AppSettings = store.GetAll();            
+            AppSettings = store.GetAll();
 
-            //var a= SettingsList.Find((s)=>s.GetType()==typeof(RunAtStartup));
-            //SettingsList.GetSetting(typeof(RunAtStartup));
         }
+
         public void Add(ISetting setting)
         {
-            if (SettingsList.Find((s) => s.GetType() == setting.GetType()) == null)
+            if (SettingsList._GetSetting(setting.GetType()) == null)
             {
                 setting.SetAppSettings(AppSettings);
                 SettingsList.Add(setting);

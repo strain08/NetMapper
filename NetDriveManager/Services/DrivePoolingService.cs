@@ -10,13 +10,13 @@ namespace NetMapper.Services
     public class DrivePoolingService
     {
         private readonly DriveListService driveListService;
-        private readonly DriveConnectService stateResolverService;
+        private readonly DriveConnectService driveConnectService;
 
         //CTOR
-        public DrivePoolingService(DriveListService driveListService, DriveConnectService stateResolverService)
+        public DrivePoolingService(DriveListService driveListService, DriveConnectService driveConnectService)
         {
             this.driveListService = driveListService;
-            this.stateResolverService = stateResolverService;           
+            this.driveConnectService = driveConnectService;           
 
             NetworkChange.NetworkAvailabilityChanged += NetworkAvailabilityChanged;
 
@@ -57,11 +57,11 @@ namespace NetMapper.Services
         {
             if (m.CanAutoConnect)
             {
-                stateResolverService.ConnectDrive(m);
+                driveConnectService.ConnectDrive(m);                
             }
             if (m.CanAutoDisconnect)
             {
-                stateResolverService.DisconnectDrive(m);
+                driveConnectService.DisconnectDrive(m);
             }
         }        
         
@@ -70,12 +70,12 @@ namespace NetMapper.Services
             if (e.IsAvailable)
             {
                 foreach (MapModel m in driveListService.DriveList.Where((m)=> m.Settings.AutoConnect))
-                    stateResolverService.ConnectDrive(m);
+                    driveConnectService.ConnectDrive(m);
             }
             else
             {
                 foreach (MapModel m in driveListService.DriveList.Where((m) => m.Settings.AutoDisconnect))
-                    stateResolverService.DisconnectDrive(m);
+                    driveConnectService.DisconnectDrive(m);
             }
         }
 

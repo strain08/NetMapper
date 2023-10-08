@@ -1,4 +1,6 @@
-﻿using Avalonia.Controls;
+﻿using Avalonia;
+using Avalonia.Controls;
+using Avalonia.Controls.ApplicationLifetimes;
 using CommunityToolkit.Mvvm.ComponentModel;
 using NetMapper.Models;
 using NetMapper.Services;
@@ -6,6 +8,8 @@ using NetMapper.Services.Helpers;
 using NetMapper.Services.Static;
 using Splat;
 using System.Collections.Generic;
+using System.Diagnostics;
+
 
 namespace NetMapper.ViewModels
 {
@@ -59,6 +63,8 @@ namespace NetMapper.ViewModels
         // CTOR
         public DriveDetailViewModel(MapModel? selectedItem = null)
         {
+         
+
             if (Design.IsDesignMode) return;
             driveListService = Locator.Current.GetRequiredService<DriveListService>();
             driveConnectService = Locator.Current.GetRequiredService<DriveConnectService>();
@@ -115,8 +121,8 @@ namespace NetMapper.ViewModels
                 driveListService.AddDrive(DisplayItem);
             }
             VMServices.DriveListViewModel.SelectedItem = DisplayItem;
-
             VMServices.MainWindowViewModel!.Content = VMServices.DriveListViewModel;
+            
         }
 
 
