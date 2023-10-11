@@ -42,7 +42,7 @@ namespace NetMapper
                 desktop.Exit += Desktop_Exit;                
             }
             DataContext = new ApplicationViewModel();
-
+            Log.Information("Test");
             base.OnFrameworkInitializationCompleted();
         }
 
