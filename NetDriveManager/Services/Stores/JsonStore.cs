@@ -1,5 +1,6 @@
 ﻿using NetMapper.Services.Helpers;
 using NetMapper.Services.Stores;
+using Serilog;
 using System;
 using System.Diagnostics;
 using System.IO;
@@ -28,7 +29,7 @@ namespace NetMapper.Services
             try
             {
                 var jsonString = File.ReadAllText(jsonFile);
-                StoreData = JsonSerializer.Deserialize<T>(jsonString) ?? throw new JsonException("Error deserializing.");
+                StoreData = JsonSerializer.Deserialize<T>(jsonString) ?? throw new JsonException($"Invalid json file: {jsonFile}");
                 return true;
             }
             catch
@@ -52,6 +53,7 @@ namespace NetMapper.Services
             }
             catch
             {
+                Log.Error($"Unable to save json file: {jsonFile}");
                 return false;
             }
         }

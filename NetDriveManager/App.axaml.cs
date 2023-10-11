@@ -7,6 +7,7 @@ using Microsoft.Toolkit.Uwp.Notifications;
 using NetMapper.Services;
 using NetMapper.Services.Static;
 using NetMapper.ViewModels;
+using Serilog;
 using Splat;
 using System;
 
@@ -28,6 +29,8 @@ namespace NetMapper
         }
         public override void OnFrameworkInitializationCompleted()
         {
+            
+
             if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
             {
                 // Line below is needed to remove Avalonia data validation.
@@ -51,6 +54,7 @@ namespace NetMapper
             ToastNotificationManagerCompat.Uninstall();
             var s = Locator.Current.GetRequiredService<SettingsService>();
             s.SaveAll();
+            Log.CloseAndFlush();
         }
 
         private void Desktop_ShutdownRequested(object? sender, ShutdownRequestedEventArgs e)
@@ -58,6 +62,7 @@ namespace NetMapper
             ToastNotificationManagerCompat.Uninstall();
             var s = Locator.Current.GetRequiredService<SettingsService>();
             s.SaveAll();
+            Log.CloseAndFlush();
         }
 
         public void OnTrayClicked(object sender, EventArgs e)

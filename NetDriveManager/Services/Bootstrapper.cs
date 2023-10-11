@@ -11,10 +11,10 @@ namespace NetMapper.Services
         public static void Register(IMutableDependencyResolver s, IReadonlyDependencyResolver r)
         {
             // Json Settings Store
-            s.Register<IStore<AppSettingsModel>>(() => new JsonStore<AppSettingsModel>("AppSettings.json"));
+            s.Register<IStore<AppSettingsModel>>(() => new JsonStore<AppSettingsModel>("NetMapperSettings.json"));
 
             // Json Drive List Store
-            s.Register<IStore<List<MapModel>>>(() => new JsonStore<List<MapModel>>("NetDriveSettings.json"));
+            s.Register<IStore<List<MapModel>>>(() => new JsonStore<List<MapModel>>("NetMapperData.json"));
 
             s.RegisterConstant(new SettingsService(
                 r.GetRequiredService<IStore<AppSettingsModel>>()));

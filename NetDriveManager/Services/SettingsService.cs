@@ -47,6 +47,7 @@ namespace NetMapper.Services
                 setting.Apply();
             }
         }
+
         public void SaveAll()
         {
             SettingsStore.Update(AppSettings);

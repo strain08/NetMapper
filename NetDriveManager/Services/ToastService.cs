@@ -42,9 +42,7 @@ namespace NetMapper.Services
                 {
                     _onToastActionsSimple?.Invoke(_mapModel, args.GetEnum<ToastActionsSimple>(ACTION_SIMPLE));
                 }
-
             };
-
         }
 
         // PUBLIC TOAST CALLS
@@ -56,7 +54,6 @@ namespace NetMapper.Services
                 .AddArgument(ACTION_SIMPLE, ToastActionsDisconnect.ShowWindow)
                 .AddText($"Drive {m.DriveLetterColon} connected.")
                 .SetToastScenario(ToastScenario.Reminder);
-
             t.Show();
         }
 
@@ -83,6 +80,7 @@ namespace NetMapper.Services
 
             t.Show();
         }
+
         public void ToastDriveDisconnectError(MapModel m, ToastAnswerDelegate<ToastActionsDisconnect> del)
         {
             _onToastActionsDisconnect = del;
@@ -100,7 +98,6 @@ namespace NetMapper.Services
                 .AddButton(new ToastButtonDismiss())
                 .AddArgument(ACTION_DISCONNECT, ToastActionsDisconnect.ShowWindow)
                 .SetToastScenario(ToastScenario.Reminder);
-
             t.Show();
         }
 

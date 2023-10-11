@@ -1,7 +1,10 @@
 ﻿using Avalonia;
 using Avalonia.ReactiveUI;
 using Avalonia.Svg.Skia;
+using NetMapper.Services.Helpers;
+using Serilog;
 using System;
+using System.IO;
 using Windows.Foundation.Diagnostics;
 
 namespace NetMapper
@@ -14,8 +17,27 @@ namespace NetMapper
         [STAThread]
         public static void Main(string[] args)
         {
-            BuildAvaloniaApp()
-            .StartWithClassicDesktopLifetime(args);
+            string startupFolder = AppStartupFolder.GetStartupFolder();
+            string logFile=Path.Combine(startupFolder, "NetMapper.log");
+
+            Log.Logger = new LoggerConfiguration()
+                .WriteTo.Console()
+                .WriteTo.File(logFile)
+                .CreateLogger();
+            Log.Information("Application started in: " + AppStartupFolder.GetStartupFolder());
+            try
+            {
+                BuildAvaloniaApp()
+                .StartWithClassicDesktopLifetime(args);
+            }
+            catch (Exception ex)
+            {
+                Log.Fatal(ex, "Fatal error.");
+            }
+            finally
+            {
+                Log.CloseAndFlush();
+            }
             
         }
 
@@ -30,6 +52,7 @@ namespace NetMapper
             return   AppBuilder.Configure<App>()
                 .UsePlatformDetect()
                 .LogToTrace();
+            
         }
     }
 }

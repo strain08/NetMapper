@@ -1,12 +1,10 @@
 ﻿using Avalonia.Threading;
-
 using NetMapper.Enums;
 using NetMapper.Models;
 using NetMapper.Services.Helpers;
 using NetMapper.Services.Static;
 using NetMapper.Services.Toasts;
-using NetMapper.ViewModels;
-using System;
+using Serilog;
 using System.Threading.Tasks;
 
 namespace NetMapper.Services
@@ -27,18 +25,19 @@ namespace NetMapper.Services
             {
                 var result = Utility.ConnectNetworkDrive(m.DriveLetter, m.NetworkPath);
 
-                switch(result)
+                switch (result)
                 {
                     case ConnectResult.Success:
                         //toastService.ToastDriveConnected(m, ToastClickedCallback);
                         _ = new ToastDriveConnected(m, ToastClickedCallback);
                         break;
-                    case ConnectResult.LoginFailure | ConnectResult.InvalidCredentials :
+                    case ConnectResult.LoginFailure | ConnectResult.InvalidCredentials:
                         toastService.ToastBadLogin(m, ToastClickedCallback);
                         break;
+                    default:
+                        Log.Error($"Error connecting to {m.NetworkPath}. Error code: {result} ");
+                        break;
                 }
-                GC.Collect();
-                
             });
         }
 
@@ -60,7 +59,7 @@ namespace NetMapper.Services
                         break;
                     default:
                         toastService.ToastDriveDisconnectError(m, UnableToDisconnectCallback);
-                       // a = new ToastCanNotRemoveDrive(m, UnableToDisconnectCallback);
+                        // a = new ToastCanNotRemoveDrive(m, UnableToDisconnectCallback);
                         break;
                 }
             });
@@ -82,7 +81,7 @@ namespace NetMapper.Services
                         if (error == CancelConnection.DISCONNECT_SUCCESS)
                         {
                             toastService.ToastDriveDisconnected(m, ToastClickedCallback);
-                           // _ = new ToastDriveDisconnected(m, ToastClickedCallback);
+                            // _ = new ToastDriveDisconnected(m, ToastClickedCallback);
                         }
                     });
                     break;
