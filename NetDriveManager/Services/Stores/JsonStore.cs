@@ -2,7 +2,6 @@
 using NetMapper.Services.Stores;
 using Serilog;
 using System;
-using System.Diagnostics;
 using System.IO;
 using System.Text.Json;
 
@@ -17,60 +16,69 @@ namespace NetMapper.Services
         // CTOR
 
         public JsonStore(string jsonFileName)
-        {             
+        {
             var strWorkPath = AppStartupFolder.GetStartupFolder();
             jsonFile = Path.Combine(strWorkPath, jsonFileName);
-        }      
+        }
 
 
         // READ
-        public bool Load()
+        public void Load()
         {
+            // file does not exist, try create new one
+            if (!File.Exists(jsonFile))
+            {
+                Log.Information($"Json file {jsonFile} does not exist. Will try create new file.");
+                Save();
+                return;
+            }
+            // file exists, try read
+            var jsonString = File.ReadAllText(jsonFile);
+
             try
             {
-                var jsonString = File.ReadAllText(jsonFile);
-                StoreData = JsonSerializer.Deserialize<T>(jsonString) ?? throw new JsonException($"Invalid json file: {jsonFile}");
-                return true;
+                StoreData = JsonSerializer.Deserialize<T>(jsonString);
             }
-            catch
+            catch (Exception ex)
             {
-                return Save();
+                Log.Error(ex, $"Error deserializing {jsonFile}. Will try create new file.");
+                Save();
             }
         }
 
         // WRITE
-        public bool Save()
+        public void Save()
         {
+            var jsonOptions = new JsonSerializerOptions
+            {
+                WriteIndented = true
+            };
+            
             try
             {
-                var jsonOptions = new JsonSerializerOptions
-                {
-                    WriteIndented = true
-                };
-                var jsonString = JsonSerializer.Serialize(StoreData ?? new(), typeof(T), jsonOptions);
-                File.WriteAllText(jsonFile, jsonString);
-                return true;
+                StoreData ??= new();
+                var jsonString = JsonSerializer.Serialize(StoreData, StoreData.GetType(), jsonOptions);
+                File.WriteAllText(jsonFile, jsonString);                
             }
-            catch
+            catch (Exception ex)
             {
-                Log.Error($"Unable to save json file: {jsonFile}");
-                return false;
+                Log.Fatal(ex, $"Unable to write json file: {jsonFile}");
+                throw;
             }
         }
 
         // UPDATE
-        public bool Update(T updatedData)
+        public void Update(T updatedData)
         {
-
             StoreData = updatedData;
-            return Save();
+            Save();
         }
 
         public T GetAll()
         {
-            if (StoreData != null) return StoreData;            
+            if (StoreData != null) return StoreData;
             Load();
-            return StoreData ?? new();
+            return StoreData ?? throw new ArgumentNullException();
         }
     }
 

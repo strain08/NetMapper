@@ -26,16 +26,15 @@ namespace NetMapper.Services
         public void AddDrive(MapModel model)
         {
             DriveList.Add(model);
-            if (!store.Update(new List<MapModel>(DriveList)))
-                throw new ApplicationException("Can not write settings file.");
+            store.Update(new List<MapModel>(DriveList));            
         }
 
         public void RemoveDrive(MapModel model)
         {
             var i = DriveList.IndexOf(model);
             DriveList.RemoveAt(i);
-            if (!store.Update(new List<MapModel>(DriveList)))
-                throw new ApplicationException("Can not write settings file.");
+            store.Update(new List<MapModel>(DriveList));
+                
         }        
 
         public void EditDrive(MapModel oldModel, MapModel newModel)
@@ -43,8 +42,7 @@ namespace NetMapper.Services
             var i = DriveList.IndexOf(oldModel);
             DriveList.RemoveAt(i);
             DriveList.Insert(i, newModel);
-            if (!store.Update(new List<MapModel>(DriveList))) 
-                throw new ApplicationException("Can not write settings file.");
+            store.Update(new List<MapModel>(DriveList));                
         }        
     }
 }

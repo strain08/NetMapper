@@ -38,8 +38,8 @@ namespace NetMapper.Services
 
         public static TService GetRequiredService<TService>(this IReadonlyDependencyResolver resolver) where TService : class
         {
-            TService service = resolver.GetService<TService>() ??
-                throw new InvalidOperationException($"Splat failed to resolve object of type {typeof(TService)}"); // throw error with detailed description
+            TService service = resolver.GetService<TService>() ?? 
+                throw new InvalidOperationException($"Splat failed to resolve object of type {typeof(TService)}");  // throw error with detailed description
 
             return service; // return instance if not null
         }

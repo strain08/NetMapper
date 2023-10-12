@@ -8,6 +8,8 @@ using NetMapper.Services;
 using NetMapper.Services.Static;
 using NetMapper.ViewModels;
 using Serilog;
+using Serilog.Core;
+using Serilog.Events;
 using Splat;
 using System;
 
@@ -45,33 +47,32 @@ namespace NetMapper
                 desktop.Exit += Desktop_Exit;                
             }
             DataContext = new ApplicationViewModel();
-            Log.Information("Test");
             base.OnFrameworkInitializationCompleted();
         }
 
         private void Desktop_Exit(object? sender, ControlledApplicationLifetimeExitEventArgs e)
         {
-            ToastNotificationManagerCompat.Uninstall();
-            var s = Locator.Current.GetRequiredService<SettingsService>();
-            s.SaveAll();
-            Log.CloseAndFlush();
-        }
+            AppShutdown();
+        }        
 
         private void Desktop_ShutdownRequested(object? sender, ShutdownRequestedEventArgs e)
         {
-            ToastNotificationManagerCompat.Uninstall();
-            var s = Locator.Current.GetRequiredService<SettingsService>();
-            s.SaveAll();
-            Log.CloseAndFlush();
+            AppShutdown();
         }
 
         public void OnTrayClicked(object sender, EventArgs e)
         {
-
             if (VMServices.ApplicationViewModel == null) return;
             VMServices.ApplicationViewModel.ShowWindowCommand();
-
-
+        }        
+        
+        private static void AppShutdown()
+        {
+            ToastNotificationManagerCompat.Uninstall();
+            Locator.Current.GetRequiredService<SettingsService>().SaveAll();            
+            Log.Information("Application exit.");
+            Log.CloseAndFlush();
         }
     }
+
 }

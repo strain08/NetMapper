@@ -33,6 +33,7 @@ namespace NetMapper
             catch (Exception ex)
             {
                 Log.Fatal(ex, "Fatal error.");
+                
             }
             finally
             {

@@ -12,18 +12,14 @@ namespace NetMapper.Services.Helpers
     {
         public static string GetProcessFullPath()
         {
-            var strExeFile = Process.GetCurrentProcess()?.MainModule?.FileName
-                ?? throw new ApplicationException("Process.GetCurrentProcess()?.MainModule?.FileName null");
-            return strExeFile;
+            var strExeFile = Process.GetCurrentProcess()?.MainModule?.FileName;
+            return strExeFile ?? throw new ArgumentNullException();
         }
 
         public static string GetStartupFolder()
         {
-            var strExeFile = GetProcessFullPath();
-
-            var strWorkPath = Path.GetDirectoryName(strExeFile)
-                ?? throw new ApplicationException("Path.GetDirectoryName(strExeFilePath) null");
-            return strWorkPath;
+            var strWorkPath = Path.GetDirectoryName(GetProcessFullPath());                
+            return strWorkPath ?? throw new ArgumentNullException();
         }
     }
 }
