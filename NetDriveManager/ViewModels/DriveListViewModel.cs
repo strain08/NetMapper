@@ -28,7 +28,7 @@ namespace NetMapper.ViewModels
         // CTOR
         public DriveListViewModel()
         {
-           //if (Design.IsDesignMode) return; // design mode bypass            
+           if (Design.IsDesignMode) return; // design mode bypass            
             
             driveListService = Locator.Current.GetRequiredService<DriveListService>();
             driveConnectService = Locator.Current.GetRequiredService<DriveConnectService>();
@@ -67,9 +67,9 @@ namespace NetMapper.ViewModels
         {
             VMServices.MainWindowViewModel!.Content = new DriveDetailViewModel();
         }
-        public static void Info()
+        public static void About()
         {
-
+            VMServices.MainWindowViewModel!.Content = new AboutViewModel();
         }
         public static void Settings()
         {

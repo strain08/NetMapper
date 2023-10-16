@@ -1,0 +1,47 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="250" d:DesignHeight="450"
+             x:Class="NetMapper.Views.AboutView"
+			 xmlns:vm="using:NetMapper.ViewModels"
+			 x:DataType="vm:AboutViewModel">
+	<DockPanel>
+		<TextBlock
+			DockPanel.Dock="Top"
+			FontWeight="Normal"
+			FontSize="18"
+			Margin="8,0,0,0"
+			Foreground="LightBlue"
+			Text="About"/>
+		<!-- OK -->
+		<StackPanel
+			Background="Transparent"
+			HorizontalAlignment="Center"
+			Orientation="Horizontal"
+			Height="50"
+			DockPanel.Dock="Bottom">
+			<Button Classes="btnMain"
+					Content="OK"
+					Width="80"
+					Command="{Binding OkCommand}"/>			
+		</StackPanel>
+		<StackPanel>
+			<!-- OPTIONS -->
+			<TextBlock
+				Margin="16,16,0,0"
+				FontSize="16"
+				FontWeight="Bold"
+				Foreground="Gray"
+				Text="NetMapper v0.1"/>
+			<StackPanel Classes="detail">
+				<Button Margin="20,0,0,0" 
+						Command="{Binding HandleLinkClicked}"
+						Classes="hyperlink"
+						ToolTip.Tip="https://github.com/swain80/NetDrives"
+						Content="github.com/swain80/NetDrives"/>				
+			</StackPanel>
+			
+		</StackPanel>
+	</DockPanel>
+</UserControl>

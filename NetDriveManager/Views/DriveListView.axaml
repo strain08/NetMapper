@@ -35,6 +35,7 @@
 				<Button VerticalAlignment="Bottom"
 						HorizontalAlignment="Right"
 						Background="Transparent"
+						Command="{Binding About}"
 						Classes="btnMain"
 						Margin="8,0,0,6"						>
 					<Image Source="{SvgImage /Assets/info-borderless-svgrepo-com.svg}"/>

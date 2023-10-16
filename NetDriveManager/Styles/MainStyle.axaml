@@ -66,5 +66,20 @@
 		</Style.Resources>
 		<Setter Property="Fill" Value="{DynamicResource ShapeBrush}"/>
 	</Style>
-  
+	
+	<Style Selector="Button.hyperlink">
+		<Setter Property="Template">
+			<ControlTemplate>
+				<TextBlock Text="{TemplateBinding Content}" Foreground="{StaticResource SystemAccentColor}" TextDecorations="Underline">
+					<TextBlock.Styles>
+						<Style Selector="TextBlock:pointerover">
+							<Setter Property="Foreground" Value="{StaticResource SystemAccentColorLight1}"/>
+						</Style>
+					</TextBlock.Styles>
+				</TextBlock>
+			</ControlTemplate>
+		</Setter>
+		<Setter Property="Background" Value="Transparent"/>
+		<Setter Property="BorderThickness" Value="0"/>
+	</Style>
 </Styles>

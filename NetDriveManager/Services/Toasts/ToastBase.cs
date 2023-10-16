@@ -24,7 +24,7 @@ namespace NetMapper.Services.Toasts
             toastNotification = new ToastNotification(toastContent.GetXml());
             toastNotification.Activated += Notif_Activated;
             toastNotification.Dismissed += ToastNotification_Dismissed;
-            toastNotifier = ToastNotificationManagerCompat.CreateToastNotifier();            
+            toastNotifier = ToastNotificationManagerCompat.CreateToastNotifier();
             toastNotifier.Show(toastNotification);
             
         }
@@ -44,8 +44,7 @@ namespace NetMapper.Services.Toasts
 
             if (toastNotification == null) return;
             toastNotification.Activated -= Notif_Activated;                
-            toastNotification.Dismissed -= ToastNotification_Dismissed;
-            
+            toastNotification.Dismissed -= ToastNotification_Dismissed;            
         }
 
         protected virtual void Dispose(bool disposing)
@@ -58,6 +57,8 @@ namespace NetMapper.Services.Toasts
                     {
                         toastNotification.Activated -= Notif_Activated;
                         toastNotification.Dismissed -= ToastNotification_Dismissed;
+                        toastNotification = null;
+                        toastNotifier = null;
                     }
                 }
 
