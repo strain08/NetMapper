@@ -35,11 +35,11 @@
 				Foreground="Gray"
 				Text="NetMapper v0.1"/>
 			<StackPanel Classes="detail">
-				<Button Margin="20,0,0,0" 
+				<Button Margin="18,0,0,0" 
 						Command="{Binding HandleLinkClicked}"
 						Classes="hyperlink"
-						ToolTip.Tip="https://github.com/swain80/NetDrives"
-						Content="github.com/swain80/NetDrives"/>				
+						ToolTip.Tip="https://github.com/strain08/NetMapper"
+						Content="github.com/strain08/NetMapper"/>				
 			</StackPanel>
 			
 		</StackPanel>
