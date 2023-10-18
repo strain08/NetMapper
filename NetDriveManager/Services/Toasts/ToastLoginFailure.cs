@@ -5,10 +5,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Windows.UI.Notifications;
 
 namespace NetMapper.Services.Toasts
 {
-    internal class ToastLoginFailure : ToastBase<ToastActionsSimple>
+    public class ToastLoginFailure : ToastBase<ToastActionsSimple>
     {
         public ToastLoginFailure(MapModel m, Action<MapModel, ToastActionsSimple> del) : base(m, del)
         {
@@ -17,7 +18,10 @@ namespace NetMapper.Services.Toasts
                .AddText($"Login failure connecting to {m.NetworkPath}.")
                .AddText($"Please connect the share in windows or delete the mapping.")
                .SetToastScenario(ToastScenario.Reminder);
-            Show(toastContent);
+            
+            var toast = new ToastNotification(toastContent.GetXml());
+
+            Show(toast);
         }
     }
 }

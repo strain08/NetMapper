@@ -58,8 +58,8 @@ namespace NetMapper.Services
 
                         break;
                     default:
-                        toastService.ToastDriveDisconnectError(m, UnableToDisconnectCallback);
-                        // a = new ToastCanNotRemoveDrive(m, UnableToDisconnectCallback);
+                        //toastService.ToastDriveDisconnectError(m, UnableToDisconnectCallback);
+                        _ = new ToastCanNotRemoveDrive(m, UnableToDisconnectCallback);
                         break;
                 }
             });
@@ -80,8 +80,8 @@ namespace NetMapper.Services
                         CancelConnection error = Utility.DisconnectNetworkDrive(m.DriveLetter, true);
                         if (error == CancelConnection.DISCONNECT_SUCCESS)
                         {
-                            toastService.ToastDriveDisconnected(m, ToastClickedCallback);
-                            // _ = new ToastDriveDisconnected(m, ToastClickedCallback);
+                            //toastService.ToastDriveDisconnected(m, ToastClickedCallback);
+                            _ = new ToastDriveDisconnected(m, ToastClickedCallback);
                         }
                     });
                     break;

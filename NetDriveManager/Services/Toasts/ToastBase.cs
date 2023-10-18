@@ -6,41 +6,52 @@ using Windows.UI.Notifications;
 
 namespace NetMapper.Services.Toasts
 {
-    internal class ToastBase<T> :IDisposable where T : struct, Enum 
-    {        
+    public class ToastBase<T> :IDisposable where T : struct, Enum 
+    {
+        private protected static string? previousMsg;
+        protected const string MSG_BIND = "MESSAGE";
+
         protected ToastNotification? toastNotification;
-        protected ToastNotifierCompat? toastNotifier;
-        protected Action<MapModel, T> del;
-        protected MapModel m;
+        protected Action<MapModel, T> thisDel;
+        protected MapModel thisModel;        
         private bool disposedValue;
+        
 
         public ToastBase(MapModel m, Action<MapModel, T> del)
         {
-            this.del = del;           
-            this.m = m;  
+            thisDel = del;           
+            thisModel = m;  
         }
-        protected void Show(ToastContentBuilder toastContent) 
-        {          
-            toastNotification = new ToastNotification(toastContent.GetXml());
+
+        protected void Show(ToastNotification toast) 
+        {
+            toastNotification = toast;
             toastNotification.Activated += Notif_Activated;
             toastNotification.Dismissed += ToastNotification_Dismissed;
-            toastNotifier = ToastNotificationManagerCompat.CreateToastNotifier();
-            toastNotifier.Show(toastNotification);
-            
+            ToastNotificationManagerCompat.CreateToastNotifier().Show(toastNotification);
+        }        
+        
+        protected void UpdateToast(string newMessage, string tag)
+        {
+            var data = new NotificationData() { SequenceNumber = 0 };
+            data.Values[MSG_BIND] = previousMsg += "\n" + newMessage;
+            ToastNotificationManagerCompat.CreateToastNotifier().Update(data, tag);
         }
 
         private void ToastNotification_Dismissed(ToastNotification sender, ToastDismissedEventArgs args)
         {
             if (toastNotification == null) return;
+            previousMsg = null; // toast became invisible or dismissed, do not update anymore            
             toastNotification.Activated -= Notif_Activated;
             toastNotification.Dismissed -= ToastNotification_Dismissed;
         }
 
         private void Notif_Activated(ToastNotification sender, object obj)
         {
+            previousMsg = null;
             var eventArgs = obj as ToastActivatedEventArgs;
             ToastArguments args = ToastArguments.Parse(eventArgs?.Arguments);
-            del.Invoke(m, args.GetEnum<T>("A"));
+            thisDel.Invoke(thisModel, args.GetEnum<T>("A"));
 
             if (toastNotification == null) return;
             toastNotification.Activated -= Notif_Activated;                
@@ -58,7 +69,6 @@ namespace NetMapper.Services.Toasts
                         toastNotification.Activated -= Notif_Activated;
                         toastNotification.Dismissed -= ToastNotification_Dismissed;
                         toastNotification = null;
-                        toastNotifier = null;
                     }
                 }
 
