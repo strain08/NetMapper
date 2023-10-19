@@ -14,7 +14,7 @@ namespace NetMapper.Services
         //CTOR
         public DriveConnectService()
         {
-            //this.toastService = toastService;
+            
         }
 
         public void ConnectDrive(MapModel m)
@@ -25,12 +25,10 @@ namespace NetMapper.Services
 
                 switch (result)
                 {
-                    case ConnectResult.Success:
-                        //toastService.ToastDriveConnected(m, ToastClickedCallback);
+                    case ConnectResult.Success:                        
                         _ = new ToastDriveConnected(m, ToastClickedCallback);
                         break;
-                    case ConnectResult.LoginFailure | ConnectResult.InvalidCredentials:
-                        //toastService.ToastBadLogin(m, ToastClickedCallback);
+                    case ConnectResult.LoginFailure | ConnectResult.InvalidCredentials:                        
                         _ = new ToastLoginFailure(m, ToastClickedCallback);
                         break;
                     default:
@@ -51,13 +49,10 @@ namespace NetMapper.Services
 
                 switch (result)
                 {
-                    case CancelConnection.DISCONNECT_SUCCESS:
-                        //toastService.ToastDriveDisconnected(m, ToastClickedCallback);
+                    case CancelConnection.DISCONNECT_SUCCESS:                        
                         _ = new ToastDriveDisconnected(m, ToastClickedCallback);
-
                         break;
-                    default:
-                        //toastService.ToastDriveDisconnectError(m, UnableToDisconnectCallback);
+                    default:                       
                         _ = new ToastCanNotRemoveDrive(m, UnableToDisconnectCallback);
                         break;
                 }

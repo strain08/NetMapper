@@ -1,26 +1,35 @@
-﻿using NetMapper.Models;
-using NetMapper.Extensions;
-
+﻿using NetMapper.Extensions;
+using NetMapper.Models;
 using NetMapper.Services.Settings;
+using NetMapper.Services.Stores;
 using System;
 using System.Collections.Generic;
-using NetMapper.Services.Stores;
 
 namespace NetMapper.Services
 {
     internal class SettingsService
     {
-        public IStore<AppSettingsModel> SettingsStore;
+        private IStore<AppSettingsModel> SettingsStore;
 
-        public AppSettingsModel AppSettings;
+        private readonly List<ISetting> SettingsList = new(); //SettingsList.GetSetting(typeof(RunAtStartup));
 
-        public List<ISetting> SettingsList = new(); //SettingsList.GetSetting(typeof(RunAtStartup));
+        public AppSettingsModel AppSettings
+        {
+            get => appSettings;
+            set
+            {
+                appSettings = value;
+                foreach (var setting in SettingsList)
+                    setting.SetAppSettings(value);
+            }
+        }
+        private AppSettingsModel appSettings;
 
         //CTOR
         public SettingsService(IStore<AppSettingsModel> store)
         {
             SettingsStore = store;
-            AppSettings = store.GetAll();
+            appSettings = store.GetAll();
 
         }
 
@@ -35,8 +44,8 @@ namespace NetMapper.Services
         }
 
         public ISetting Get(Type settingType)
-        {            
-            return SettingsList.Find((s) => s.GetType() == settingType) ?? 
+        {
+            return SettingsList.Find((s) => s.GetType() == settingType) ??
                 throw new InvalidOperationException($"{ToString} : Can not find {settingType} in SettingsList.");
         }
 

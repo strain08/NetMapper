@@ -15,11 +15,12 @@ namespace NetMapper.Services
 
             // Json Drive List Store
             s.Register<IStore<List<MapModel>>>(() => new JsonStore<List<MapModel>>("NetMapperData.json"));
-
+            
+            // Settings
             s.RegisterConstant(new SettingsService(
                 r.GetRequiredService<IStore<AppSettingsModel>>()));
 
-            // Notification
+            // Toast
             s.RegisterConstant(new ToastService());
 
             // Connect service

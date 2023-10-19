@@ -9,7 +9,7 @@ namespace NetMapper.Services.Settings
     {
         RegistryKey? rk;
         const string APP_NAME = "NetMapper";
-        const string RK_RUN = "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run";
+        const string RK_RUN = @"SOFTWARE\Microsoft\Windows\CurrentVersion\Run";
         
 
         private bool AddRunAtStartup()
@@ -40,24 +40,6 @@ namespace NetMapper.Services.Settings
             return true;
         }
 
-        public bool Validate() 
-        {
-            try
-            {
-                rk = Registry.CurrentUser.OpenSubKey(RK_RUN, true);
-                if (rk == null) return false;
-                string? startKey = rk.GetValue(APP_NAME, null)?.ToString();
-                if (startKey == null) return false;
-                if (startKey != AppStartupFolder.GetProcessFullPath()) return false;
-                return true;
-                
-            }
-            catch 
-            { 
-                return false; 
-            }
-        }        
-
         public override void Apply()
         {            
             
@@ -71,5 +53,22 @@ namespace NetMapper.Services.Settings
             }
         }
 
+        //public bool Validate() 
+        //{
+        //    try
+        //    {
+        //        rk = Registry.CurrentUser.OpenSubKey(RK_RUN, true);
+        //        if (rk == null) return false;
+        //        string? startKey = rk.GetValue(APP_NAME, null)?.ToString();
+        //        if (startKey == null) return false;
+        //        if (startKey != AppStartupFolder.GetProcessFullPath()) return false;
+        //        return true;
+
+        //    }
+        //    catch 
+        //    { 
+        //        return false; 
+        //    }
+        //}        
     }
 }
