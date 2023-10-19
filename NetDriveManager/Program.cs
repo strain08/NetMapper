@@ -12,7 +12,7 @@ namespace NetMapper
         // Initialization code. Don't use any Avalonia, third-party APIs or any
         // SynchronizationContext-reliant code before AppMain is called: things aren't initialized
         // yet and stuff might break.
-        private static readonly Mutex Mutex = new Mutex(true, "bc5bb7ee-6999-41d2-a41e-546417e43fa0");
+        private static readonly Mutex Mutex = new(true, "bc5bb7ee-6999-41d2-a41e-546417e43fa0");
 
         [STAThread]
         public static void Main(string[] args)
