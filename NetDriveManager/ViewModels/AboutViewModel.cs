@@ -1,33 +1,25 @@
-﻿using NetMapper.Services.Static;
-using System;
-using System.Collections.Generic;
+﻿using NetMapper.Services.Helpers;
+using NetMapper.Services.Static;
 using System.Diagnostics;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
-using static System.Net.WebRequestMethods;
 
 namespace NetMapper.ViewModels
 {
     public class AboutViewModel : ViewModelBase
-    {
-        //const string APP_NAME = "NetMapper";
-        public string AppNameAndVersion
+    {        
+        public static string AppNameAndVersion
         {
             get
             {
-                Assembly assembly = Assembly.GetExecutingAssembly();
-                string? AppName = assembly.GetName().Name ?? "";
-                FileVersionInfo fvi = FileVersionInfo.GetVersionInfo(assembly.Location);
+                FileVersionInfo fvi = AppUtil.GetVersionInfo();
+                string AppName = fvi.ProductName ?? fvi.FileName;
                 string versionMajor = fvi.FileMajorPart.ToString();
                 string versionMinor = fvi.FileMinorPart.ToString();
                 string result = AppName + " v" + versionMajor + "." + versionMinor;
                 return result;
             } 
         }
-        public string GitDisplayLink => "github.com/strain08/NetMapper";
-        public string GitFullLink => "https://github.com/strain08/NetMapper";
+        public static string GitDisplayLink => "github.com/strain08/NetMapper";
+        public static string GitFullLink => "https://github.com/strain08/NetMapper";
 
         public AboutViewModel()
         {

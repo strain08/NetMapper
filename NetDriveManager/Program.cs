@@ -17,8 +17,8 @@ namespace NetMapper
         [STAThread]
         public static void Main(string[] args)
         {
-            string startupFolder = AppStartupFolder.GetStartupFolder();
-            string logFile = Path.Combine(startupFolder, "NetMapper.log");
+            string startupFolder = AppUtil.GetStartupFolder();
+            string logFile = Path.Combine(startupFolder, AppUtil.GetAppName() + ".log");
 
             if (!Mutex.WaitOne(TimeSpan.Zero, true)) return; // check if app aleady started
 
@@ -26,13 +26,14 @@ namespace NetMapper
                 .WriteTo.Console()
                 .WriteTo.File(logFile)
                 .CreateLogger();
-            Log.Information("Application started in: " + AppStartupFolder.GetStartupFolder());
+
+            Log.Information("Application started in: " + AppUtil.GetStartupFolder());
+
             try
             {
                 BuildAvaloniaApp()
                 .StartWithClassicDesktopLifetime(args);
                 Mutex.ReleaseMutex();
-
             }
             catch (Exception ex)
             {

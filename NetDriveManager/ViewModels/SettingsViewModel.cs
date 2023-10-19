@@ -22,7 +22,7 @@ namespace NetMapper.ViewModels
         }
         public void OkCommand()
         {
-            settingsService.AppSettings = DisplaySettings.Clone();
+            settingsService.AppSettings = DisplaySettings.Clone();            
             settingsService.ApplyAll();
             settingsService.SaveAll();
             (VMServices.MainWindowViewModel ??= new()).Content = VMServices.DriveListViewModel;

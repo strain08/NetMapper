@@ -17,7 +17,7 @@ namespace NetMapper.Services
 
         public JsonStore(string jsonFileName)
         {
-            var strWorkPath = AppStartupFolder.GetStartupFolder();
+            var strWorkPath = AppUtil.GetStartupFolder();
             jsonFile = Path.Combine(strWorkPath, jsonFileName);
         }
 

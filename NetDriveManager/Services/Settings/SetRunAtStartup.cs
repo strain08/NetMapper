@@ -8,16 +8,15 @@ namespace NetMapper.Services.Settings
     internal class SetRunAtStartup : SettingBase
     {
         RegistryKey? rk;
-        const string APP_NAME = "NetMapper";
-        const string RK_RUN = @"SOFTWARE\Microsoft\Windows\CurrentVersion\Run";
-        
+        private string AppName => AppUtil.GetAppName();
+        const string RK_RUN = @"SOFTWARE\Microsoft\Windows\CurrentVersion\Run";        
 
         private bool AddRunAtStartup()
         {
             try
             {
                 rk = Registry.CurrentUser.OpenSubKey(RK_RUN, true) ?? throw new ArgumentNullException();
-                rk.SetValue(APP_NAME, AppStartupFolder.GetProcessFullPath());
+                rk.SetValue(AppName, AppUtil.GetProcessFullPath());
             }
             catch
             {                
@@ -31,7 +30,7 @@ namespace NetMapper.Services.Settings
             try
             {
                 rk = Registry.CurrentUser.OpenSubKey(RK_RUN, true) ?? throw new ArgumentNullException();
-                rk.DeleteValue(APP_NAME, false);
+                rk.DeleteValue(AppName, false);
             }
             catch
             {

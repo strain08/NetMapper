@@ -33,7 +33,7 @@ namespace NetMapper.Services
 
         }
 
-        public void Add(ISetting setting)
+        public void AddSetting(ISetting setting)
         {
             if (SettingsList._GetSetting(setting.GetType()) == null)
             {
@@ -43,7 +43,7 @@ namespace NetMapper.Services
             else throw new InvalidOperationException($"{ToString} : Duplicate setting: {setting.GetType()}");
         }
 
-        public ISetting Get(Type settingType)
+        public ISetting GetSetting(Type settingType)
         {
             return SettingsList.Find((s) => s.GetType() == settingType) ??
                 throw new InvalidOperationException($"{ToString} : Can not find {settingType} in SettingsList.");

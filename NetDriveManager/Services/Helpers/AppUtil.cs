@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace NetMapper.Services.Helpers
 {
-    public class AppStartupFolder
+    public class AppUtil
     {
         public static string GetProcessFullPath()
         {
@@ -20,6 +20,16 @@ namespace NetMapper.Services.Helpers
         {
             var strWorkPath = Path.GetDirectoryName(GetProcessFullPath());                
             return strWorkPath ?? throw new ArgumentNullException();
+        }
+
+        public static FileVersionInfo GetVersionInfo()
+        {
+            return FileVersionInfo.GetVersionInfo(GetProcessFullPath());
+        }
+
+        public static string GetAppName()
+        {
+            return GetVersionInfo().ProductName ?? GetVersionInfo().FileName;
         }
     }
 }

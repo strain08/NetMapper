@@ -26,14 +26,14 @@ namespace NetMapper.ViewModels
             if (Design.IsDesignMode) return;            
 
             settingsService = Locator.Current.GetRequiredService<SettingsService>();
-            settingsService.Add(new SetRunAtStartup());
-            settingsService.Add(new SetMinimizeTaskbar());
+            settingsService.AddSetting(new SetRunAtStartup());
+            settingsService.AddSetting(new SetMinimizeTaskbar());
 
             MainWindowView = new()
             {
                 DataContext = VMServices.MainWindowViewModel = new MainWindowViewModel()
             };
-            settingsService.Add(new SetMainWindow(MainWindowView));
+            settingsService.AddSetting(new SetMainWindow(MainWindowView));
 
             settingsService.ApplyAll();
 
