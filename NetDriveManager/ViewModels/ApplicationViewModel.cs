@@ -52,10 +52,10 @@ namespace NetMapper.ViewModels
                 TooltipText += item.DriveLetterColon;
                 switch (item.MappingStateProp)
                 {
-                    case Enums.MappingState.Unmapped:
+                    case Enums.MappingState.Mapped:
                         TooltipText += " connected.";
                         break;
-                    case Enums.MappingState.Mapped:
+                    case Enums.MappingState.Unmapped:
                         TooltipText += " disconnected.";
                         break;
                     case Enums.MappingState.LetterUnavailable:
