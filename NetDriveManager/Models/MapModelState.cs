@@ -12,15 +12,16 @@ using System.Threading.Tasks;
 namespace NetMapper.Models
 {
     public partial class MapModel
-    {
-        [JsonIgnore]
+    {        
         [ObservableProperty]
+        [property: JsonIgnore]
         [NotifyPropertyChangedFor(nameof(ConnectCommandVisible))]
         [NotifyPropertyChangedFor(nameof(DisconnectCommandVisible))]
         ShareState shareStateProp = ShareState.Undefined;
 
-        [JsonIgnore]
+        
         [ObservableProperty]
+        [property: JsonIgnore]
         [NotifyPropertyChangedFor(nameof(ConnectCommandVisible))]
         [NotifyPropertyChangedFor(nameof(DisconnectCommandVisible))]
         [NotifyPropertyChangedFor(nameof(VolumeLabel))]

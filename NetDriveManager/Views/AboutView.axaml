@@ -6,6 +6,9 @@
              x:Class="NetMapper.Views.AboutView"
 			 xmlns:vm="using:NetMapper.ViewModels"
 			 x:DataType="vm:AboutViewModel">
+	<Design.DataContext>
+		<vm:AboutViewModel/>
+	</Design.DataContext>
 	<DockPanel>
 		<TextBlock
 			DockPanel.Dock="Top"
@@ -24,7 +27,7 @@
 			<Button Classes="btnMain"
 					Content="OK"
 					Width="80"
-					Command="{Binding OkCommand}"/>			
+					Command="{Binding OkCommand}"/>
 		</StackPanel>
 		<StackPanel>
 			<!-- OPTIONS -->
@@ -33,15 +36,15 @@
 				FontSize="16"
 				FontWeight="Bold"
 				Foreground="Gray"
-				Text="NetMapper v0.1"/>
+				Text="{Binding AppNameAndVersion}"/>
 			<StackPanel Classes="detail">
-				<Button Margin="18,0,0,0" 
+				<Button Margin="18,0,0,0"
 						Command="{Binding HandleLinkClicked}"
 						Classes="hyperlink"
-						ToolTip.Tip="https://github.com/strain08/NetMapper"
-						Content="github.com/strain08/NetMapper"/>				
+						ToolTip.Tip="{Binding GitFullLink}"
+						Content="{Binding GitDisplayLink}"/>
 			</StackPanel>
-			
+
 		</StackPanel>
 	</DockPanel>
 </UserControl>

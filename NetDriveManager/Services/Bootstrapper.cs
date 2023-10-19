@@ -23,8 +23,7 @@ namespace NetMapper.Services
             s.RegisterConstant(new ToastService());
 
             // Connect service
-            s.RegisterConstant(new DriveConnectService(
-                r.GetRequiredService<ToastService>()));
+            s.RegisterConstant(new DriveConnectService());
 
             // Drive List CRUD
             s.RegisterConstant(new DriveListService(

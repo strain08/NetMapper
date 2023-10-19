@@ -9,8 +9,10 @@ namespace NetMapper.Services
 {
     public class DrivePoolingService
     {
+        private const int POLL_INTERVAL_MSEC = 5000;
         private readonly DriveListService driveListService;
         private readonly DriveConnectService driveConnectService;
+
 
         //CTOR
         public DrivePoolingService(DriveListService driveListService, DriveConnectService driveConnectService)
@@ -21,7 +23,7 @@ namespace NetMapper.Services
             NetworkChange.NetworkAvailabilityChanged += NetworkAvailabilityChanged;
 
             // Get share and mapping states into model at regular intervals
-            Task.Run(() => StateLoop(5000));
+            Task.Run(() => StateLoop(POLL_INTERVAL_MSEC));
 
         }
         //DTOR

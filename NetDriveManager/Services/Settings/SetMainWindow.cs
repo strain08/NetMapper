@@ -34,7 +34,6 @@ namespace NetMapper.Services.Settings
             MainWindowView.PositionChanged += MainWindowView_PositionChanged;
             MainWindowView.PropertyChanged += MainWindowView_PropertyChanged;
 
-
         }
 
         void MainWindowView_PropertyChanged(object? sender, AvaloniaPropertyChangedEventArgs e)
@@ -60,10 +59,9 @@ namespace NetMapper.Services.Settings
         {
             if (GetAppSettings().PositionOK() && sender is Window window)
             {
-                window.Position = GetAppSettings().WindowPosition;
-                GetAppSettings().WindowIsOpened = true;
+                window.Position = GetAppSettings().WindowPosition;                
             }
-
+            GetAppSettings().WindowIsOpened = true;
         }
 
         void MainWindowView_PositionChanged(object? sender, PixelPointEventArgs e)

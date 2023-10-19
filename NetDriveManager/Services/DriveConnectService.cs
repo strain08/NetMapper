@@ -10,13 +10,11 @@ using System.Threading.Tasks;
 namespace NetMapper.Services
 {
     public class DriveConnectService
-    {
-        //IDisposable? a;
-        private readonly ToastService toastService;
+    {        
         //CTOR
-        public DriveConnectService(ToastService toastService)
+        public DriveConnectService()
         {
-            this.toastService = toastService;
+            //this.toastService = toastService;
         }
 
         public void ConnectDrive(MapModel m)
@@ -32,7 +30,8 @@ namespace NetMapper.Services
                         _ = new ToastDriveConnected(m, ToastClickedCallback);
                         break;
                     case ConnectResult.LoginFailure | ConnectResult.InvalidCredentials:
-                        toastService.ToastBadLogin(m, ToastClickedCallback);
+                        //toastService.ToastBadLogin(m, ToastClickedCallback);
+                        _ = new ToastLoginFailure(m, ToastClickedCallback);
                         break;
                     default:
                         Log.Error($"Error connecting to {m.NetworkPath}. Error code: {result} ");

@@ -6,28 +6,39 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using static System.Net.WebRequestMethods;
 
 namespace NetMapper.ViewModels
 {
-    public class AboutViewModel:ViewModelBase
+    public class AboutViewModel : ViewModelBase
     {
+        //const string APP_NAME = "NetMapper";
+        public string AppNameAndVersion
+        {
+            get
+            {
+                Assembly assembly = Assembly.GetExecutingAssembly();
+                string? AppName = assembly.GetName().Name ?? "";
+                FileVersionInfo fvi = FileVersionInfo.GetVersionInfo(assembly.Location);
+                string versionMajor = fvi.FileMajorPart.ToString();
+                string versionMinor = fvi.FileMinorPart.ToString();
+                string result = AppName + " v" + versionMajor + "." + versionMinor;
+                return result;
+            } 
+        }
+        public string GitDisplayLink => "github.com/strain08/NetMapper";
+        public string GitFullLink => "https://github.com/strain08/NetMapper";
+
         public AboutViewModel()
         {
-            System.Reflection.Assembly assembly = System.Reflection.Assembly.GetExecutingAssembly();
-            FileVersionInfo fvi = FileVersionInfo.GetVersionInfo(assembly.Location);
-            string fileVersion = FileVersionInfo.GetVersionInfo(assembly.Location).ProductMajorPart.ToString();
-            string versionMajor = fvi.FileMajorPart.ToString();
-            string versionMinor = fvi.FileMinorPart.ToString();
-            string versionFix = fvi.FileBuildPart.ToString();
-            Debug.Print(versionMajor + " " + versionMinor + " " + versionFix);
+
         }
         public void HandleLinkClicked() 
         {
-            // UriBuilder builder = new UriBuilder{ Path = @"https:\\github.com" };
             ProcessStartInfo psi = new()
             {
                 UseShellExecute = true,
-                FileName = @"https:\\github.com"
+                FileName = GitFullLink
             };
             Process.Start(psi);
             

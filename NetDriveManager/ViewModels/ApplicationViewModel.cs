@@ -1,21 +1,29 @@
 ﻿using Avalonia.Controls;
+using CommunityToolkit.Mvvm.ComponentModel;
+using NetMapper.Models;
 using NetMapper.Services;
 using NetMapper.Services.Settings;
 using NetMapper.Services.Static;
 using NetMapper.Views;
 using Splat;
+using System;
+using System.Collections.ObjectModel;
+using System.Collections.Specialized;
+using System.Diagnostics;
 
 namespace NetMapper.ViewModels
 {
-    public class ApplicationViewModel : ViewModelBase
+    public partial class ApplicationViewModel : ViewModelBase
     {
         public MainWindow MainWindowView;
         readonly SettingsService settingsService;
+        readonly DriveListService listService;
+        [ObservableProperty]
+        string tooltipText;
 
         public ApplicationViewModel()
         {
-            if (Design.IsDesignMode) return;
-
+            if (Design.IsDesignMode) return;            
 
             settingsService = Locator.Current.GetRequiredService<SettingsService>();
             settingsService.Add(new SetRunAtStartup());
@@ -29,9 +37,37 @@ namespace NetMapper.ViewModels
 
             settingsService.ApplyAll();
 
+            listService = Locator.Current.GetRequiredService<DriveListService>();
+            listService.ModelPropertiesUpdated = UpdateTooltip;
+
             VMServices.ApplicationViewModel = this;
         }
 
+        private void UpdateTooltip()
+        {
+            TooltipText = string.Empty;
+
+            foreach (var item in listService.DriveList) 
+            {
+                TooltipText += item.DriveLetterColon;
+                switch (item.MappingStateProp)
+                {
+                    case Enums.MappingState.Unmapped:
+                        TooltipText += " connected.";
+                        break;
+                    case Enums.MappingState.Mapped:
+                        TooltipText += " disconnected.";
+                        break;
+                    case Enums.MappingState.LetterUnavailable:
+                        TooltipText += " letter unavailable.";
+                        break;
+                }
+
+                TooltipText += "\n";
+            }     
+        }
+        
+        // systray menu
         public void ShowWindowCommand()
         {
             App.AppContext((application) =>
@@ -43,12 +79,13 @@ namespace NetMapper.ViewModels
                 application.MainWindow.Focus();
             });
         }
-
+        
+        // systray menu
         public static void ExitCommand()
         {
             App.AppContext((application) =>
             {
-                application.Shutdown();
+                application.Shutdown();                
             });
         }
     }

@@ -9,7 +9,9 @@ public partial class MapModel : ObservableObject
 {
     // PUBLIC PROP
     public char DriveLetter { get; set; }    
+
     public string NetworkPath { get; set; } = string.Empty;
+
     public MappingSettingsModel Settings { get; set; } = new();
 
     [JsonIgnore]

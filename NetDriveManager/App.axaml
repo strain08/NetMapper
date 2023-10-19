@@ -14,19 +14,27 @@
 	<Application.Styles>
 		<FluentTheme />
 		<StyleInclude Source="/Styles/MainStyle.axaml"/>
-		
 	</Application.Styles>
+
 	<TrayIcon.Icons>
 		<TrayIcons >
-			<TrayIcon Icon="/Assets/avalonia-logo.ico" ToolTipText="My ToolTip" Clicked="OnTrayClicked">
+			<TrayIcon 
+				Icon="/Assets/avalonia-logo.ico" 
+				ToolTipText="{Binding TooltipText}"
+				Clicked="OnTrayClicked">
 				<TrayIcon.Menu>
 					<NativeMenu>
-						<NativeMenuItem Header="Show" Command="{Binding ShowWindowCommand}" />
+						<NativeMenuItem 
+							Header="Show" 
+							Command="{Binding ShowWindowCommand}" />
 						<NativeMenuItemSeparator />
-						<NativeMenuItem Header="Exit" Command="{Binding ExitCommand}" />
+						<NativeMenuItem 
+							Header="Exit" 
+							Command="{Binding ExitCommand}" />
 					</NativeMenu>
 				</TrayIcon.Menu>
 			</TrayIcon>
 		</TrayIcons>
 	</TrayIcon.Icons>
+
 </Application>
