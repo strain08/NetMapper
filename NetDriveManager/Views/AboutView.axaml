@@ -35,10 +35,15 @@
 				Margin="16,16,0,0"
 				FontSize="16"
 				FontWeight="Bold"
-				Foreground="Gray"
+				Foreground="DarkGray"
 				Text="{Binding AppNameAndVersion}"/>
+			<TextBlock
+				Margin="18,0,0,0"
+				Foreground="Gray"
+				Text="{Binding BuildTime}"/>
+			
 			<StackPanel Classes="detail">
-				<Button Margin="18,0,0,0"
+				<Button Margin="18,8,0,0"
 						Command="{Binding HandleLinkClicked}"
 						Classes="hyperlink"
 						ToolTip.Tip="{Binding GitFullLink}"

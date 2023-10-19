@@ -19,12 +19,11 @@ namespace NetMapper.ViewModels
         readonly SettingsService settingsService;
         readonly DriveListService listService;
         [ObservableProperty]
-        string tooltipText;
+        string tooltipText = string.Empty;
 
-        public ApplicationViewModel()
+        public ApplicationViewModel()     
         {
-            if (Design.IsDesignMode) return;            
-
+            if (Design.IsDesignMode) return; 
             settingsService = Locator.Current.GetRequiredService<SettingsService>();
             settingsService.AddSetting(new SetRunAtStartup());
             settingsService.AddSetting(new SetMinimizeTaskbar());
