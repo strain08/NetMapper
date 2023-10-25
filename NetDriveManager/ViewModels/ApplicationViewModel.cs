@@ -3,7 +3,6 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using NetMapper.Models;
 using NetMapper.Services;
 using NetMapper.Services.Settings;
-using NetMapper.Services.Static;
 using NetMapper.Views;
 using Splat;
 using System;
@@ -19,13 +18,16 @@ namespace NetMapper.ViewModels
 
         readonly ISettingsService settings;
         readonly IDriveListService listService;
+        readonly NavService navService;
         [ObservableProperty]
         string tooltipText = string.Empty;
+
         public ApplicationViewModel() { }
 
         public ApplicationViewModel(ISettingsService settingsService,IDriveListService driveListService)
         {
             //if (Design.IsDesignMode) return; 
+            navService = Locator.Current.GetRequiredService<NavService>();
             settings = settingsService;
             listService = driveListService;
             InitializeApp();
@@ -45,7 +47,8 @@ namespace NetMapper.ViewModels
             settings.ApplyAll();
 
             listService.ModelPropertiesUpdated = UpdateTooltip;
-
+            
+            navService.AddViewModel(this);
             //VMServices.ApplicationViewModel = this;
         }
 
@@ -80,14 +83,15 @@ namespace NetMapper.ViewModels
         }
 
         // systray menu
-        public static void ExitCommand()
+        public void ExitCommand()
         {
             App.AppContext((application) =>
             {
                 application.Shutdown();                
             });
         }
-        protected void ShowMainWindow()
+
+        public void ShowMainWindow()
         {
             App.AppContext((application) =>
             {

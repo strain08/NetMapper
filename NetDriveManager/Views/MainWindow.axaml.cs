@@ -1,7 +1,5 @@
 using Avalonia;
 using Avalonia.Controls;
-using NetMapper.Services.Static;
-using System;
 using System.Diagnostics;
 
 namespace NetMapper.Views

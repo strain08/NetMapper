@@ -3,7 +3,6 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using NetMapper.Models;
 using NetMapper.Services;
 using NetMapper.Services.Helpers;
-using NetMapper.Services.Static;
 using Splat;
 using System.Collections.Generic;
 
@@ -116,17 +115,14 @@ namespace NetMapper.ViewModels
             {
                 driveListService.AddDrive(DisplayItem);
             }
-            (nav.GetViewModel(typeof(DriveListViewModel)) as DriveListViewModel).SelectedItem = DisplayItem;
-            nav.GoTo(typeof(DriveListViewModel));
-            //VMServices.DriveListViewModel.SelectedItem = DisplayItem;
-            //VMServices.MainWindowViewModel!.Content = VMServices.DriveListViewModel;
+            
+            nav.GetViewModel<DriveListViewModel>().SelectedItem = DisplayItem;
+            nav.GoTo<DriveListViewModel>();
         }
-
 
         public void Cancel()
         {
-            //VMServices.MainWindowViewModel!.Content = VMServices.DriveListViewModel;
-            nav.GoTo(typeof(DriveListViewModel));
+            nav.GoTo<DriveListViewModel>();
         }
     }
 }

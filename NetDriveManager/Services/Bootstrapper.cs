@@ -10,6 +10,9 @@ namespace NetMapper.Services
     {
         public static void Register(IMutableDependencyResolver s, IReadonlyDependencyResolver r)
         {
+            // navigation service
+            s.RegisterLazySingleton(() => new NavService());
+
             // Json Settings Store
             s.Register<IDataStore<AppSettingsModel>>(() => new JsonStore<AppSettingsModel>("NetMapperSettings.json"));
 
@@ -21,7 +24,9 @@ namespace NetMapper.Services
                 r.GetRequiredService<IDataStore<AppSettingsModel>>()));
 
             // Connect service
-            s.RegisterLazySingleton<IDriveConnectService>(() => new DriveConnectService());
+            s.RegisterLazySingleton<IDriveConnectService>(() => new DriveConnectService(
+                r.GetRequiredService<NavService>()
+                ));
 
             // Drive List CRUD
             s.RegisterLazySingleton<IDriveListService>(() => new DriveListService(
@@ -32,7 +37,7 @@ namespace NetMapper.Services
                 r.GetRequiredService<IDriveListService>(),
                 r.GetRequiredService<IDriveConnectService>()));
 
-            s.RegisterLazySingleton(() => new NavService());
+            
         }
 
         public static TService GetRequiredService<TService>(this IReadonlyDependencyResolver resolver) where TService : class

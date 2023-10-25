@@ -2,8 +2,8 @@
 using NetMapper.Enums;
 using NetMapper.Models;
 using NetMapper.Services.Helpers;
-using NetMapper.Services.Static;
 using NetMapper.Services.Toasts;
+using NetMapper.ViewModels;
 using Serilog;
 using System.Threading.Tasks;
 
@@ -11,10 +11,12 @@ namespace NetMapper.Services
 {
     public class DriveConnectService : IDriveConnectService
     {
+        private readonly NavService nav;
         //CTOR
-        public DriveConnectService()
+        
+        public DriveConnectService(NavService navService)
         {
-
+            nav = navService;
         }
 
         public void ConnectDrive(MapModel m)
@@ -89,14 +91,12 @@ namespace NetMapper.Services
             ShowMainWindow();
         }
 
-        private static void ShowMainWindow()
+        private void ShowMainWindow()
         {
             Dispatcher.UIThread.Post(() =>
-            {
-                //App.AppContext((app) => {
-                //    app.MainWindow?.Show(); ;
-                //});
-                VMServices.ApplicationViewModel?.ShowWindowCommand();
+            {                
+                var appVm = nav.GetViewModel(typeof(ApplicationViewModel)) as ApplicationViewModel;
+                appVm?.ShowMainWindow();
             });
         }
     }

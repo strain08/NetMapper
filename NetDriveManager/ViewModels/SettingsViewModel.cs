@@ -1,8 +1,6 @@
-﻿using Avalonia.Controls;
-using CommunityToolkit.Mvvm.ComponentModel;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
 using NetMapper.Models;
 using NetMapper.Services;
-using NetMapper.Services.Static;
 using Splat;
 
 namespace NetMapper.ViewModels
@@ -24,10 +22,10 @@ namespace NetMapper.ViewModels
         }
         public void OkCommand()
         {
-            settingsService.SetAppSettings(DisplaySettings.Clone());            
+            settingsService.SetAppSettings(DisplaySettings.Clone());
             settingsService.ApplyAll();
             settingsService.SaveAll();
-            
+
             navService.GoTo(typeof(DriveListViewModel));
             //(VMServices.MainWindowViewModel ??= new()).Content = VMServices.DriveListViewModel;
         }
@@ -36,7 +34,7 @@ namespace NetMapper.ViewModels
             navService.GoTo(typeof(DriveListViewModel));
             //(VMServices.MainWindowViewModel ??= new()).Content = VMServices.DriveListViewModel;
 
-            
+
         }
     }
 }

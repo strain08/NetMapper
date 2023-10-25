@@ -3,10 +3,8 @@ using Avalonia.Input;
 using Avalonia.Markup.Xaml;
 using NetMapper.Models;
 using NetMapper.Services;
-using NetMapper.Services.Static;
 using NetMapper.ViewModels;
 using Splat;
-using System;
 
 namespace NetMapper.Views;
 
@@ -28,6 +26,5 @@ public partial class DriveListView : UserControl
         ListBox? MyList = this.FindControl<ListBox>("listBox");
         var nav = Locator.Current.GetRequiredService<NavService>();
         nav.GoTo(new DriveDetailViewModel((MapModel?)MyList?.SelectedItem));
-        //VMServices.MainWindowViewModel!.Content = new DriveDetailViewModel((MapModel?)MyList?.SelectedItem);
     }
 }
