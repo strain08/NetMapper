@@ -1,9 +1,10 @@
 ﻿using NetMapper.Models;
+using NetMapper.Services.Interfaces;
 using System;
 
 namespace NetMapper.Services.Settings
 {
-    internal abstract class SettingBase : ISetting
+    public abstract class SettingBase : ISettingModule
     {
         public AppSettingsModel 
             GetAppSettings() => appSettings ?? throw new ArgumentNullException();

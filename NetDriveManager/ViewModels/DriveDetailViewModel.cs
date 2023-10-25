@@ -1,6 +1,4 @@
-﻿using Avalonia;
-using Avalonia.Controls;
-using Avalonia.Controls.ApplicationLifetimes;
+﻿using Avalonia.Controls;
 using CommunityToolkit.Mvvm.ComponentModel;
 using NetMapper.Models;
 using NetMapper.Services;
@@ -8,7 +6,6 @@ using NetMapper.Services.Helpers;
 using NetMapper.Services.Static;
 using Splat;
 using System.Collections.Generic;
-using System.Diagnostics;
 
 
 namespace NetMapper.ViewModels
@@ -17,9 +14,9 @@ namespace NetMapper.ViewModels
     {
 
         [ObservableProperty]
-        MapModel displayItem;
+        MapModel displayItem = new();
         [ObservableProperty]
-        MapModel selectedItem;
+        MapModel selectedItem = new(); 
 
         public string NetworkPath
         {
@@ -57,44 +54,44 @@ namespace NetMapper.ViewModels
 
         bool isEditing;
 
-        readonly DriveListService driveListService;
-        readonly DriveConnectService driveConnectService;
+        readonly IDriveListService driveListService;
+        readonly IDriveConnectService driveConnectService;
+        readonly NavService nav;
 
         // CTOR
         public DriveDetailViewModel(MapModel? selectedItem = null)
         {
-         
-
             if (Design.IsDesignMode) return;
-            driveListService = Locator.Current.GetRequiredService<DriveListService>();
-            driveConnectService = Locator.Current.GetRequiredService<DriveConnectService>();
+            driveListService = Locator.Current.GetRequiredService<IDriveListService>();
+            driveConnectService = Locator.Current.GetRequiredService<IDriveConnectService>();
+            nav = Locator.Current.GetRequiredService<NavService>();
 
             LoadDriveLettersList();
-            DisplayItem = new();
-            SelectedItem = new();
+
             if (selectedItem == null)
             {
-                IsEditing = false;                
+                IsEditing = false;
+                return;
             }
-            else
-            {
-                IsEditing = true;
 
-                SelectedItem = selectedItem;
+            IsEditing = true;
 
-                // decoupled copy of selected item
-                DisplayItem = selectedItem.Clone();
+            SelectedItem = selectedItem;
 
-                // add selected item letter
-                DriveLettersList.Add(selectedItem.DriveLetter);
+            // decoupled copy of selected item
+            DisplayItem = selectedItem.Clone();
 
-                SelectedLetter = DisplayItem.DriveLetter;
-            }
+            // add selected item letter
+            DriveLettersList.Add(selectedItem.DriveLetter);
+            DriveLettersList.Sort();
+
+            SelectedLetter = DisplayItem.DriveLetter;
+
         }
 
         private void LoadDriveLettersList()
         {
-            var cAvailableLeters = new List<char>(Utility.GetAvailableDriveLetters());
+            var cAvailableLeters = new List<char>(Interop.GetAvailableDriveLetters());
 
             // remove unmapped managed drive letters
             foreach (MapModel d in driveListService.DriveList)
@@ -107,9 +104,8 @@ namespace NetMapper.ViewModels
         public void Ok()
         {
             if (IsEditing)
-            {
-                // drive letter changed
-                if (SelectedItem.DriveLetter != DisplayItem.DriveLetter)
+            {                
+                if (SelectedItem.DriveLetter != DisplayItem.DriveLetter) // drive letter changed
                 {
                     driveConnectService.DisconnectDrive(SelectedItem); // disconnect previous drive
                 }
@@ -120,17 +116,17 @@ namespace NetMapper.ViewModels
             {
                 driveListService.AddDrive(DisplayItem);
             }
-            VMServices.DriveListViewModel.SelectedItem = DisplayItem;
-            VMServices.MainWindowViewModel!.Content = VMServices.DriveListViewModel;
-            
+            (nav.GetViewModel(typeof(DriveListViewModel)) as DriveListViewModel).SelectedItem = DisplayItem;
+            nav.GoTo(typeof(DriveListViewModel));
+            //VMServices.DriveListViewModel.SelectedItem = DisplayItem;
+            //VMServices.MainWindowViewModel!.Content = VMServices.DriveListViewModel;
         }
 
 
-        public static void Cancel()
+        public void Cancel()
         {
-            VMServices.MainWindowViewModel!.Content = VMServices.DriveListViewModel;
-
-
+            //VMServices.MainWindowViewModel!.Content = VMServices.DriveListViewModel;
+            nav.GoTo(typeof(DriveListViewModel));
         }
     }
 }

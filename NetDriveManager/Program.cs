@@ -20,7 +20,7 @@ namespace NetMapper
             string startupFolder = AppUtil.GetStartupFolder();
             string logFile = Path.Combine(startupFolder, AppUtil.GetAppName() + ".log");
 
-            if (!Mutex.WaitOne(TimeSpan.Zero, true)) return; // check if app aleady started
+            //if (!Mutex.WaitOne(TimeSpan.Zero, true)) return; // check if app aleady started
 
             Log.Logger = new LoggerConfiguration()
                 .WriteTo.Console()
@@ -29,21 +29,21 @@ namespace NetMapper
 
             Log.Information("Application started in: " + AppUtil.GetStartupFolder());
 
-            try
-            {
+            //try
+            //{
                 BuildAvaloniaApp()
                 .StartWithClassicDesktopLifetime(args);
                 Mutex.ReleaseMutex();
-            }
-            catch (Exception ex)
-            {
-                Log.Fatal(ex, "Fatal error.");
+            //}
+            //catch (Exception ex)
+            //{
+            //    Log.Fatal(ex, "Fatal error.");
 
-            }
-            finally
-            {
-                Log.CloseAndFlush();
-            }
+            //}
+            //finally
+            //{
+            //    Log.CloseAndFlush();
+            //}
 
 
         }

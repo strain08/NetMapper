@@ -4,6 +4,9 @@ using System.Runtime.InteropServices;
 
 namespace NetMapper.Enums
 {
+    //const int CONNECT_PROMPT = 0x00000010;
+    //const int CONNECT_INTERACTIVE = 0x00000008;
+
     [StructLayout(LayoutKind.Sequential)]
     struct NETRESOURCE
     {

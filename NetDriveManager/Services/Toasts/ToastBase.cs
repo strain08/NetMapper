@@ -9,7 +9,7 @@ namespace NetMapper.Services.Toasts
     public class ToastBase<T> :IDisposable where T : struct, Enum 
     {
         private protected static string? previousMsg;
-        protected const string MSG_BIND = "MESSAGE";
+        protected const string MSG_CONTENT = "MESSAGE";
 
         protected ToastNotification? toastNotification;
         protected Action<MapModel, T> thisDel;
@@ -23,30 +23,30 @@ namespace NetMapper.Services.Toasts
             thisModel = m;  
         }
 
-        protected void Show(ToastNotification toast) 
+        public void Show(ToastNotification toast) 
         {
             toastNotification = toast;
-            toastNotification.Activated += Notif_Activated;
-            toastNotification.Dismissed += ToastNotification_Dismissed;
+            toastNotification.Activated += Activated;
+            toastNotification.Dismissed += Dismissed;
             ToastNotificationManagerCompat.CreateToastNotifier().Show(toastNotification);
         }        
         
-        protected void UpdateToast(string newMessage, string tag)
+        protected void Update(string newMessage, string tag)
         {
             var data = new NotificationData() { SequenceNumber = 0 };
-            data.Values[MSG_BIND] = previousMsg += "\n" + newMessage;
+            data.Values[MSG_CONTENT] = previousMsg += "\n" + newMessage;            
             ToastNotificationManagerCompat.CreateToastNotifier().Update(data, tag);
         }
 
-        private void ToastNotification_Dismissed(ToastNotification sender, ToastDismissedEventArgs args)
+        private void Dismissed(ToastNotification sender, ToastDismissedEventArgs args)
         {
             if (toastNotification == null) return;
             previousMsg = null; // toast became invisible or dismissed, do not update anymore            
-            toastNotification.Activated -= Notif_Activated;
-            toastNotification.Dismissed -= ToastNotification_Dismissed;
+            toastNotification.Activated -= Activated;
+            toastNotification.Dismissed -= Dismissed;
         }
 
-        private void Notif_Activated(ToastNotification sender, object obj)
+        private void Activated(ToastNotification sender, object obj)
         {
             previousMsg = null;
             var eventArgs = obj as ToastActivatedEventArgs;
@@ -54,8 +54,8 @@ namespace NetMapper.Services.Toasts
             thisDel.Invoke(thisModel, args.GetEnum<T>("A"));
 
             if (toastNotification == null) return;
-            toastNotification.Activated -= Notif_Activated;                
-            toastNotification.Dismissed -= ToastNotification_Dismissed;            
+            toastNotification.Activated -= Activated;                
+            toastNotification.Dismissed -= Dismissed;            
         }
 
         protected virtual void Dispose(bool disposing)
@@ -66,8 +66,8 @@ namespace NetMapper.Services.Toasts
                 {
                     if (toastNotification != null)
                     {
-                        toastNotification.Activated -= Notif_Activated;
-                        toastNotification.Dismissed -= ToastNotification_Dismissed;
+                        toastNotification.Activated -= Activated;
+                        toastNotification.Dismissed -= Dismissed;
                         toastNotification = null;
                     }
                 }

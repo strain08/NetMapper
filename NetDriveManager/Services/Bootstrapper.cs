@@ -11,34 +11,33 @@ namespace NetMapper.Services
         public static void Register(IMutableDependencyResolver s, IReadonlyDependencyResolver r)
         {
             // Json Settings Store
-            s.Register<IStore<AppSettingsModel>>(() => new JsonStore<AppSettingsModel>("NetMapperSettings.json"));
+            s.Register<IDataStore<AppSettingsModel>>(() => new JsonStore<AppSettingsModel>("NetMapperSettings.json"));
 
             // Json Drive List Store
-            s.Register<IStore<List<MapModel>>>(() => new JsonStore<List<MapModel>>("NetMapperData.json"));
-            
-            // Settings
-            s.RegisterConstant(new SettingsService(
-                r.GetRequiredService<IStore<AppSettingsModel>>()));
+            s.Register<IDataStore<List<MapModel>>>(() => new JsonStore<List<MapModel>>("NetMapperData.json"));
 
-            // Toast
-            s.RegisterConstant(new ToastService());
+            // Settings
+            s.RegisterConstant<ISettingsService>(new SettingsService(
+                r.GetRequiredService<IDataStore<AppSettingsModel>>()));
 
             // Connect service
-            s.RegisterConstant(new DriveConnectService());
+            s.RegisterLazySingleton<IDriveConnectService>(() => new DriveConnectService());
 
             // Drive List CRUD
-            s.RegisterConstant(new DriveListService(
-                r.GetRequiredService<IStore<List<MapModel>>>()));
+            s.RegisterLazySingleton<IDriveListService>(() => new DriveListService(
+                r.GetRequiredService<IDataStore<List<MapModel>>>()));
 
             // StateGenerator
             s.RegisterConstant(new DrivePoolingService(
-                r.GetRequiredService<DriveListService>(),
-                r.GetRequiredService<DriveConnectService>()));
+                r.GetRequiredService<IDriveListService>(),
+                r.GetRequiredService<IDriveConnectService>()));
+
+            s.RegisterLazySingleton(() => new NavService());
         }
 
         public static TService GetRequiredService<TService>(this IReadonlyDependencyResolver resolver) where TService : class
         {
-            TService service = resolver.GetService<TService>() ?? 
+            TService service = resolver.GetService<TService>() ??
                 throw new InvalidOperationException($"Splat failed to resolve object of type {typeof(TService)}");  // throw error with detailed description
 
             return service; // return instance if not null

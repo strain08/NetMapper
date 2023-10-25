@@ -5,7 +5,7 @@ using System;
 
 namespace NetMapper.Services.Settings
 {
-    internal class SetRunAtStartup : SettingBase
+    public class SetRunAtStartup : SettingBase
     {
         RegistryKey? rk;
         private string AppName => AppUtil.GetAppName();
@@ -42,7 +42,7 @@ namespace NetMapper.Services.Settings
         public override void Apply()
         {            
             
-            if (GetAppSettings().bLoadAtStartup)
+            if (GetAppSettings().SetLoadAtStartup)
             {                
                 AddRunAtStartup();
             }

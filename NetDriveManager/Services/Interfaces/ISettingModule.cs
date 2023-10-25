@@ -1,8 +1,8 @@
 ﻿using NetMapper.Models;
 
-namespace NetMapper.Services.Settings
+namespace NetMapper.Services.Interfaces
 {
-    internal interface ISetting
+    public interface ISettingModule
     {
         AppSettingsModel GetAppSettings();
         void SetAppSettings(AppSettingsModel value);

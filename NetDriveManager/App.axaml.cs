@@ -12,7 +12,7 @@ using Serilog.Core;
 using Serilog.Events;
 using Splat;
 using System;
-
+using Avalonia.Controls;
 namespace NetMapper
 {
     public partial class App : Application
@@ -28,11 +28,10 @@ namespace NetMapper
             {
                 command.Invoke(application);
             }
+            
         }
         public override void OnFrameworkInitializationCompleted()
         {
-            
-
             if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
             {
                 // Line below is needed to remove Avalonia data validation.
@@ -44,10 +43,19 @@ namespace NetMapper
 
                 desktop.ShutdownMode = ShutdownMode.OnExplicitShutdown;
                 desktop.ShutdownRequested += Desktop_ShutdownRequested;
-                desktop.Exit += Desktop_Exit;
-                
+                desktop.Exit += Desktop_Exit;                
             }
-            DataContext = new ApplicationViewModel();
+
+            if (Design.IsDesignMode)
+            {
+                DataContext = new ApplicationViewModel();
+            }
+            else
+            {
+                DataContext = new ApplicationViewModel(
+                    Locator.Current.GetRequiredService<ISettingsService>(),
+                    Locator.Current.GetRequiredService<IDriveListService>());
+            }
             base.OnFrameworkInitializationCompleted();
         }
 
@@ -63,14 +71,16 @@ namespace NetMapper
 
         public void OnTrayClicked(object sender, EventArgs e)
         {
-            if (VMServices.ApplicationViewModel == null) return;
-            VMServices.ApplicationViewModel.ShowWindowCommand();
+            //if (VMServices.ApplicationViewModel == null) return;
+            //VMServices.ApplicationViewModel.ShowWindowCommand();
+            var mainWindow = DataContext as ApplicationViewModel;
+            mainWindow?.ShowWindowCommand();
         }        
         
         private static void AppShutdown()
         {
             ToastNotificationManagerCompat.Uninstall();
-            Locator.Current.GetRequiredService<SettingsService>().SaveAll();            
+            Locator.Current.GetRequiredService<ISettingsService>().SaveAll();            
             Log.Information("Application exit.");
             Log.CloseAndFlush();
         }

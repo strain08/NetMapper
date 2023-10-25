@@ -1,4 +1,5 @@
 ﻿using Microsoft.Toolkit.Uwp.Notifications;
+using NetMapper.Enums;
 using NetMapper.Models;
 using System;
 using Windows.UI.Notifications;
@@ -7,15 +8,17 @@ namespace NetMapper.Services.Toasts
 {
     public class ToastDriveDisconnected : ToastBase<ToastActionsSimple>
     {
-        const string TAG = "INFO"; // toasts with same tag will be updated
+        private const string TAG = "INFO"; // toasts with same tag will be updated
+        
+        // Toast message format
+        private string ToastMessage => $"{thisModel.DriveLetterColon} [ {thisModel.VolumeLabel} ] disconnected.";
 
-        private string ToastMessage => $"Drive {thisModel.DriveLetterColon} disconnected.";
-
+        // CTOR
         public ToastDriveDisconnected(MapModel m, Action<MapModel, ToastActionsSimple> del) : base(m, del)
         {
             if (previousMsg != null) // there is a visible notification, update
             {
-                UpdateToast(ToastMessage, TAG);
+                Update(ToastMessage, TAG);
                 return;
             }
 
@@ -23,7 +26,7 @@ namespace NetMapper.Services.Toasts
                .AddArgument("A", ToastActionsSimple.ShowWindow)
                .AddVisualChild(new AdaptiveText
                {
-                   Text = new BindableString(MSG_BIND) // bound to ToastMessage prop
+                   Text = new BindableString(MSG_CONTENT) // bound to ToastMessage prop
                })
                .SetToastScenario(ToastScenario.Reminder);
 
@@ -32,7 +35,7 @@ namespace NetMapper.Services.Toasts
                 Tag = TAG,
                 Data = new NotificationData()
             };
-            Toast.Data.Values[MSG_BIND] = previousMsg = ToastMessage;
+            Toast.Data.Values[MSG_CONTENT] = previousMsg = ToastMessage;
 
             Show(Toast);
 

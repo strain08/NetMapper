@@ -5,7 +5,7 @@ using System;
 
 namespace NetMapper.Services.Settings
 {
-    internal class SetMainWindow : SettingBase
+    public class SetMainWindow : SettingBase
     {
         readonly MainWindow MainWindowView;
         public SetMainWindow(MainWindow MainWindowView)
@@ -38,7 +38,7 @@ namespace NetMapper.Services.Settings
 
         void MainWindowView_PropertyChanged(object? sender, AvaloniaPropertyChangedEventArgs e)
         {
-            if (!GetAppSettings().bMinimizeToTaskbar) return;
+            if (!GetAppSettings().SetMinimizeToTaskbar) return;
 
             if (e.NewValue is WindowState windowState && sender is Window window)
             {

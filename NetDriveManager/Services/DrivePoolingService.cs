@@ -10,27 +10,23 @@ namespace NetMapper.Services
     public class DrivePoolingService
     {
         private const int POLL_INTERVAL_MSEC = 5000;
-        private readonly DriveListService driveListService;
-        private readonly DriveConnectService driveConnectService;
-
+        private readonly IDriveListService driveListService;
+        private readonly IDriveConnectService driveConnectService;
 
         //CTOR
-        public DrivePoolingService(DriveListService driveListService, DriveConnectService driveConnectService)
+        public DrivePoolingService()
+        {
+
+        }
+        public DrivePoolingService(
+            IDriveListService driveListService, 
+            IDriveConnectService driveConnectService)
         {
             this.driveListService = driveListService;
-            this.driveConnectService = driveConnectService;           
-
-            NetworkChange.NetworkAvailabilityChanged += NetworkAvailabilityChanged;
-
+            this.driveConnectService = driveConnectService;
             // Get share and mapping states into model at regular intervals
             Task.Run(() => StateLoop(POLL_INTERVAL_MSEC));
-
-        }
-        //DTOR
-        ~DrivePoolingService()
-        {
-            NetworkChange.NetworkAvailabilityChanged -= NetworkAvailabilityChanged;
-        }
+        }        
 
         private async void StateLoop(int timeMilliseconds)
         {
@@ -39,7 +35,7 @@ namespace NetMapper.Services
             {
                 foreach (MapModel m in driveListService.DriveList)
                 {
-                    taskList.Add(Task.Run(action: ()=> { 
+                    taskList.Add(Task.Run(()=> { 
                         UpdateModel(m);
                         UpdateSystem(m);
                     }));
@@ -65,21 +61,6 @@ namespace NetMapper.Services
             {
                 driveConnectService.DisconnectDrive(m);
             }
-        }        
-        
-        private void NetworkAvailabilityChanged(object? sender, NetworkAvailabilityEventArgs e)
-        {
-            if (e.IsAvailable)
-            {
-                foreach (MapModel m in driveListService.DriveList.Where((m)=> m.Settings.AutoConnect))
-                    driveConnectService.ConnectDrive(m);
-            }
-            else
-            {
-                foreach (MapModel m in driveListService.DriveList.Where((m) => m.Settings.AutoDisconnect))
-                    driveConnectService.DisconnectDrive(m);
-            }
         }
-
     }
 }

@@ -7,10 +7,10 @@ namespace NetMapper.Models
 {
     public class AppSettingsModel
     {
-        public bool bLoadAtStartup { get; set; }
-        public bool bRemoveUnmanaged { get; set; }
-        public bool bMinimizeToTaskbar { get; set; }
-        public bool bInfoNotify { get; set; }
+        public bool SetLoadAtStartup { get; set; }
+        public bool SetRemoveUnmanaged { get; set; }
+        public bool SetMinimizeToTaskbar { get; set; }
+        public bool SetInfoNotify { get; set; }
         
         public double WindowHeight { get; set; } = 400;
         public double WindowWidth { get; set; } = 225;

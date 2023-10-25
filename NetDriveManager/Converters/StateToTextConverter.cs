@@ -19,7 +19,7 @@ namespace NetMapper.Converters
                     case ShareState.Unavailable:
                         return "Unavailable";
                     case ShareState.Undefined:
-                        return "Waiting..";
+                        return "Updating..";
                 }
             }
             if (value is MappingState mappingState && targetType.IsAssignableTo(typeof(string)))
@@ -33,7 +33,7 @@ namespace NetMapper.Converters
                     case MappingState.LetterUnavailable:
                         return "Letter unavailable";
                     case MappingState.Undefined:
-                        return "Waiting..";
+                        return "Updating..";
                 }
             }
             return new BindingNotification(new InvalidCastException(), BindingErrorType.Error);

@@ -1,49 +1,50 @@
-﻿using NetMapper.Extensions;
-using NetMapper.Models;
-using NetMapper.Services.Settings;
+﻿using NetMapper.Models;
+using NetMapper.Services.Interfaces;
 using NetMapper.Services.Stores;
 using System;
 using System.Collections.Generic;
 
 namespace NetMapper.Services
 {
-    internal class SettingsService
+    public class SettingsService : ISettingsService
     {
-        private IStore<AppSettingsModel> SettingsStore;
-
-        private readonly List<ISetting> SettingsList = new(); //SettingsList.GetSetting(typeof(RunAtStartup));
-
-        public AppSettingsModel AppSettings
-        {
-            get => appSettings;
-            set
-            {
-                appSettings = value;
-                foreach (var setting in SettingsList)
-                    setting.SetAppSettings(value);
-            }
-        }
         private AppSettingsModel appSettings;
 
+        private readonly IDataStore<AppSettingsModel> SettingsStore;
+
+        private readonly List<ISettingModule> SettingsList; //SettingsList.GetSetting(typeof(RunAtStartup));        
+
         //CTOR
-        public SettingsService(IStore<AppSettingsModel> store)
+        public SettingsService(IDataStore<AppSettingsModel> store)
         {
             SettingsStore = store;
-            appSettings = store.GetAll();
-
+            appSettings = store.GetData();
+            SettingsList = new();
         }
 
-        public void AddSetting(ISetting setting)
+        public AppSettingsModel GetAppSettings()
         {
-            if (SettingsList._GetSetting(setting.GetType()) == null)
-            {
-                setting.SetAppSettings(AppSettings);
-                SettingsList.Add(setting);
-            }
-            else throw new InvalidOperationException($"{ToString} : Duplicate setting: {setting.GetType()}");
+            return appSettings;
         }
 
-        public ISetting GetSetting(Type settingType)
+        public void SetAppSettings(AppSettingsModel value)
+        {
+            appSettings = value;
+            foreach (var setting in SettingsList)
+                setting.SetAppSettings(value);
+        }
+
+        public void AddModule(ISettingModule settingModule)
+        {
+            // check if module already exists
+            if (SettingsList.Find((sm) => sm.GetType() == settingModule.GetType()) != null)
+                throw new InvalidOperationException($"{ToString} : Duplicate setting: {settingModule.GetType()}");
+
+            settingModule.SetAppSettings(GetAppSettings());
+            SettingsList.Add(settingModule);
+        }
+
+        public ISettingModule GetModule(Type settingType)
         {
             return SettingsList.Find((s) => s.GetType() == settingType) ??
                 throw new InvalidOperationException($"{ToString} : Can not find {settingType} in SettingsList.");
@@ -59,7 +60,7 @@ namespace NetMapper.Services
 
         public void SaveAll()
         {
-            SettingsStore.Update(AppSettings);
+            SettingsStore.Update(GetAppSettings());
         }
     }
 }

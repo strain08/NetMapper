@@ -2,7 +2,7 @@
 
 namespace NetMapper.Services.Settings
 {
-    internal class SetMinimizeTaskbar : SettingBase
+    public class SetMinimizeTaskbar : SettingBase
     {
         public override void Apply()
         {

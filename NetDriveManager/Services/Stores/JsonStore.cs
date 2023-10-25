@@ -7,7 +7,7 @@ using System.Text.Json;
 
 namespace NetMapper.Services
 {
-    public class JsonStore<T> : IStore<T> where T : new()
+    public class JsonStore<T> : IDataStore<T> where T : new()
     {
         readonly string jsonFile;
 
@@ -23,7 +23,7 @@ namespace NetMapper.Services
 
 
         // READ
-        public void Load()
+        private void Load()
         {
             // file does not exist, try create new one
             if (!File.Exists(jsonFile))
@@ -47,7 +47,7 @@ namespace NetMapper.Services
         }
 
         // WRITE
-        public void Save()
+        private void Save()
         {
             var jsonOptions = new JsonSerializerOptions
             {
@@ -74,7 +74,7 @@ namespace NetMapper.Services
             Save();
         }
 
-        public T GetAll()
+        public T GetData()
         {
             if (StoreData != null) return StoreData;
             Load();

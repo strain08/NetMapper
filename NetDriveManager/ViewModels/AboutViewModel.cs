@@ -1,7 +1,10 @@
-﻿using NetMapper.Services.Helpers;
+﻿using NetMapper.Services;
+using NetMapper.Services.Helpers;
 using NetMapper.Services.Static;
+using Splat;
 using System;
 using System.Diagnostics;
+using System.Runtime.CompilerServices;
 
 namespace NetMapper.ViewModels
 {
@@ -31,11 +34,13 @@ namespace NetMapper.ViewModels
             buildTime.Month.ToString() +            
             "." +
             buildTime.Day.ToString();
+        private readonly NavService navService;
 
         public AboutViewModel()
         {
             // get BuildTime from assembly
             buildTime = AppUtil.BuildTime();
+            navService = Locator.Current.GetRequiredService<NavService>();
             
         }
         public void HandleLinkClicked() 
@@ -50,7 +55,8 @@ namespace NetMapper.ViewModels
         }
         public void OkCommand()
         {
-            VMServices.MainWindowViewModel!.Content = VMServices.DriveListViewModel;
+            //VMServices.MainWindowViewModel!.Content = VMServices.DriveListViewModel;
+            navService.GoTo(typeof(DriveListViewModel));
         }
     }
 }

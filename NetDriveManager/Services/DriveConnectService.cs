@@ -9,27 +9,27 @@ using System.Threading.Tasks;
 
 namespace NetMapper.Services
 {
-    public class DriveConnectService
-    {        
+    public class DriveConnectService : IDriveConnectService
+    {
         //CTOR
         public DriveConnectService()
         {
-            
+
         }
 
         public void ConnectDrive(MapModel m)
         {
             Task.Run(() =>
             {
-                var result = Utility.ConnectNetworkDrive(m.DriveLetter, m.NetworkPath);
+                var result = Interop.ConnectNetworkDrive(m.DriveLetter, m.NetworkPath);
 
                 switch (result)
                 {
-                    case ConnectResult.Success:                        
-                        _ = new ToastDriveConnected(m, ToastClickedCallback);
+                    case ConnectResult.Success:
+                        _ = new ToastDriveConnected(m, CallbackToastClicked);
                         break;
-                    case ConnectResult.LoginFailure | ConnectResult.InvalidCredentials:                        
-                        _ = new ToastLoginFailure(m, ToastClickedCallback);
+                    case ConnectResult.LoginFailure | ConnectResult.InvalidCredentials:
+                        _ = new ToastLoginFailure(m, CallbackToastClicked);
                         break;
                     default:
                         Log.Error($"Error connecting to {m.NetworkPath}. Error code: {result} ");
@@ -43,39 +43,37 @@ namespace NetMapper.Services
             _ = Task.Run(() =>
             {
                 // not a network drive, do nothing
-                if (Utility.IsRegularDriveMapped(m.DriveLetter)) return;
+                if (Interop.IsRegularDriveMapped(m.DriveLetter)) return;
 
-                var result = Utility.DisconnectNetworkDrive(m.DriveLetter);
+                var result = Interop.DisconnectNetworkDrive(m.DriveLetter);
 
                 switch (result)
                 {
-                    case CancelConnection.DISCONNECT_SUCCESS:                        
-                        _ = new ToastDriveDisconnected(m, ToastClickedCallback);
+                    case CancelConnection.DISCONNECT_SUCCESS:
+                        _ = new ToastDriveDisconnected(m, CallbackToastClicked);
                         break;
-                    default:                       
-                        _ = new ToastCanNotRemoveDrive(m, UnableToDisconnectCallback);
+                    default:
+                        _ = new ToastCanNotRemoveDrive(m, CallbackDisconnect);
                         break;
                 }
             });
         }
 
-        private void UnableToDisconnectCallback(MapModel m, ToastActionsDisconnect answer)
+        private void CallbackDisconnect(MapModel m, ToastActionsDisconnect answer)
         {
             switch (answer)
             {
                 case ToastActionsDisconnect.Retry:
-                    //m.MappingStateProp = MappingState.Undefined;
                     DisconnectDrive(m);
                     break;
 
                 case ToastActionsDisconnect.Force:
                     Task.Run(() =>
                     {
-                        CancelConnection error = Utility.DisconnectNetworkDrive(m.DriveLetter, true);
+                        CancelConnection error = Interop.DisconnectNetworkDrive(m.DriveLetter, true);
                         if (error == CancelConnection.DISCONNECT_SUCCESS)
                         {
-                            //toastService.ToastDriveDisconnected(m, ToastClickedCallback);
-                            _ = new ToastDriveDisconnected(m, ToastClickedCallback);
+                            _ = new ToastDriveDisconnected(m, CallbackToastClicked);
                         }
                     });
                     break;
@@ -86,7 +84,7 @@ namespace NetMapper.Services
             }
         }
 
-        private void ToastClickedCallback(MapModel m, ToastActionsSimple answer)
+        private void CallbackToastClicked(MapModel m, ToastActionsSimple answer)
         {
             ShowMainWindow();
         }

@@ -13,6 +13,15 @@
         Unmapped,
         LetterUnavailable
     }
+    public enum ToastActionsDisconnect
+    {
+        Force,
+        Retry,
+        ShowWindow
+    }
+    public enum ToastActionsSimple
+    {
+        ShowWindow
+    }
 
-   
 }

@@ -1,25 +1,20 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using NetMapper.Enums;
 using NetMapper.Services.Helpers;
-using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
 using System.Text.Json.Serialization;
-using System.Threading.Tasks;
 
 namespace NetMapper.Models
 {
     public partial class MapModel
-    {        
+    {
         [ObservableProperty]
         [property: JsonIgnore]
         [NotifyPropertyChangedFor(nameof(ConnectCommandVisible))]
         [NotifyPropertyChangedFor(nameof(DisconnectCommandVisible))]
         ShareState shareStateProp = ShareState.Undefined;
 
-        
+
         [ObservableProperty]
         [property: JsonIgnore]
         [NotifyPropertyChangedFor(nameof(ConnectCommandVisible))]
@@ -47,7 +42,7 @@ namespace NetMapper.Models
         public bool CanAutoDisconnect =>
             CanDisconnect &&
             Settings.AutoDisconnect;
-        
+
         public void UpdateProperties()
         {
             UpdateShareState();
@@ -56,29 +51,33 @@ namespace NetMapper.Models
 
         private void UpdateShareState()
         {
-            ShareStateProp = Directory.Exists(NetworkPath) ? ShareState.Available : ShareState.Unavailable;
+            ShareStateProp = Directory.Exists(NetworkPath) ? 
+                ShareState.Available : ShareState.Unavailable;
         }
 
         private void UpdateMappingState()
         {
             // if it is a network drive mapped to this path -> Mapped            
-            if (Utility.GetActualPathForLetter(DriveLetter) == NetworkPath)
+            if (Interop.GetActualPathForLetter(DriveLetter) == NetworkPath)
             {
+                volumeLabel = null;
                 MappingStateProp = MappingState.Mapped;
                 return;
             }
             // if letter available -> unmapped, else -> unavailable
-            if (Utility.GetAvailableDriveLetters().Contains(DriveLetter))
+            if (Interop.GetAvailableDriveLetters().Contains(DriveLetter))
             {
                 MappingStateProp = MappingState.Unmapped;
             }
             else
             {
+                volumeLabel = null;
                 MappingStateProp = MappingState.LetterUnavailable;
+
             }
 
         }
 
-       
+
     }
 }

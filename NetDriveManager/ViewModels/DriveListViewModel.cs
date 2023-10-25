@@ -3,11 +3,9 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using NetMapper.Enums;
 using NetMapper.Models;
 using NetMapper.Services;
-using NetMapper.Services.Static;
 using Splat;
 using System;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
 
 namespace NetMapper.ViewModels
 {
@@ -22,25 +20,26 @@ namespace NetMapper.ViewModels
         MapModel?
             selectedItem;
 
-        readonly DriveListService driveListService;
-        readonly DriveConnectService driveConnectService;
+        readonly IDriveListService driveListService;
+        readonly IDriveConnectService driveConnectService;
+        readonly NavService navService;
 
         // CTOR
         public DriveListViewModel()
         {
-           if (Design.IsDesignMode) return; // design mode bypass            
-            
-            driveListService = Locator.Current.GetRequiredService<DriveListService>();
-            driveConnectService = Locator.Current.GetRequiredService<DriveConnectService>();
+            if (Design.IsDesignMode) return; // design mode bypass            
 
+            driveListService = Locator.Current.GetRequiredService<IDriveListService>();
+            driveConnectService = Locator.Current.GetRequiredService<IDriveConnectService>();
+            navService = Locator.Current.GetRequiredService<NavService>();
             DriveList = driveListService.DriveList;
-      
+
         }
 
         // COMMS        
         public void DisconnectDriveCommand(object commandParameter)
         {
-            var m = (MapModel)commandParameter
+            var m = commandParameter as MapModel
                 ?? throw new InvalidOperationException("Error getting command parameter for DisconnectDriveCommand");
             m.MappingStateProp = MappingState.Undefined;
             m.Settings.AutoConnect = false; // prevent auto reconnection in Mapping Loop
@@ -49,7 +48,7 @@ namespace NetMapper.ViewModels
 
         public void ConnectDriveCommand(object commandParameter)
         {
-            var m = (MapModel)commandParameter
+            var m = commandParameter as MapModel
                 ?? throw new InvalidOperationException("Error getting command parameter for ConnectDriveCommand");
             m.MappingStateProp = MappingState.Undefined;
             driveConnectService.ConnectDrive(m);
@@ -63,18 +62,21 @@ namespace NetMapper.ViewModels
             }
         }
 
-        public static void AddItem()
+        public void AddItem()
         {
-            VMServices.MainWindowViewModel!.Content = new DriveDetailViewModel();
+            //VMServices.MainWindowViewModel!.Content = new DriveDetailViewModel();
+
+            navService.GoTo(new DriveDetailViewModel());
+
         }
-        public static void About()
+        public void About()
         {
-            VMServices.MainWindowViewModel!.Content = new AboutViewModel();
+            navService.GoTo(new AboutViewModel());
         }
-        public static void Settings()
+        public void Settings()
         {
-            VMServices.MainWindowViewModel!.Content = new SettingsViewModel();
+            navService.GoTo(new SettingsViewModel());
         }
-        
+
     }
 }

@@ -1,5 +1,7 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+﻿using Avalonia.Controls;
+using CommunityToolkit.Mvvm.ComponentModel;
 using NetMapper.Services.Helpers;
+using NetMapper.Views;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -7,10 +9,10 @@ using System.ComponentModel;
 
 namespace NetMapper.ViewModels
 {
-    public class ViewModelBase : ObservableObject, INotifyDataErrorInfo
-    {
+    public partial class ViewModelBase : ObservableObject, INotifyDataErrorInfo
+    {  
         private static readonly string[] NO_ERRORS = Array.Empty<string>();
-        private readonly Dictionary<string, List<string>> _errorsByPropertyName = new();
+        private readonly Dictionary<string, List<string>> _errorsByPropertyName = new();        
 
         public event EventHandler<DataErrorsChangedEventArgs>? ErrorsChanged;
 
@@ -63,7 +65,7 @@ namespace NetMapper.ViewModels
                 AddError(propertyName, $"Path must be at most {maxLength} characters long.");
                 return false;
             }
-            if (!Utility.IsNetworkPath(value))
+            if (!Interop.IsNetworkPath(value))
             {
                 AddError(propertyName, $"Not a valid network path.");
                 return false;
@@ -71,5 +73,8 @@ namespace NetMapper.ViewModels
             RemoveError(propertyName);
             return true;
         }
+
+       
+        
     }
 }

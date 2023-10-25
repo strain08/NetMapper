@@ -15,31 +15,38 @@ namespace NetMapper.ViewModels
 {
     public partial class ApplicationViewModel : ViewModelBase
     {
-        public MainWindow MainWindowView;
-        readonly SettingsService settingsService;
-        readonly DriveListService listService;
+        public MainWindow? MainWindowView;
+
+        readonly ISettingsService settings;
+        readonly IDriveListService listService;
         [ObservableProperty]
         string tooltipText = string.Empty;
+        public ApplicationViewModel() { }
 
-        public ApplicationViewModel()     
+        public ApplicationViewModel(ISettingsService settingsService,IDriveListService driveListService)
         {
-            if (Design.IsDesignMode) return; 
-            settingsService = Locator.Current.GetRequiredService<SettingsService>();
-            settingsService.AddSetting(new SetRunAtStartup());
-            settingsService.AddSetting(new SetMinimizeTaskbar());
+            //if (Design.IsDesignMode) return; 
+            settings = settingsService;
+            listService = driveListService;
+            InitializeApp();
+        }
+
+        private void InitializeApp()
+        {
+            settings.AddModule(new SetRunAtStartup());
+            settings.AddModule(new SetMinimizeTaskbar());
 
             MainWindowView = new()
             {
-                DataContext = VMServices.MainWindowViewModel = new MainWindowViewModel()
+                DataContext = new MainWindowViewModel()
             };
-            settingsService.AddSetting(new SetMainWindow(MainWindowView));
+            settings.AddModule(new SetMainWindow(MainWindowView));
 
-            settingsService.ApplyAll();
+            settings.ApplyAll();
 
-            listService = Locator.Current.GetRequiredService<DriveListService>();
             listService.ModelPropertiesUpdated = UpdateTooltip;
 
-            VMServices.ApplicationViewModel = this;
+            //VMServices.ApplicationViewModel = this;
         }
 
         private void UpdateTooltip()
@@ -69,22 +76,29 @@ namespace NetMapper.ViewModels
         // systray menu
         public void ShowWindowCommand()
         {
-            App.AppContext((application) =>
-            {
-                application.MainWindow ??= MainWindowView;
-                application.MainWindow.WindowState = WindowState.Normal;
-                application.MainWindow.Show();
-                application.MainWindow.BringIntoView();
-                application.MainWindow.Focus();
-            });
+            ShowMainWindow();
         }
-        
+
         // systray menu
         public static void ExitCommand()
         {
             App.AppContext((application) =>
             {
                 application.Shutdown();                
+            });
+        }
+        protected void ShowMainWindow()
+        {
+            App.AppContext((application) =>
+            {
+                if (MainWindowView != null)
+                {
+                    application.MainWindow ??= MainWindowView;
+                    application.MainWindow.WindowState = WindowState.Normal;
+                    application.MainWindow.Show();
+                    application.MainWindow.BringIntoView();
+                    application.MainWindow.Focus();
+                }
             });
         }
     }

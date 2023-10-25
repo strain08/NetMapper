@@ -12,24 +12,29 @@ namespace NetMapper.ViewModels
         [ObservableProperty]
         AppSettingsModel displaySettings;
 
-        readonly SettingsService settingsService;
-
+        private readonly ISettingsService settingsService;
+        private readonly NavService navService;
         public SettingsViewModel()
         {
             //if (Design.IsDesignMode) return; // design mode bypass            
-            settingsService = Locator.Current.GetRequiredService<SettingsService>();
-            DisplaySettings = settingsService.AppSettings.Clone();
+            settingsService = Locator.Current.GetRequiredService<ISettingsService>();
+            navService = Locator.Current.GetRequiredService<NavService>();
+
+            DisplaySettings = settingsService.GetAppSettings().Clone();
         }
         public void OkCommand()
         {
-            settingsService.AppSettings = DisplaySettings.Clone();            
+            settingsService.SetAppSettings(DisplaySettings.Clone());            
             settingsService.ApplyAll();
             settingsService.SaveAll();
-            (VMServices.MainWindowViewModel ??= new()).Content = VMServices.DriveListViewModel;
+            
+            navService.GoTo(typeof(DriveListViewModel));
+            //(VMServices.MainWindowViewModel ??= new()).Content = VMServices.DriveListViewModel;
         }
-        public static void CancelCommand()
+        public void CancelCommand()
         {
-            (VMServices.MainWindowViewModel ??= new()).Content = VMServices.DriveListViewModel;
+            navService.GoTo(typeof(DriveListViewModel));
+            //(VMServices.MainWindowViewModel ??= new()).Content = VMServices.DriveListViewModel;
 
             
         }

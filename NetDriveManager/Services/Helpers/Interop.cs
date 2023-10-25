@@ -14,7 +14,7 @@ using System.Threading.Tasks;
 
 namespace NetMapper.Services.Helpers
 {
-    public static class Utility
+    public static class Interop
     {
 
         [DllImport("mpr.dll")]
@@ -26,10 +26,16 @@ namespace NetMapper.Services.Helpers
         private static extern int WNetCancelConnection2
             (string sLocalName, uint iFlags, int iForce);
 
-        public static ConnectResult ConnectNetworkDrive(char cDriveLetter, string sNetworkPath)
+        public static ConnectResult ConnectNetworkDrive(
+            char cDriveLetter, 
+            string sNetworkPath, 
+            string? sUser = null, 
+            string? sPassword = null)
         {
+
+
             //Checks if the last character is \ as this causes error on mapping a drive.
-            if (sNetworkPath.Substring(sNetworkPath.Length - 1, 1) == @"\")
+            if (sNetworkPath[^1..] == @"\")
             {
                 // sNetworkPath.Substring(0, sNetworkPath.Length - 1);
                 sNetworkPath = sNetworkPath[..^1];
@@ -41,7 +47,7 @@ namespace NetMapper.Services.Helpers
                 sLocalName = cDriveLetter + ":",
                 sRemoteName = sNetworkPath
             };
-            return (ConnectResult)WNetAddConnection2(ref oNetworkResource, null, null, 0);
+            return (ConnectResult)WNetAddConnection2(ref oNetworkResource, sPassword, sUser, 0);
         }
 
         public static async Task<ConnectResult> ConnectNetworkDriveAsync(char cDriveLetter, string sNetworkPath) => 
@@ -95,41 +101,41 @@ namespace NetMapper.Services.Helpers
             return false;
         }
 
-        public static void IsMachineOnline(string hostName)
-        {
-            using Ping pingSender = new();
-            PingOptions options = new()
-            {
-                // Use the default Ttl value which is 128,
-                // but change the fragmentation behavior.
-                DontFragment = true
-            };
+        //public static void IsMachineOnline(string hostName)
+        //{
+        //    using Ping pingSender = new();
+        //    PingOptions options = new()
+        //    {
+        //        // Use the default Ttl value which is 128,
+        //        // but change the fragmentation behavior.
+        //        DontFragment = true
+        //    };
 
 
-            // Create a buffer of 32 bytes of data to be transmitted.
-            string data = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
-            byte[] buffer = Encoding.ASCII.GetBytes(data);
-            int timeout = 120;
-            try
-            {
-                PingReply reply = pingSender.Send(hostName, timeout, buffer, options);
+        //    // Create a buffer of 32 bytes of data to be transmitted.
+        //    string data = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
+        //    byte[] buffer = Encoding.ASCII.GetBytes(data);
+        //    int timeout = 120;
+        //    try
+        //    {
+        //        PingReply reply = pingSender.Send(hostName, timeout, buffer, options);
 
-                if (reply.Status == IPStatus.Success)
-                {
-                    Debug.WriteLine(hostName + " is online.");
-                }
-                else
-                {
-                    Debug.WriteLine(hostName + " is offline.");
-                }
-            }
-            catch
-            {
-                Debug.WriteLine(hostName + " is offline.");
-            }
+        //        if (reply.Status == IPStatus.Success)
+        //        {
+        //            Debug.WriteLine(hostName + " is online.");
+        //        }
+        //        else
+        //        {
+        //            Debug.WriteLine(hostName + " is offline.");
+        //        }
+        //    }
+        //    catch
+        //    {
+        //        Debug.WriteLine(hostName + " is offline.");
+        //    }
 
-        }
-
+        //}
+        
         public static List<char> GetAvailableDriveLetters()
         {
             List<char> availableLetters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".ToList();
@@ -140,6 +146,7 @@ namespace NetMapper.Services.Helpers
 
             return availableLetters;
         }
+
         /// <summary>
         /// Get network path for network drive letter.
         /// </summary>

@@ -1,5 +1,4 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
-using NetMapper.Enums;
 using System.IO;
 using System.Text.Json.Serialization;
 
@@ -8,7 +7,7 @@ namespace NetMapper.Models;
 public partial class MapModel : ObservableObject
 {
     // PUBLIC PROP
-    public char DriveLetter { get; set; }    
+    public char DriveLetter { get; set; }
 
     public string NetworkPath { get; set; } = string.Empty;
 
@@ -19,23 +18,29 @@ public partial class MapModel : ObservableObject
     {
         get => DriveLetter + ":";
         set => DriveLetter = value[0];
-    }    
+    }
 
     [JsonIgnore]
     public string VolumeLabel
     {
         get
         {
-            DriveInfo drive = new(DriveLetterColon);
-            return drive.IsReady ? drive.VolumeLabel : string.Empty;
+            if (volumeLabel == null)
+            {
+                DriveInfo drive = new(DriveLetterColon);
+                return volumeLabel = drive.IsReady ? drive.VolumeLabel : string.Empty;
+            }
+            return volumeLabel;
         }
     }
-   
-    public MapModel Clone() 
-    { 
+
+    private string? volumeLabel = null;
+
+    public MapModel Clone()
+    {
         var clone = (MapModel)MemberwiseClone();
         clone.Settings = Settings.Clone();
-        return clone; 
+        return clone;
     }
 }
 
