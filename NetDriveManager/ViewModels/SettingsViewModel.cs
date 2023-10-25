@@ -26,15 +26,11 @@ namespace NetMapper.ViewModels
             settingsService.ApplyAll();
             settingsService.SaveAll();
 
-            navService.GoTo(typeof(DriveListViewModel));
-            //(VMServices.MainWindowViewModel ??= new()).Content = VMServices.DriveListViewModel;
+            navService.GoTo<DriveListViewModel>();
         }
         public void CancelCommand()
         {
-            navService.GoTo(typeof(DriveListViewModel));
-            //(VMServices.MainWindowViewModel ??= new()).Content = VMServices.DriveListViewModel;
-
-
+            navService.GoTo<DriveListViewModel>();
         }
     }
 }
