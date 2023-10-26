@@ -28,15 +28,16 @@ namespace NetMapper.Services.Toasts
                })
                .SetToastScenario(ToastScenario.Reminder);
 
+            var notificationData = new NotificationData();
+            notificationData.Values[MSG_CONTENT] = previousMsg = ToastMessage;
+
             var Toast = new ToastNotification(toastContent.GetXml())
             {
                 Tag = TAG,
-                Data = new NotificationData()
-            };
-            Toast.Data.Values[MSG_CONTENT] = previousMsg = ToastMessage;
+                Data = notificationData
+            };           
 
             Show(Toast);
-
         }
     }
 }

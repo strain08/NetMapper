@@ -1,4 +1,5 @@
 ﻿using NetMapper.Models;
+using NetMapper.Services.Interfaces;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.NetworkInformation;
@@ -7,23 +8,25 @@ using System.Threading.Tasks;
 
 namespace NetMapper.Services
 {
-    public class DrivePoolingService
+    public class PoolingService
     {
         private const int POLL_INTERVAL_MSEC = 5000;
         private readonly IDriveListService driveListService;
-        private readonly IDriveConnectService driveConnectService;
+        private readonly IUpdateModelState updateModelState;
+        private readonly IUpdateSystemState updateSystemState;
 
         //CTOR
-        public DrivePoolingService()
-        {
-
-        }
-        public DrivePoolingService(
+        public PoolingService() { }
+        
+        //CTOR
+        public PoolingService(
             IDriveListService driveListService, 
-            IDriveConnectService driveConnectService)
+            IUpdateModelState updateModel,
+            IUpdateSystemState updateSystem)
         {
             this.driveListService = driveListService;
-            this.driveConnectService = driveConnectService;
+            updateModelState = updateModel;
+            updateSystemState = updateSystem;
             // Get share and mapping states into model at regular intervals
             Task.Run(() => StateLoop(POLL_INTERVAL_MSEC));
         }        
@@ -36,8 +39,8 @@ namespace NetMapper.Services
                 foreach (MapModel m in driveListService.DriveList)
                 {
                     taskList.Add(Task.Run(()=> { 
-                        UpdateModel(m);
-                        UpdateSystem(m);
+                        updateModelState.Update(m);
+                        updateSystemState.Update(m);
                     }));
                 }
                 await Task.WhenAll(taskList);
@@ -45,22 +48,6 @@ namespace NetMapper.Services
                 Thread.Sleep(timeMilliseconds);
             }
         }
-
-        private void UpdateModel(MapModel m)
-        {
-            m.UpdateProperties();
-        }
-
-        private void UpdateSystem(MapModel m)
-        {
-            if (m.CanAutoConnect)
-            {
-                driveConnectService.ConnectDrive(m);                
-            }
-            if (m.CanAutoDisconnect)
-            {
-                driveConnectService.DisconnectDrive(m);
-            }
-        }
+                
     }
 }

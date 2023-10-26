@@ -64,10 +64,7 @@ namespace NetMapper.ViewModels
 
         public void AddItem()
         {
-            //VMServices.MainWindowViewModel!.Content = new DriveDetailViewModel();
-
             navService.GoTo(new DriveDetailViewModel());
-
         }
         public void About()
         {

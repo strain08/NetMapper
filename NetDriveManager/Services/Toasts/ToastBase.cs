@@ -8,9 +8,12 @@ namespace NetMapper.Services.Toasts
 {
     public class ToastBase<T> :IDisposable where T : struct, Enum 
     {
+        // if not null, next toast should be merged with this message
         private protected static string? previousMsg;
+        
+        // toastData binding key
         protected const string MSG_CONTENT = "MESSAGE";
-
+        
         protected ToastNotification? toastNotification;
         protected Action<MapModel, T> thisDel;
         protected MapModel thisModel;        
@@ -32,7 +35,7 @@ namespace NetMapper.Services.Toasts
         }        
         
         protected void Update(string newMessage, string tag)
-        {
+        {            
             var data = new NotificationData() { SequenceNumber = 0 };
             data.Values[MSG_CONTENT] = previousMsg += "\n" + newMessage;            
             ToastNotificationManagerCompat.CreateToastNotifier().Update(data, tag);

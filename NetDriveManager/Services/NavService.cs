@@ -6,58 +6,74 @@ namespace NetMapper.Services
 {
     public class NavService
     {
-        private readonly List<ViewModelBase> viewModelList;
+        private readonly Dictionary<Type, ViewModelBase> viewModelDictionary = new();
 
-        public Action<ViewModelBase>? Navigate;
+        private Action<ViewModelBase>? Navigate;
 
-        public NavService()
+        public NavService()  { }
+
+        public void SetNavigateCallback(Action<ViewModelBase> action)
         {
-            viewModelList = new();
+            Navigate = action;
         }
 
         public void AddViewModel(ViewModelBase viewModel)
         {
-            if (GetViewModel(viewModel.GetType()) == null)
-                viewModelList.Add(viewModel);
+            try
+            {
+                viewModelDictionary.Add(viewModel.GetType(), viewModel);
+            }
+            catch (ArgumentException)
+            {
+                throw new InvalidOperationException("Duplicate viewmodel: " + viewModel.GetType());
+            }
         }
 
-        public ViewModelBase? GetViewModel(Type type) => 
-            viewModelList.Find((vm) => vm.GetType() == type);
-
-        public T GetViewModel<T>() where T : ViewModelBase => 
-            viewModelList.Find((vm) => vm.GetType() == typeof(T)) as T ?? 
-            throw new InvalidOperationException($"ViewModel {nameof(T)} not found in list.");
-
-        private void RemoveViewModel(Type type)
+        public ViewModelBase? GetViewModel(Type type)
         {
-            var i = viewModelList.FindIndex((vm) => vm.GetType() == type);
-            viewModelList.RemoveAt(i);
+            if (viewModelDictionary.TryGetValue(type, out var viewModel))
+            {
+                return viewModel;
+            }
+            else
+            {
+                throw new InvalidOperationException("Can not find " + nameof(type) + " in dicionary");
+            }
         }
 
-        public void GoTo(Type t)
+        public T GetViewModel<T>() where T : ViewModelBase
         {
-            var vm = GetViewModel(t);
-            if (vm == null) throw new InvalidOperationException($"Can not navigate. Viewmodel {t.Name} not present in list.");
-            Navigate?.Invoke(vm);
+
+            if (viewModelDictionary.TryGetValue(typeof(T), out var viewModel))
+            {
+                return viewModel as T ?? throw new ArgumentNullException("Type mismatch: ");
+            }
+
+            throw new InvalidOperationException("Can not find " + nameof(T) + " in dictionary.");
+
         }
 
-        public void GoTo<T>() where T: ViewModelBase
+        public void GoTo<T>() where T : ViewModelBase
         {
-            var vm = GetViewModel<T>();
-            if (vm == null) throw new InvalidOperationException($"Can not navigate. Viewmodel {nameof(T)} not present in list.");
-            Navigate?.Invoke(vm);
+            if (Navigate == null) throw new InvalidOperationException($"Can not navigate. Navigate property null.");
+
+            Navigate.Invoke(GetViewModel<T>());
         }
 
         public void GoTo(ViewModelBase newViewModel)
         {
-            var existingVM = GetViewModel(newViewModel.GetType());
-            if (existingVM != null)
+            if (viewModelDictionary.TryAdd(newViewModel.GetType(), newViewModel))
             {
-                RemoveViewModel(existingVM.GetType());
+                Navigate?.Invoke(newViewModel);
+                return;
             }
-            AddViewModel(newViewModel);
+            // viewModel exists in dict, replace
+            viewModelDictionary.Remove(newViewModel.GetType());
+            viewModelDictionary.Add(newViewModel.GetType(), newViewModel);
             Navigate?.Invoke(newViewModel);
         }
+
+
     }
 
 }

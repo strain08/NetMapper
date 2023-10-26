@@ -20,7 +20,7 @@ namespace NetMapper
             string startupFolder = AppUtil.GetStartupFolder();
             string logFile = Path.Combine(startupFolder, AppUtil.GetAppName() + ".log");
 
-            //if (!Mutex.WaitOne(TimeSpan.Zero, true)) return; // check if app aleady started
+            if (!Mutex.WaitOne(TimeSpan.Zero, true)) return; // check if app aleady started
 
             Log.Logger = new LoggerConfiguration()
                 .WriteTo.Console()

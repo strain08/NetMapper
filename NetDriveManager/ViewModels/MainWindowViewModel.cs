@@ -12,10 +12,10 @@ namespace NetMapper.ViewModels
         public MainWindowViewModel()
         {
             var nav = Locator.Current.GetRequiredService<NavService>();
-            nav.Navigate = (vm) =>
+            nav.SetNavigateCallback((vm) =>
             {
                 Content = vm;
-            };
+            });
 
             nav.GoTo(new DriveListViewModel());
 

@@ -10,16 +10,14 @@ namespace NetMapper.Services
     {
         private AppSettingsModel appSettings;
 
-        private readonly IDataStore<AppSettingsModel> SettingsStore;
+        private readonly IDataStore<AppSettingsModel> SettingsStore;        
 
-        private readonly List<ISettingModule> SettingsList; //SettingsList.GetSetting(typeof(RunAtStartup));        
-
+        private readonly Dictionary<Type, ISettingModule> SettingsDictionary = new();
         //CTOR
         public SettingsService(IDataStore<AppSettingsModel> store)
-        {
+        {            
             SettingsStore = store;
             appSettings = store.GetData();
-            SettingsList = new();
         }
 
         public AppSettingsModel GetAppSettings()
@@ -30,31 +28,43 @@ namespace NetMapper.Services
         public void SetAppSettings(AppSettingsModel value)
         {
             appSettings = value;
-            foreach (var setting in SettingsList)
-                setting.SetAppSettings(value);
+
+            foreach (var setting in SettingsDictionary)
+            {
+                setting.Value.SetAppSettings(appSettings);
+            }
         }
 
         public void AddModule(ISettingModule settingModule)
-        {
-            // check if module already exists
-            if (SettingsList.Find((sm) => sm.GetType() == settingModule.GetType()) != null)
-                throw new InvalidOperationException($"{ToString} : Duplicate setting: {settingModule.GetType()}");
+        { 
+            try
+            {
+                SettingsDictionary.Add(settingModule.GetType(), settingModule);
+                settingModule.SetAppSettings(GetAppSettings());
 
-            settingModule.SetAppSettings(GetAppSettings());
-            SettingsList.Add(settingModule);
+            } catch (ArgumentException)
+            {
+                throw new InvalidOperationException($"{ToString} : Duplicate setting: {settingModule.GetType()}");
+            }
         }
 
         public ISettingModule GetModule(Type settingType)
         {
-            return SettingsList.Find((s) => s.GetType() == settingType) ??
+            if(SettingsDictionary.TryGetValue(settingType,out var settingModule))
+            {
+                return settingModule;
+            }
+            else
+            {
                 throw new InvalidOperationException($"{ToString} : Can not find {settingType} in SettingsList.");
+            }
         }
 
         public void ApplyAll()
         {
-            foreach (var setting in SettingsList)
+            foreach (var setting in SettingsDictionary)
             {
-                setting.Apply();
+                setting.Value.Apply();
             }
         }
 

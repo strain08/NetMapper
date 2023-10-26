@@ -13,7 +13,7 @@ namespace NetMapper.Services
     {
         private readonly NavService nav;
         //CTOR
-        
+
         public DriveConnectService(NavService navService)
         {
             nav = navService;
@@ -94,9 +94,9 @@ namespace NetMapper.Services
         private void ShowMainWindow()
         {
             Dispatcher.UIThread.Post(() =>
-            {                
-                var appVm = nav.GetViewModel(typeof(ApplicationViewModel)) as ApplicationViewModel;
-                appVm?.ShowMainWindow();
+            {
+                nav.GetViewModel<ApplicationViewModel>()
+                   .ShowMainWindow();
             });
         }
     }

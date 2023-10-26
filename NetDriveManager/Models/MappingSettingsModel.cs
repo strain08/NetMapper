@@ -1,9 +1,8 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
-using System;
 
 namespace NetMapper.Models
 {
-    public partial class MappingSettingsModel:ObservableObject
+    public partial class MappingSettingsModel : ObservableObject
     {
         [ObservableProperty]
         bool autoConnect;

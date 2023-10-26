@@ -1,4 +1,5 @@
 ﻿using NetMapper.Models;
+using NetMapper.Services.Interfaces;
 using NetMapper.Services.Stores;
 using Splat;
 using System;
@@ -6,6 +7,7 @@ using System.Collections.Generic;
 
 namespace NetMapper.Services
 {
+
     public static class Bootstrapper
     {
         public static void Register(IMutableDependencyResolver s, IReadonlyDependencyResolver r)
@@ -32,12 +34,18 @@ namespace NetMapper.Services
             s.RegisterLazySingleton<IDriveListService>(() => new DriveListService(
                 r.GetRequiredService<IDataStore<List<MapModel>>>()));
 
-            // StateGenerator
-            s.RegisterConstant(new DrivePoolingService(
-                r.GetRequiredService<IDriveListService>(),
-                r.GetRequiredService<IDriveConnectService>()));
-
+            // Model state updater
+            s.Register<IUpdateModelState>(() => new UpdateModelState());
             
+            // System state updater
+            s.Register<IUpdateSystemState>(() => new UpdateSystemState(
+                r.GetRequiredService<IDriveConnectService>()));
+            
+            // Pooling Service
+            s.RegisterConstant(new PoolingService(
+                r.GetRequiredService<IDriveListService>(),
+                r.GetRequiredService<IUpdateModelState>(),
+                r.GetRequiredService<IUpdateSystemState>()));            
         }
 
         public static TService GetRequiredService<TService>(this IReadonlyDependencyResolver resolver) where TService : class
