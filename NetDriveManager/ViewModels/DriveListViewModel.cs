@@ -32,7 +32,7 @@ namespace NetMapper.ViewModels
             driveListService = Locator.Current.GetRequiredService<IDriveListService>();
             driveConnectService = Locator.Current.GetRequiredService<IDriveConnectService>();
             navService = Locator.Current.GetRequiredService<NavService>();
-            DriveList = driveListService.DriveList;
+            DriveList = driveListService.DriveList;            
 
         }
 
@@ -41,7 +41,6 @@ namespace NetMapper.ViewModels
         {
             var m = commandParameter as MapModel
                 ?? throw new InvalidOperationException("Error getting command parameter for DisconnectDriveCommand");
-            m.MappingStateProp = MappingState.Undefined;
             m.Settings.AutoConnect = false; // prevent auto reconnection in Mapping Loop
             driveConnectService.DisconnectDrive(m);
         }
@@ -49,8 +48,7 @@ namespace NetMapper.ViewModels
         public void ConnectDriveCommand(object commandParameter)
         {
             var m = commandParameter as MapModel
-                ?? throw new InvalidOperationException("Error getting command parameter for ConnectDriveCommand");
-            m.MappingStateProp = MappingState.Undefined;
+                ?? throw new InvalidOperationException("Error getting command parameter for ConnectDriveCommand");            
             driveConnectService.ConnectDrive(m);
         }
 

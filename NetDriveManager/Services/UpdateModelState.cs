@@ -31,7 +31,7 @@ namespace NetMapper.Services
             // if it is a network drive mapped to this path -> Mapped            
             if (Interop.GetActualPathForLetter(m.DriveLetter) == m.NetworkPath)
             {
-                m.VolumeLabel = GetVolumeLabel(m);
+                m.VolumeLabel = Interop.GetVolumeLabel(m);
                 m.MappingStateProp = MappingState.Mapped;
                 return;
             }
@@ -42,15 +42,11 @@ namespace NetMapper.Services
             }
             else // ->unavailable
             {
-                m.VolumeLabel = GetVolumeLabel(m);
+                m.VolumeLabel = Interop.GetVolumeLabel(m);
                 m.MappingStateProp = MappingState.LetterUnavailable;
             }
         }
 
-        private string GetVolumeLabel(MapModel m)
-        {
-            DriveInfo drive = new(m.DriveLetterColon);
-            return drive.IsReady ? drive.VolumeLabel : string.Empty;
-        }
+        
     }
 }

@@ -101,6 +101,11 @@ namespace NetMapper.Services.Helpers
             return false;
         }
 
+        public static string GetVolumeLabel(MapModel m)
+        {
+            DriveInfo drive = new(m.DriveLetterColon);
+            return drive.IsReady ? drive.VolumeLabel : string.Empty;
+        }
         //public static void IsMachineOnline(string hostName)
         //{
         //    using Ping pingSender = new();
@@ -135,7 +140,7 @@ namespace NetMapper.Services.Helpers
         //    }
 
         //}
-        
+
         public static List<char> GetAvailableDriveLetters()
         {
             List<char> availableLetters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".ToList();

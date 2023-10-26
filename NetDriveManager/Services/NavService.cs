@@ -29,18 +29,6 @@ namespace NetMapper.Services
             }
         }
 
-        public ViewModelBase? GetViewModel(Type type)
-        {
-            if (viewModelDictionary.TryGetValue(type, out var viewModel))
-            {
-                return viewModel;
-            }
-            else
-            {
-                throw new InvalidOperationException("Can not find " + nameof(type) + " in dicionary");
-            }
-        }
-
         public T GetViewModel<T>() where T : ViewModelBase
         {
 
@@ -68,8 +56,7 @@ namespace NetMapper.Services
                 return;
             }
             // viewModel exists in dict, replace
-            viewModelDictionary.Remove(newViewModel.GetType());
-            viewModelDictionary.Add(newViewModel.GetType(), newViewModel);
+            viewModelDictionary[newViewModel.GetType()] = newViewModel;
             Navigate?.Invoke(newViewModel);
         }
 

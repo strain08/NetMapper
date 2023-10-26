@@ -29,21 +29,21 @@ namespace NetMapper
 
             Log.Information("Application started in: " + AppUtil.GetStartupFolder());
 
-            //try
-            //{
+            try
+            {
                 BuildAvaloniaApp()
                 .StartWithClassicDesktopLifetime(args);
                 Mutex.ReleaseMutex();
-            //}
-            //catch (Exception ex)
-            //{
-            //    Log.Fatal(ex, "Fatal error.");
+            }
+            catch (Exception ex)
+            {
+                Log.Fatal(ex, "Fatal error.");
 
-            //}
-            //finally
-            //{
-            //    Log.CloseAndFlush();
-            //}
+            }
+            finally
+            {
+                Log.CloseAndFlush();
+            }
 
 
         }

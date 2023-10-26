@@ -1,6 +1,4 @@
 ﻿using Avalonia;
-using CommunityToolkit.Mvvm.ComponentModel;
-using System;
 using System.Text.Json.Serialization;
 
 namespace NetMapper.Models
@@ -11,7 +9,7 @@ namespace NetMapper.Models
         public bool SetRemoveUnmanaged { get; set; }
         public bool SetMinimizeToTaskbar { get; set; }
         public bool SetInfoNotify { get; set; }
-        
+
         public double WindowHeight { get; set; } = 400;
         public double WindowWidth { get; set; } = 225;
         public int WinX { get; set; }
@@ -35,11 +33,9 @@ namespace NetMapper.Models
             if (WinY > 0 && WinY > 0) return true;
             return false;
         }
-        
+
         [JsonIgnore]
         public bool WindowIsOpened = false;
-        [JsonIgnore]
-        public bool EventsInitialized = false;
 
         public AppSettingsModel Clone() => (AppSettingsModel)MemberwiseClone();
     }

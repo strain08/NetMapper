@@ -44,12 +44,15 @@
 							Orientation="Horizontal">
 					<!-- Add / Remove -->
 					<Button Classes="btnMain"
-							Command="{Binding AddItem}" Padding="8" Margin="4">
+							Command="{Binding AddItem}"
+							Padding="8"
+							Margin="4">
 						<Image Source="{SvgImage /Assets/plus-large-svgrepo-com.svg}"/>
 
 					</Button>
 					<Button Classes="btnMain"
-							Command="{Binding RemoveItem}" Padding="8">
+							Command="{Binding RemoveItem}"
+							Padding="8">
 						<Image Source="{SvgImage /Assets/minus-svgrepo-com.svg}"/>
 
 					</Button>
@@ -72,11 +75,11 @@
 									Content="Detach"
 									Command="{Binding $parent[ListBox].DataContext.DisconnectDriveCommand}"
 									IsVisible="{Binding DisconnectCommandVisible}"
-									CommandParameter="{Binding}"									
+									CommandParameter="{Binding}"
 									VerticalAlignment="Center"
 									VerticalContentAlignment="Center"/>
 								<Button
-									Content="Attach"									
+									Content="Attach"
 									IsVisible="{Binding ConnectCommandVisible}"
 									Command="{Binding $parent[ListBox].DataContext.ConnectDriveCommand}"
 									CommandParameter="{Binding}"
@@ -102,7 +105,7 @@
 										Text="{Binding VolumeLabel}"/>
 								</StackPanel>
 								<!-- Network path-->
-								<TextBlock 
+								<TextBlock
 									Classes="detail"
 									Margin="8,0,0,8"
 									Text="{Binding NetworkPath}"							/>

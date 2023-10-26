@@ -21,6 +21,8 @@ namespace NetMapper.Services
 
         public void ConnectDrive(MapModel m)
         {
+            m.MappingStateProp = MappingState.Undefined;
+
             Task.Run(() =>
             {
                 var result = Interop.ConnectNetworkDrive(m.DriveLetter, m.NetworkPath);
@@ -28,6 +30,7 @@ namespace NetMapper.Services
                 switch (result)
                 {
                     case ConnectResult.Success:
+                        m.VolumeLabel = Interop.GetVolumeLabel(m);
                         _ = new ToastDriveConnected(m, CallbackToastClicked);
                         break;
                     case ConnectResult.LoginFailure | ConnectResult.InvalidCredentials:
@@ -42,7 +45,8 @@ namespace NetMapper.Services
 
         public void DisconnectDrive(MapModel m)
         {
-            _ = Task.Run(() =>
+            m.MappingStateProp = MappingState.Undefined;
+            Task.Run(() =>
             {
                 // not a network drive, do nothing
                 if (Interop.IsRegularDriveMapped(m.DriveLetter)) return;

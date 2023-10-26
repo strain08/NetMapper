@@ -58,13 +58,13 @@
 				/>
 			<StackPanel Classes="detail">
 				<CheckBox
-					IsChecked="{Binding DisplaySettings.bLoadAtStartup}"
+					IsChecked="{Binding DisplaySettings.SetLoadAtStartup}"
 					Content="Start with Windows"
 					ToolTip.Tip="Launch at login"/>
 			</StackPanel>
 			<StackPanel Classes="detail">
 				<CheckBox
-					IsChecked="{Binding DisplaySettings.bMinimizeToTaskbar}"
+					IsChecked="{Binding DisplaySettings.SetMinimizeToTaskbar}"
 					Content="Minimize to system tray"
 					ToolTip.Tip="Launch at login"/>
 			</StackPanel>
