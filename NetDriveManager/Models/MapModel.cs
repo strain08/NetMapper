@@ -16,12 +16,11 @@ public partial class MapModel : ObservableObject
         set => DriveLetter = value[0];
     }
     public string NetworkPath { get; set; } = string.Empty;
-    
 
-    [ObservableProperty]
-    [property: JsonIgnore]
-    string? volumeLabel;
     
+    [ObservableProperty]
+    string? volumeLabel;
+
     public MappingSettingsModel Settings { get; set; } = new();
 
     public MapModel Clone()

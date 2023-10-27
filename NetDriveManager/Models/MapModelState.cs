@@ -1,7 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using NetMapper.Enums;
 using NetMapper.Services.Helpers;
-using System.IO;
 using System.Text.Json.Serialization;
 
 namespace NetMapper.Models
@@ -18,8 +17,20 @@ namespace NetMapper.Models
         [property: JsonIgnore]
         [NotifyPropertyChangedFor(nameof(ConnectCommandVisible))]
         [NotifyPropertyChangedFor(nameof(DisconnectCommandVisible))]
-        [NotifyPropertyChangedFor(nameof(VolumeLabel))]
         MappingState mappingStateProp = MappingState.Undefined;
+
+        partial void OnMappingStatePropChanged(MappingState value)
+        {
+            if (value == MappingState.Mapped |
+                value == MappingState.LetterUnavailable)
+            {
+                VolumeLabel = Interop.GetVolumeLabel(this);
+            }
+            if (value == MappingState.Unmapped)
+            {
+                VolumeLabel = "";
+            }
+        }
 
         [JsonIgnore]
         private bool CanConnect =>
@@ -39,6 +50,6 @@ namespace NetMapper.Models
         [JsonIgnore]
         public bool CanAutoDisconnect =>
             CanDisconnect &&
-            Settings.AutoDisconnect;  
+            Settings.AutoDisconnect;
     }
 }

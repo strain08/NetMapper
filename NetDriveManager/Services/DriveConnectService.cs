@@ -30,7 +30,7 @@ namespace NetMapper.Services
                 switch (result)
                 {
                     case ConnectResult.Success:
-                        m.VolumeLabel = Interop.GetVolumeLabel(m);
+                        m.MappingStateProp = MappingState.Mapped;
                         _ = new ToastDriveConnected(m, CallbackToastClicked);
                         break;
                     case ConnectResult.LoginFailure | ConnectResult.InvalidCredentials:
@@ -55,8 +55,9 @@ namespace NetMapper.Services
 
                 switch (result)
                 {
-                    case CancelConnection.DISCONNECT_SUCCESS:
+                    case CancelConnection.DISCONNECT_SUCCESS:                        
                         _ = new ToastDriveDisconnected(m, CallbackToastClicked);
+                        m.MappingStateProp = MappingState.Unmapped;
                         break;
                     default:
                         _ = new ToastCanNotRemoveDrive(m, CallbackDisconnect);

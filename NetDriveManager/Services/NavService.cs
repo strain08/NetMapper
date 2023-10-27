@@ -25,7 +25,7 @@ namespace NetMapper.Services
             }
             catch (ArgumentException)
             {
-                throw new InvalidOperationException("Duplicate viewmodel: " + viewModel.GetType());
+                throw new InvalidOperationException($"{ToString}: Duplicate ViewModel: {viewModel.GetType()}.");
             }
         }
 
@@ -34,16 +34,18 @@ namespace NetMapper.Services
 
             if (viewModelDictionary.TryGetValue(typeof(T), out var viewModel))
             {
-                return viewModel as T ?? throw new ArgumentNullException("Type mismatch: ");
+                return viewModel as T ?? 
+                    throw new ArgumentNullException($"{ToString}: Type mismatch: {viewModel.GetType()} should be {nameof(T)}.");
             }
 
-            throw new InvalidOperationException("Can not find " + nameof(T) + " in dictionary.");
+            throw new InvalidOperationException($"{ToString}: Can not find {nameof(T)} in dictionary.");
 
         }
 
         public void GoTo<T>() where T : ViewModelBase
         {
-            if (Navigate == null) throw new InvalidOperationException($"Can not navigate. Navigate property null.");
+            if (Navigate == null) 
+                throw new NullReferenceException($"{ToString}: Can not navigate to {nameof(T)}. \"Navigate\" property null.");
 
             Navigate.Invoke(GetViewModel<T>());
         }

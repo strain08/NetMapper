@@ -19,30 +19,34 @@ namespace NetMapper.Services
             UpdateShareState(m);
             UpdateMappingState(m);
         }
-
+        /// <summary>
+        /// Updates model's ShareStateProp to System State
+        /// </summary>
+        /// <param name="m"></param>
         private void UpdateShareState(MapModel m)
         {
             m.ShareStateProp = Directory.Exists(m.NetworkPath) ?
                 ShareState.Available : ShareState.Unavailable;
         }
-
+        /// <summary>
+        /// Updates model's MappingStateProp to System State
+        /// </summary>
+        /// <param name="m"></param>
         private void UpdateMappingState(MapModel m)
         {
-            // if it is a network drive mapped to this path -> Mapped            
+            // if a Network Drive is mapped to this path -> Mapped            
             if (Interop.GetActualPathForLetter(m.DriveLetter) == m.NetworkPath)
-            {
-                m.VolumeLabel = Interop.GetVolumeLabel(m);
-                m.MappingStateProp = MappingState.Mapped;
+            {   
+                m.MappingStateProp =  MappingState.Mapped;                
                 return;
             }
-            // if letter available -> unmapped
+            // if Letter Available -> drive is Unmapped
             if (Interop.GetAvailableDriveLetters().Contains(m.DriveLetter))
-            {
+            {               
                 m.MappingStateProp = MappingState.Unmapped;
             }
-            else // ->unavailable
+            else // Drive letter not available, is mapped to something else
             {
-                m.VolumeLabel = Interop.GetVolumeLabel(m);
                 m.MappingStateProp = MappingState.LetterUnavailable;
             }
         }
