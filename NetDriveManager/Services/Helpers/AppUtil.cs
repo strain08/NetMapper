@@ -33,6 +33,7 @@ namespace NetMapper.Services.Helpers
 
         public static string GetAppName()
         {
+            if (Avalonia.Controls.Design.IsDesignMode) return "AppName";            
             return GetVersionInfo().ProductName ?? GetVersionInfo().FileName;
         }
   

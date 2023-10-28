@@ -1,6 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using System.IO;
 using System.Text.Json.Serialization;
+using Windows.System;
 
 namespace NetMapper.Models;
 

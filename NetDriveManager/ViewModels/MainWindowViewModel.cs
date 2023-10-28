@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using NetMapper.Services;
+using NetMapper.Services.Helpers;
 using Splat;
 
 namespace NetMapper.ViewModels
@@ -8,6 +9,8 @@ namespace NetMapper.ViewModels
     {
         [ObservableProperty]
         ViewModelBase? content;
+
+        public string Title => AppUtil.GetAppName();
 
         public MainWindowViewModel()
         {

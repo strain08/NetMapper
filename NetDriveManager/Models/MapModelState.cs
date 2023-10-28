@@ -1,7 +1,9 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Messaging;
 using NetMapper.Enums;
 using NetMapper.Services.Helpers;
 using System.Text.Json.Serialization;
+using NetMapper.Messages;
 
 namespace NetMapper.Models
 {
@@ -21,6 +23,8 @@ namespace NetMapper.Models
 
         partial void OnMappingStatePropChanged(MappingState value)
         {
+            WeakReferenceMessenger.Default.Send(new PropertyChangedMessage("MappingState"));
+
             if (value == MappingState.Mapped |
                 value == MappingState.LetterUnavailable)
             {

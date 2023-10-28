@@ -18,8 +18,8 @@
 				<RowDefinition Height="40"></RowDefinition>
 				<RowDefinition></RowDefinition>
 			</Grid.RowDefinitions>
-			<TextBlock
-				Text="NetMapper"
+			<TextBlock				
+				Text="{Binding Title}"
 				FontSize="14"
 				Padding="0,0,0,0"
 				IsHitTestVisible="False"/>

@@ -1,18 +1,15 @@
 ﻿using Avalonia.Controls;
 using CommunityToolkit.Mvvm.ComponentModel;
-using NetMapper.Models;
+using CommunityToolkit.Mvvm.Messaging;
 using NetMapper.Services;
 using NetMapper.Services.Settings;
 using NetMapper.Views;
+using NetMapper.Messages;
 using Splat;
-using System;
-using System.Collections.ObjectModel;
-using System.Collections.Specialized;
-using System.Diagnostics;
 
 namespace NetMapper.ViewModels
 {
-    public partial class ApplicationViewModel : ViewModelBase
+    public partial class ApplicationViewModel : ViewModelBase, IRecipient<PropertyChangedMessage>
     {
         public MainWindow? MainWindowView;
 
@@ -24,12 +21,13 @@ namespace NetMapper.ViewModels
 
         public ApplicationViewModel() { }
 
-        public ApplicationViewModel(ISettingsService settingsService,IDriveListService driveListService)
+        public ApplicationViewModel(ISettingsService settingsService, IDriveListService driveListService)
         {
             //if (Design.IsDesignMode) return; 
             navService = Locator.Current.GetRequiredService<NavService>();
             settings = settingsService;
             listService = driveListService;
+            WeakReferenceMessenger.Default.Register(this);
             InitializeApp();
         }
 
@@ -46,8 +44,8 @@ namespace NetMapper.ViewModels
 
             settings.ApplyAll();
 
-            listService.ModelPropertiesUpdated = UpdateTooltip;
-            
+            //listService.ModelPropertiesUpdated = UpdateTooltip;
+
             navService.AddViewModel(this);
             //VMServices.ApplicationViewModel = this;
         }
@@ -56,7 +54,7 @@ namespace NetMapper.ViewModels
         {
             TooltipText = string.Empty;
 
-            foreach (var item in listService.DriveList) 
+            foreach (var item in listService.DriveList)
             {
                 TooltipText += item.DriveLetterColon;
                 switch (item.MappingStateProp)
@@ -73,9 +71,9 @@ namespace NetMapper.ViewModels
                 }
 
                 TooltipText += "\n";
-            }     
+            }
         }
-        
+
         // systray menu
         public void ShowWindowCommand()
         {
@@ -87,7 +85,7 @@ namespace NetMapper.ViewModels
         {
             App.AppContext((application) =>
             {
-                application.Shutdown();                
+                application.Shutdown();
             });
         }
 
@@ -104,6 +102,11 @@ namespace NetMapper.ViewModels
                     application.MainWindow.Focus();
                 }
             });
+        }
+
+        public void Receive(PropertyChangedMessage message)
+        {
+            UpdateTooltip();
         }
     }
 }
