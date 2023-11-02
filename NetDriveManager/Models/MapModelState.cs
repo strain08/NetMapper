@@ -23,8 +23,8 @@ namespace NetMapper.Models
 
         partial void OnMappingStatePropChanged(MappingState value)
         {
-            WeakReferenceMessenger.Default.Send(new PropertyChangedMessage("MappingState"));
-
+            WeakReferenceMessenger.Default.Send(new PropertyChangedMessage(nameof(MappingStateProp),value));
+            
             if (value == MappingState.Mapped |
                 value == MappingState.LetterUnavailable)
             {
@@ -34,7 +34,7 @@ namespace NetMapper.Models
             {
                 VolumeLabel = "";
             }
-        }
+        }        
 
         [JsonIgnore]
         private bool CanConnect =>

@@ -6,7 +6,7 @@ using Windows.UI.Notifications;
 
 namespace NetMapper.Services.Toasts
 {
-    public class ToastBase<T> :IDisposable where T : struct, Enum 
+    public class ToastBase<TAnswer> :IDisposable where TAnswer : struct, Enum 
     {
         // if not null, next toast should be merged with this message
         private protected static string? previousMsg;
@@ -15,12 +15,12 @@ namespace NetMapper.Services.Toasts
         protected const string MSG_CONTENT = "MESSAGE";
         
         protected ToastNotification? toastNotification;
-        protected Action<MapModel, T> thisDel;
+        protected Action<MapModel, TAnswer> thisDel;
         protected MapModel thisModel;        
         private bool disposedValue;
         
 
-        public ToastBase(MapModel m, Action<MapModel, T> del)
+        public ToastBase(MapModel m, Action<MapModel, TAnswer> del)
         {
             thisDel = del;           
             thisModel = m;  
@@ -54,7 +54,7 @@ namespace NetMapper.Services.Toasts
             previousMsg = null;
             var eventArgs = obj as ToastActivatedEventArgs;
             ToastArguments args = ToastArguments.Parse(eventArgs?.Arguments);
-            thisDel.Invoke(thisModel, args.GetEnum<T>("A"));
+            thisDel.Invoke(thisModel, args.GetEnum<TAnswer>("A"));
 
             if (toastNotification == null) return;
             toastNotification.Activated -= Activated;                

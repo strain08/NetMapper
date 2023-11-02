@@ -6,6 +6,7 @@ using NetMapper.Services.Settings;
 using NetMapper.Views;
 using NetMapper.Messages;
 using Splat;
+using System.Diagnostics;
 
 namespace NetMapper.ViewModels
 {
@@ -44,10 +45,7 @@ namespace NetMapper.ViewModels
 
             settings.ApplyAll();
 
-            //listService.ModelPropertiesUpdated = UpdateTooltip;
-
             navService.AddViewModel(this);
-            //VMServices.ApplicationViewModel = this;
         }
 
         private void UpdateTooltip()
@@ -67,6 +65,9 @@ namespace NetMapper.ViewModels
                         break;
                     case Enums.MappingState.LetterUnavailable:
                         TooltipText += " letter unavailable.";
+                        break;
+                    default:
+                        TooltipText += " updating...";
                         break;
                 }
 
@@ -105,7 +106,7 @@ namespace NetMapper.ViewModels
         }
 
         public void Receive(PropertyChangedMessage message)
-        {
+        {            
             UpdateTooltip();
         }
     }
