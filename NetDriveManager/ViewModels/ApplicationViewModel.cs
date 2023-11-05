@@ -20,7 +20,8 @@ public partial class ApplicationViewModel : ViewModelBase, IRecipient<PropertyCh
     private readonly ISettingsService settings;
     public MainWindow? MainWindowView;
 
-    [ObservableProperty] private string tooltipText = string.Empty;
+    [ObservableProperty] 
+    private string tooltipText = string.Empty;
 
     public ApplicationViewModel()
     {

@@ -8,9 +8,9 @@ namespace NetMapper.ViewModels;
 
 public partial class AboutViewModel : ViewModelBase
 {
-    private readonly DateTime buildTime;
+    private readonly DateTime _buildTime;
 
-    private readonly INavService nav;
+    private readonly INavService _nav;
 
     public AboutViewModel() { }
 
@@ -18,8 +18,8 @@ public partial class AboutViewModel : ViewModelBase
     public AboutViewModel(INavService navService)
     {
         // get BuildTime from assembly
-        buildTime = AppUtil.BuildTime();
-        nav = navService;
+        _buildTime = AppUtil.BuildTime();
+        _nav = navService;
     }
 
     public static string AppNameAndVersion
@@ -27,10 +27,10 @@ public partial class AboutViewModel : ViewModelBase
         get
         {
             var fvi = AppUtil.GetVersionInfo();
-            var AppName = fvi.ProductName ?? fvi.FileName;
+            var appName = fvi.ProductName ?? fvi.FileName;
             var versionMajor = fvi.FileMajorPart.ToString();
             var versionMinor = fvi.FileMinorPart.ToString();
-            var result = AppName + " " + versionMajor + "." + versionMinor + "b";
+            var result = appName + " " + versionMajor + "." + versionMinor + "b";
             return result;
         }
     }
@@ -40,11 +40,11 @@ public partial class AboutViewModel : ViewModelBase
 
     public string BuildTime =>
         "build: " +
-        buildTime.Year +
+        _buildTime.Year +
         "." +
-        buildTime.Month +
+        _buildTime.Month +
         "." +
-        buildTime.Day;
+        _buildTime.Day;
 
     public void HandleLinkClicked()
     {
@@ -58,6 +58,6 @@ public partial class AboutViewModel : ViewModelBase
 
     public void OkCommand()
     {
-        nav.GoTo<DriveListViewModel>();
+        _nav.GoTo<DriveListViewModel>();
     }
 }

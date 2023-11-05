@@ -6,6 +6,9 @@
              x:Class="NetMapper.Views.SettingsView"
              xmlns:vm="using:NetMapper.ViewModels"
              x:DataType="vm:SettingsViewModel">
+    <Design.DataContext>
+        <vm:SettingsViewModel />
+    </Design.DataContext>
     <UserControl.Styles>
         <Style Selector="StackPanel.detail">
             <Setter Property="Margin" Value="16,8,16,0" />

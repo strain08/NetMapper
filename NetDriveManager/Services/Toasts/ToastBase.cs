@@ -43,12 +43,11 @@ public class ToastBase<TAnswer> : IDisposable where TAnswer : struct, Enum
 
     public ToastBase<TAnswer> Show()
     {
-        if (_toastNotification != null)
-        {
-            _toastNotification.Activated += Activated;
-            _toastNotification.Dismissed += Dismissed;
-            ToastNotificationManagerCompat.CreateToastNotifier().Show(_toastNotification);
-        }
+        if (_toastNotification == null)
+            throw new ArgumentNullException(nameof(_toastNotification), "Toast notification not set.");
+        _toastNotification.Activated += Activated;
+        _toastNotification.Dismissed += Dismissed;
+        ToastNotificationManagerCompat.CreateToastNotifier().Show(_toastNotification);
 
         return this;
     }
