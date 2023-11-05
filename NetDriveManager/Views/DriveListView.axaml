@@ -68,7 +68,7 @@
                 Background="Transparent">
                 <ListBox.ItemTemplate>
                     <DataTemplate>
-                        <DockPanel DoubleTapped="OnDoubleClick">
+                        <DockPanel>
                             <Panel DockPanel.Dock="Right">
                                 <!-- Command parameter contains MappingModel-->
                                 <Button

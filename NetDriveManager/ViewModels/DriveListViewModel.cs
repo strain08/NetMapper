@@ -1,28 +1,24 @@
-﻿using System;
-using System.Collections.ObjectModel;
-using CommunityToolkit.Mvvm.ComponentModel;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
 using NetMapper.Attributes;
 using NetMapper.Models;
 using NetMapper.Services;
 using NetMapper.Services.Interfaces;
+using System;
+using System.Collections.ObjectModel;
 
 namespace NetMapper.ViewModels;
 
 public partial class DriveListViewModel : ViewModelBase
 {
     private readonly IDriveConnectService driveConnectService;
-
     private readonly IDriveListService driveListService;
     private readonly INavService nav;
 
-    [ObservableProperty] private MapModel?
-        selectedItem;
-
+    [ObservableProperty]
+    private MapModel? selectedItem;
+    public ObservableCollection<MapModel> DriveList { get; set; }
+    
     // CTOR
-    public DriveListViewModel()
-    {
-    }
-
     [ResolveThis]
     public DriveListViewModel(
         IDriveListService driveListService,
@@ -34,12 +30,9 @@ public partial class DriveListViewModel : ViewModelBase
         nav = navService;
         DriveList = driveListService.DriveList;
     }
+    public DriveListViewModel() { }
 
-    // PROP
-    public ObservableCollection<MapModel>
-        DriveList { get; set; }
-
-    // COMMS        
+    // COMMANDS        
     public void DisconnectDriveCommand(object commandParameter)
     {
         var m = commandParameter as MapModel
