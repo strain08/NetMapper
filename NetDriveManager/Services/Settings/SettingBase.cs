@@ -1,21 +1,25 @@
-﻿using NetMapper.Models;
+﻿using System;
+using NetMapper.Models;
 using NetMapper.Services.Interfaces;
-using System;
 
-namespace NetMapper.Services.Settings
+namespace NetMapper.Services.Settings;
+
+public abstract class SettingBase : ISettingModule
 {
-    public abstract class SettingBase : ISettingModule
+    private AppSettingsModel?
+        appSettings;
+
+    public AppSettingsModel
+        GetAppSettings()
     {
-        public AppSettingsModel 
-            GetAppSettings() => appSettings ?? throw new ArgumentNullException();
-
-        public void 
-            SetAppSettings(AppSettingsModel value) => appSettings = value;
-
-        private AppSettingsModel? 
-            appSettings;
-
-        public abstract void Apply();
-
+        return appSettings ?? throw new ArgumentNullException();
     }
+
+    public void
+        SetAppSettings(AppSettingsModel value)
+    {
+        appSettings = value;
+    }
+
+    public abstract void Apply();
 }

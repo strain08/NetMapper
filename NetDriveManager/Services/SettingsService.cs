@@ -1,76 +1,65 @@
-﻿using NetMapper.Models;
+﻿using System;
+using System.Collections.Generic;
+using NetMapper.Models;
 using NetMapper.Services.Interfaces;
 using NetMapper.Services.Stores;
-using System;
-using System.Collections.Generic;
 
-namespace NetMapper.Services
+namespace NetMapper.Services;
+
+public class SettingsService : ISettingsService
 {
-    public class SettingsService : ISettingsService
+    private readonly Dictionary<Type, ISettingModule> SettingsDictionary = new();
+
+    private readonly IDataStore<AppSettingsModel> SettingsStore;
+
+    private AppSettingsModel appSettings;
+
+    //CTOR
+    public SettingsService(IDataStore<AppSettingsModel> store)
     {
-        private AppSettingsModel appSettings;
+        SettingsStore = store;
+        appSettings = store.GetData();
+    }
 
-        private readonly IDataStore<AppSettingsModel> SettingsStore;        
+    public AppSettingsModel GetAppSettings()
+    {
+        return appSettings;
+    }
 
-        private readonly Dictionary<Type, ISettingModule> SettingsDictionary = new();
-        //CTOR
-        public SettingsService(IDataStore<AppSettingsModel> store)
-        {            
-            SettingsStore = store;
-            appSettings = store.GetData();
-        }
+    public void SetAppSettings(AppSettingsModel value)
+    {
+        appSettings = value;
 
-        public AppSettingsModel GetAppSettings()
+        foreach (var setting in SettingsDictionary) setting.Value.SetAppSettings(appSettings);
+    }
+
+    public void AddModule(ISettingModule settingModule)
+    {
+        try
         {
-            return appSettings;
+            SettingsDictionary.Add(settingModule.GetType(), settingModule);
+            settingModule.SetAppSettings(GetAppSettings());
         }
-
-        public void SetAppSettings(AppSettingsModel value)
+        catch (ArgumentException)
         {
-            appSettings = value;
-
-            foreach (var setting in SettingsDictionary)
-            {
-                setting.Value.SetAppSettings(appSettings);
-            }
+            throw new InvalidOperationException($"{ToString} : Duplicate setting: {settingModule.GetType()}");
         }
+    }
 
-        public void AddModule(ISettingModule settingModule)
-        { 
-            try
-            {
-                SettingsDictionary.Add(settingModule.GetType(), settingModule);
-                settingModule.SetAppSettings(GetAppSettings());
+    public ISettingModule GetModule(Type settingType)
+    {
+        if (SettingsDictionary.TryGetValue(settingType, out var settingModule))
+            return settingModule;
+        throw new InvalidOperationException($"{ToString} : Can not find {settingType} in SettingsList.");
+    }
 
-            } catch (ArgumentException)
-            {
-                throw new InvalidOperationException($"{ToString} : Duplicate setting: {settingModule.GetType()}");
-            }
-        }
+    public void ApplyAll()
+    {
+        foreach (var setting in SettingsDictionary) setting.Value.Apply();
+    }
 
-        public ISettingModule GetModule(Type settingType)
-        {
-            if(SettingsDictionary.TryGetValue(settingType,out var settingModule))
-            {
-                return settingModule;
-            }
-            else
-            {
-                throw new InvalidOperationException($"{ToString} : Can not find {settingType} in SettingsList.");
-            }
-        }
-
-        public void ApplyAll()
-        {
-            foreach (var setting in SettingsDictionary)
-            {
-                setting.Value.Apply();
-            }
-        }
-
-        public void SaveAll()
-        {
-            SettingsStore.Update(GetAppSettings());
-        }
+    public void SaveAll()
+    {
+        SettingsStore.Update(GetAppSettings());
     }
 }

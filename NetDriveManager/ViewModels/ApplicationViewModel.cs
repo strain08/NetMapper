@@ -1,113 +1,119 @@
 ﻿using Avalonia.Controls;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Messaging;
+using NetMapper.Attributes;
+using NetMapper.Enums;
+using NetMapper.Messages;
 using NetMapper.Services;
+using NetMapper.Services.Interfaces;
 using NetMapper.Services.Settings;
 using NetMapper.Views;
-using NetMapper.Messages;
 using Splat;
-using System.Diagnostics;
 
-namespace NetMapper.ViewModels
+namespace NetMapper.ViewModels;
+
+public partial class ApplicationViewModel : ViewModelBase, IRecipient<PropertyChangedMessage>
 {
-    public partial class ApplicationViewModel : ViewModelBase, IRecipient<PropertyChangedMessage>
+    private readonly IDriveListService listService;
+    private readonly INavService nav;
+
+    private readonly ISettingsService settings;
+    public MainWindow? MainWindowView;
+
+    [ObservableProperty] private string tooltipText = string.Empty;
+
+    public ApplicationViewModel()
     {
-        public MainWindow? MainWindowView;
+    } // preview does not work w/o empty ctor
 
-        readonly ISettingsService settings;
-        readonly IDriveListService listService;
-        readonly NavService navService;
-        [ObservableProperty]
-        string tooltipText = string.Empty;
+    [ResolveThis]
+    public ApplicationViewModel(
+        ISettingsService settingsService,
+        IDriveListService driveListService,
+        INavService navService)
+    {
+        //if (Design.IsDesignMode) return; 
+        nav = navService;
+        settings = settingsService;
+        listService = driveListService;
 
-        public ApplicationViewModel() { }
+        InitializeApp();
+    }
 
-        public ApplicationViewModel(ISettingsService settingsService, IDriveListService driveListService)
+    public void Receive(PropertyChangedMessage message)
+    {
+        UpdateTooltip();
+    }
+
+    private void InitializeApp()
+    {
+        WeakReferenceMessenger.Default.Register(this);
+
+        settings.AddModule(new SetRunAtStartup());
+        settings.AddModule(new SetMinimizeTaskbar());
+
+        MainWindowView = new MainWindow
         {
-            //if (Design.IsDesignMode) return; 
-            navService = Locator.Current.GetRequiredService<NavService>();
-            settings = settingsService;
-            listService = driveListService;
-            WeakReferenceMessenger.Default.Register(this);
-            InitializeApp();
-        }
+            DataContext = Locator.Current.CreateWithConstructorInjection<MainWindowViewModel>()
+        };
+        settings.AddModule(new SetMainWindow(MainWindowView));
 
-        private void InitializeApp()
+        settings.ApplyAll();
+
+        nav.AddViewModel(this);
+    }
+
+    private void UpdateTooltip()
+    {
+        TooltipText = string.Empty;
+
+        foreach (var item in listService.DriveList)
         {
-            settings.AddModule(new SetRunAtStartup());
-            settings.AddModule(new SetMinimizeTaskbar());
-
-            MainWindowView = new()
+            TooltipText += item.DriveLetterColon;
+            switch (item.MappingStateProp)
             {
-                DataContext = new MainWindowViewModel()
-            };
-            settings.AddModule(new SetMainWindow(MainWindowView));
-
-            settings.ApplyAll();
-
-            navService.AddViewModel(this);
-        }
-
-        private void UpdateTooltip()
-        {
-            TooltipText = string.Empty;
-
-            foreach (var item in listService.DriveList)
-            {
-                TooltipText += item.DriveLetterColon;
-                switch (item.MappingStateProp)
-                {
-                    case Enums.MappingState.Mapped:
-                        TooltipText += " connected.";
-                        break;
-                    case Enums.MappingState.Unmapped:
-                        TooltipText += " disconnected.";
-                        break;
-                    case Enums.MappingState.LetterUnavailable:
-                        TooltipText += " letter unavailable.";
-                        break;
-                    default:
-                        TooltipText += " updating...";
-                        break;
-                }
-
-                TooltipText += "\n";
+                case MappingState.Mapped:
+                    TooltipText += " connected.";
+                    break;
+                case MappingState.Unmapped:
+                    TooltipText += " disconnected.";
+                    break;
+                case MappingState.LetterUnavailable:
+                    TooltipText += " letter unavailable.";
+                    break;
+                default:
+                    TooltipText += " updating...";
+                    break;
             }
-        }
 
-        // systray menu
-        public void ShowWindowCommand()
-        {
-            ShowMainWindow();
+            TooltipText += "\n";
         }
+    }
 
-        // systray menu
-        public void ExitCommand()
+    // systray menu
+    public void ShowWindowCommand()
+    {
+        ShowMainWindow();
+    }
+
+    // systray menu
+    public void ExitCommand()
+    {
+        App.AppContext(application => { application.Shutdown(); });
+    }
+
+    public void ShowMainWindow()
+    {
+        App.AppContext(application =>
         {
-            App.AppContext((application) =>
+            if (MainWindowView != null)
             {
-                application.Shutdown();
-            });
-        }
-
-        public void ShowMainWindow()
-        {
-            App.AppContext((application) =>
-            {
-                if (MainWindowView != null)
-                {
-                    application.MainWindow ??= MainWindowView;
-                    application.MainWindow.WindowState = WindowState.Normal;
-                    application.MainWindow.Show();
-                    application.MainWindow.BringIntoView();
-                    application.MainWindow.Focus();
-                }
-            });
-        }
-
-        public void Receive(PropertyChangedMessage message)
-        {            
-            UpdateTooltip();
-        }
+                application.MainWindow ??= MainWindowView;
+                application.MainWindow.WindowState = WindowState.Normal;
+                application.MainWindow.Show();
+                application.MainWindow.BringIntoView();
+                application.MainWindow.Focus();
+            }
+        });
     }
 }

@@ -1,27 +1,29 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
-using NetMapper.Services;
+using NetMapper.Attributes;
 using NetMapper.Services.Helpers;
-using Splat;
+using NetMapper.Services.Interfaces;
 
-namespace NetMapper.ViewModels
+namespace NetMapper.ViewModels;
+
+public partial class MainWindowViewModel : ViewModelBase
 {
-    public partial class MainWindowViewModel : ViewModelBase
+    private readonly INavService nav;
+
+    [ObservableProperty] private ViewModelBase? content;
+
+    public MainWindowViewModel()
     {
-        [ObservableProperty]
-        ViewModelBase? content;
-
-        public string Title => AppUtil.GetAppName();
-
-        public MainWindowViewModel()
-        {
-            var nav = Locator.Current.GetRequiredService<NavService>();
-            nav.SetNavigateCallback((vm) =>
-            {
-                Content = vm;
-            });
-
-            nav.GoTo(new DriveListViewModel());
-
-        }
     }
+
+    [ResolveThis]
+    public MainWindowViewModel(INavService navService)
+    {
+        nav = navService;
+
+        nav.SetContentCallback(vm => { Content = vm; });
+
+        nav.GoToNew<DriveListViewModel>();
+    }
+
+    public string Title => AppUtil.GetAppName();
 }

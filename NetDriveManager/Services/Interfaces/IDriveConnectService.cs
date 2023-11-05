@@ -1,10 +1,10 @@
-﻿using NetMapper.Models;
+﻿using System.Threading.Tasks;
+using NetMapper.Models;
 
-namespace NetMapper.Services
+namespace NetMapper.Services;
+
+public interface IDriveConnectService
 {
-    public interface IDriveConnectService
-    {
-        void ConnectDrive(MapModel m);
-        void DisconnectDrive(MapModel m);
-    }
+    public Task ConnectDrive(MapModel m);
+    public Task DisconnectDrive(MapModel m);
 }

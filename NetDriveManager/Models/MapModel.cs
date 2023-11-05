@@ -1,14 +1,15 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
-using System.IO;
-using System.Text.Json.Serialization;
-using Windows.System;
+﻿using System.Text.Json.Serialization;
+using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace NetMapper.Models;
 
 public partial class MapModel : ObservableObject
 {
     // PUBLIC PROP
-    public char DriveLetter { get; set; }
+    [ObservableProperty] private char driveLetter;
+
+
+    [ObservableProperty] private string? volumeLabel;
 
     [JsonIgnore]
     public string DriveLetterColon
@@ -16,11 +17,8 @@ public partial class MapModel : ObservableObject
         get => DriveLetter + ":";
         set => DriveLetter = value[0];
     }
-    public string NetworkPath { get; set; } = string.Empty;
 
-    
-    [ObservableProperty]
-    string? volumeLabel;
+    public string NetworkPath { get; set; } = string.Empty;
 
     public MappingSettingsModel Settings { get; set; } = new();
 
@@ -31,4 +29,3 @@ public partial class MapModel : ObservableObject
         return clone;
     }
 }
-

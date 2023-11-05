@@ -1,17 +1,16 @@
-﻿using NetMapper.Enums;
-using System.Text.Json.Serialization;
+﻿using System.Text.Json.Serialization;
+using NetMapper.Enums;
 
-namespace NetMapper.Models
+namespace NetMapper.Models;
+
+public partial class MapModel
 {
-    public partial class MapModel
-    {
-        [JsonIgnore]
-        public bool ConnectCommandVisible =>
-            ShareStateProp == ShareState.Available &&
-            MappingStateProp == MappingState.Unmapped;
+    [JsonIgnore]
+    public bool ConnectCommandVisible =>
+        ShareStateProp == ShareState.Available &&
+        MappingStateProp == MappingState.Unmapped;
 
-        [JsonIgnore]
-        public bool DisconnectCommandVisible =>
-            MappingStateProp == MappingState.Mapped;
-    }
+    [JsonIgnore]
+    public bool DisconnectCommandVisible =>
+        MappingStateProp == MappingState.Mapped;
 }

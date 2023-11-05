@@ -1,108 +1,104 @@
-﻿using Avalonia.Threading;
+﻿using System.Threading.Tasks;
+using Avalonia.Threading;
+using NetMapper.Attributes;
 using NetMapper.Enums;
 using NetMapper.Models;
 using NetMapper.Services.Helpers;
+using NetMapper.Services.Interfaces;
 using NetMapper.Services.Toasts;
 using NetMapper.ViewModels;
 using Serilog;
-using System.Threading.Tasks;
 
-namespace NetMapper.Services
+namespace NetMapper.Services;
+
+public class DriveConnectService : IDriveConnectService
 {
-    public class DriveConnectService : IDriveConnectService
+    private readonly INavService nav;
+    //CTOR
+
+    public DriveConnectService(INavService navService)
     {
-        private readonly NavService nav;
-        //CTOR
+        nav = navService;
+    }
 
-        public DriveConnectService(NavService navService)
+    public async Task ConnectDrive(MapModel m)
+    {
+        m.MappingStateProp = MappingState.Undefined;
+
+        var result = await Interop.ConnectNetworkDriveAsync(m.DriveLetter, m.NetworkPath);
+
+        switch (result)
         {
-            nav = navService;
+            case ConnectResult.Success:
+                m.MappingStateProp = MappingState.Mapped;
+                _ = new ToastDriveConnected(m, ActionToastClicked).Show();
+                break;
+            case ConnectResult.LoginFailure | ConnectResult.InvalidCredentials:
+                _ = new ToastLoginFailure(m, ActionToastClicked).Show();
+                break;
+            default:
+                var errorDescription = result.GetAttributeOfType<DescriptionAttribute>()?.GetDescription();
+                Log.Error($"Error connecting to {m.NetworkPath}. Error code: {result}, {errorDescription} ");
+                break;
         }
+    }
 
-        public void ConnectDrive(MapModel m)
+    public async Task DisconnectDrive(MapModel m)
+    {
+        m.MappingStateProp = MappingState.Undefined;
+
+        // not a network drive, do nothing
+        if (Interop.IsRegularDriveMapped(m.DriveLetter)) return;
+
+        var result = await Interop.DisconnectNetworkDriveAsync(m.DriveLetter);
+
+        switch (result)
         {
-            m.MappingStateProp = MappingState.Undefined;
+            case DisconnectResult.DISCONNECT_SUCCESS:
+                _ = new ToastDriveDisconnected(m, ActionToastClicked).Show();
+                m.MappingStateProp = MappingState.Unmapped;
+                break;
 
-            Task.Run(() =>
-            {
-                var result = Interop.ConnectNetworkDrive(m.DriveLetter, m.NetworkPath);
+            default:
+                _ = new ToastCanNotRemoveDrive(m, ActionDisconnect).Show();
+                break;
+        }
+    }
 
-                switch (result)
+    private void ActionDisconnect(MapModel m, ToastActionsDisconnect answer)
+    {
+        switch (answer)
+        {
+            case ToastActionsDisconnect.Retry:
+                DisconnectDrive(m);
+                break;
+
+            case ToastActionsDisconnect.Force:
+                Task.Run(() =>
                 {
-                    case ConnectResult.Success:
-                        m.MappingStateProp = MappingState.Mapped;
-                        _ = new ToastDriveConnected(m, CallbackToastClicked);
-                        break;
-                    case ConnectResult.LoginFailure | ConnectResult.InvalidCredentials:
-                        _ = new ToastLoginFailure(m, CallbackToastClicked);
-                        break;
-                    default:
-                        Log.Error($"Error connecting to {m.NetworkPath}. Error code: {result} ");
-                        break;
-                }
-            });
-        }
+                    var error = Interop.DisconnectNetworkDrive(m.DriveLetter, true);
+                    if (error == DisconnectResult.DISCONNECT_SUCCESS)
+                        _ = new ToastDriveDisconnected(m, ActionToastClicked).Show();
+                });
+                break;
 
-        public void DisconnectDrive(MapModel m)
+            case ToastActionsDisconnect.ShowWindow:
+                ShowMainWindow();
+                break;
+        }
+    }
+
+    private void ActionToastClicked(MapModel m, ToastActionsSimple answer)
+    {
+        ShowMainWindow();
+    }
+
+    private void ShowMainWindow()
+    {
+        Dispatcher.UIThread.Post(() =>
         {
-            m.MappingStateProp = MappingState.Undefined;
-            Task.Run(() =>
-            {
-                // not a network drive, do nothing
-                if (Interop.IsRegularDriveMapped(m.DriveLetter)) return;
-
-                var result = Interop.DisconnectNetworkDrive(m.DriveLetter);
-
-                switch (result)
-                {
-                    case CancelConnection.DISCONNECT_SUCCESS:                        
-                        _ = new ToastDriveDisconnected(m, CallbackToastClicked);
-                        m.MappingStateProp = MappingState.Unmapped;
-                        break;
-                    default:
-                        _ = new ToastCanNotRemoveDrive(m, CallbackDisconnect);
-                        break;
-                }
-            });
-        }
-
-        private void CallbackDisconnect(MapModel m, ToastActionsDisconnect answer)
-        {
-            switch (answer)
-            {
-                case ToastActionsDisconnect.Retry:
-                    DisconnectDrive(m);
-                    break;
-
-                case ToastActionsDisconnect.Force:
-                    Task.Run(() =>
-                    {
-                        CancelConnection error = Interop.DisconnectNetworkDrive(m.DriveLetter, true);
-                        if (error == CancelConnection.DISCONNECT_SUCCESS)
-                        {
-                            _ = new ToastDriveDisconnected(m, CallbackToastClicked);
-                        }
-                    });
-                    break;
-
-                case ToastActionsDisconnect.ShowWindow:
-                    ShowMainWindow();
-                    break;
-            }
-        }
-
-        private void CallbackToastClicked(MapModel m, ToastActionsSimple answer)
-        {
-            ShowMainWindow();
-        }
-
-        private void ShowMainWindow()
-        {
-            Dispatcher.UIThread.Post(() =>
-            {
-                nav.GetViewModel<ApplicationViewModel>()
-                   .ShowMainWindow();
-            });
-        }
+            nav.GetViewModel<ApplicationViewModel>()
+                .ShowMainWindow();
+        });
     }
 }

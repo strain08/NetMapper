@@ -1,98 +1,100 @@
-﻿using Microsoft.Toolkit.Uwp.Notifications;
-using NetMapper.Models;
-using System;
-using System.Diagnostics;
+﻿using System;
 using Windows.UI.Notifications;
+using Microsoft.Toolkit.Uwp.Notifications;
+using NetMapper.Models;
 
-namespace NetMapper.Services.Toasts
+namespace NetMapper.Services.Toasts;
+
+public class ToastBase<TAnswer> : IDisposable where TAnswer : struct, Enum
 {
-    public class ToastBase<TAnswer> :IDisposable where TAnswer : struct, Enum 
+    // toastData binding key
+    protected const string MSG_CONTENT = "MESSAGE";
+
+    protected const string TOAST_ACTION = "A";
+
+    // if not null, next toast should be merged with this message
+    private protected static string? _previousMsg;
+    protected MapModel _mapModel;
+
+    protected ToastNotification? _toastNotification;
+    private bool disposedValue;
+    protected Action<MapModel, TAnswer> toastAction;
+
+
+    public ToastBase(MapModel m, Action<MapModel, TAnswer> del)
     {
-        // if not null, next toast should be merged with this message
-        private protected static string? previousMsg;
-        
-        // toastData binding key
-        protected const string MSG_CONTENT = "MESSAGE";
-        
-        protected ToastNotification? toastNotification;
-        protected Action<MapModel, TAnswer> thisDel;
-        protected MapModel thisModel;        
-        private bool disposedValue;
-        
+        toastAction = del;
+        _mapModel = m;
+    }
 
-        public ToastBase(MapModel m, Action<MapModel, TAnswer> del)
+    // // TODO: override finalizer only if 'Dispose(bool disposing)' has code to free unmanaged resources
+    // ~ToastBase()
+    // {
+    //     // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
+    //     Dispose(disposing: false);
+    // }
+
+    public void Dispose()
+    {
+        // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
+        Dispose(true);
+        GC.SuppressFinalize(this);
+    }
+
+    public ToastBase<TAnswer> Show()
+    {
+        if (_toastNotification != null)
         {
-            thisDel = del;           
-            thisModel = m;  
+            _toastNotification.Activated += Activated;
+            _toastNotification.Dismissed += Dismissed;
+            ToastNotificationManagerCompat.CreateToastNotifier().Show(_toastNotification);
         }
 
-        public void Show(ToastNotification toast) 
-        {
-            toastNotification = toast;
-            toastNotification.Activated += Activated;
-            toastNotification.Dismissed += Dismissed;
-            ToastNotificationManagerCompat.CreateToastNotifier().Show(toastNotification);
-        }        
-        
-        protected void Update(string newMessage, string tag)
-        {            
-            var data = new NotificationData() { SequenceNumber = 0 };
-            data.Values[MSG_CONTENT] = previousMsg += "\n" + newMessage;            
-            ToastNotificationManagerCompat.CreateToastNotifier().Update(data, tag);
-        }
+        return this;
+    }
 
-        private void Dismissed(ToastNotification sender, ToastDismissedEventArgs args)
-        {
-            if (toastNotification == null) return;
-            previousMsg = null; // toast became invisible or dismissed, do not update anymore            
-            toastNotification.Activated -= Activated;
-            toastNotification.Dismissed -= Dismissed;
-        }
+    protected void Update(string newMessage, string tag)
+    {
+        var data = new NotificationData { SequenceNumber = 0 };
+        data.Values[MSG_CONTENT] = _previousMsg += "\n" + newMessage;
+        ToastNotificationManagerCompat.CreateToastNotifier().Update(data, tag);
+    }
 
-        private void Activated(ToastNotification sender, object obj)
-        {
-            previousMsg = null;
-            var eventArgs = obj as ToastActivatedEventArgs;
-            ToastArguments args = ToastArguments.Parse(eventArgs?.Arguments);
-            thisDel.Invoke(thisModel, args.GetEnum<TAnswer>("A"));
+    private void Dismissed(ToastNotification sender, ToastDismissedEventArgs args)
+    {
+        if (_toastNotification == null) return;
+        _previousMsg = null; // toast became invisible or dismissed, do not update anymore            
+        _toastNotification.Activated -= Activated;
+        _toastNotification.Dismissed -= Dismissed;
+    }
 
-            if (toastNotification == null) return;
-            toastNotification.Activated -= Activated;                
-            toastNotification.Dismissed -= Dismissed;            
-        }
+    private void Activated(ToastNotification sender, object obj)
+    {
+        _previousMsg = null;
+        var eventArgs = obj as ToastActivatedEventArgs;
+        var args = ToastArguments.Parse(eventArgs?.Arguments);
+        toastAction.Invoke(_mapModel, args.GetEnum<TAnswer>(TOAST_ACTION));
 
-        protected virtual void Dispose(bool disposing)
+        if (_toastNotification == null) return;
+        _toastNotification.Activated -= Activated;
+        _toastNotification.Dismissed -= Dismissed;
+    }
+
+    protected virtual void Dispose(bool disposing)
+    {
+        if (!disposedValue)
         {
-            if (!disposedValue)
-            {
-                if (disposing)
+            if (disposing)
+                if (_toastNotification != null)
                 {
-                    if (toastNotification != null)
-                    {
-                        toastNotification.Activated -= Activated;
-                        toastNotification.Dismissed -= Dismissed;
-                        toastNotification = null;
-                    }
+                    _toastNotification.Activated -= Activated;
+                    _toastNotification.Dismissed -= Dismissed;
+                    _toastNotification = null;
                 }
 
-                // TODO: free unmanaged resources (unmanaged objects) and override finalizer
-                // TODO: set large fields to null
-                disposedValue = true;
-            }
-        }
-
-        // // TODO: override finalizer only if 'Dispose(bool disposing)' has code to free unmanaged resources
-        // ~ToastBase()
-        // {
-        //     // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
-        //     Dispose(disposing: false);
-        // }
-
-        public void Dispose()
-        {
-            // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
-            Dispose(disposing: true);
-            GC.SuppressFinalize(this);
+            // TODO: free unmanaged resources (unmanaged objects) and override finalizer
+            // TODO: set large fields to null
+            disposedValue = true;
         }
     }
 }

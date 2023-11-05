@@ -1,143 +1,145 @@
 <UserControl xmlns="https://github.com/avaloniaui"
-			 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-			 xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-			 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-			 xmlns:vm="using:NetMapper.ViewModels"
-			 xmlns:converters="using:NetMapper.Converters"
-			 mc:Ignorable="d"
-			 d:DesignWidth="250"
-			 d:DesignHeight="450"
-			 x:DataType="vm:DriveListViewModel"
-			 x:Class="NetMapper.Views.DriveListView">
-	<Design.DataContext>
-		<vm:DesignDriveListViewModel/>
-	</Design.DataContext>
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:NetMapper.ViewModels"
+             xmlns:converters="using:NetMapper.Converters"
+             mc:Ignorable="d"
+             d:DesignWidth="250"
+             d:DesignHeight="450"
+             x:DataType="vm:DriveListViewModel"
+             x:Class="NetMapper.Views.DriveListView">
+    <Design.DataContext>
+        <vm:DesignDriveListViewModel />
+    </Design.DataContext>
 
-	<UserControl.Resources>
-		<converters:StateToColorConverter x:Key="StateToColorConverter"/>
-		<converters:StateToTextConverter x:Key="StateToTextConverter"/>
-	</UserControl.Resources>
+    <UserControl.Resources>
+        <converters:StateToColorConverter x:Key="StateToColorConverter" />
+        <converters:StateToTextConverter x:Key="StateToTextConverter" />
+    </UserControl.Resources>
 
-	<Panel>
-		<DockPanel>
-			<!-- Bottom buttons -->
-			<Panel	DockPanel.Dock="Bottom" Height="50">
-				<!-- Settings -->
-				<Button HorizontalAlignment="Left"
-						VerticalAlignment="Bottom"
-						Background="Transparent"
-						Classes="btnMain"
-						Margin="8,0,0,6"
-						Command="{Binding Settings}">
-					<Image Source="{SvgImage /Assets/settings-2-svgrepo-com.svg}"/>
-				</Button>
-				<!-- Info -->
-				<Button VerticalAlignment="Bottom"
-						HorizontalAlignment="Right"
-						Background="Transparent"
-						Command="{Binding About}"
-						Classes="btnMain"
-						Margin="8,0,0,6"						>
-					<Image Source="{SvgImage /Assets/info-borderless-svgrepo-com.svg}"/>
-				</Button>
-				<StackPanel HorizontalAlignment="Center"
-							Orientation="Horizontal">
-					<!-- Add / Remove -->
-					<Button Classes="btnMain"
-							Command="{Binding AddItem}"
-							Padding="8"
-							Margin="4">
-						<Image Source="{SvgImage /Assets/plus-large-svgrepo-com.svg}"/>
+    <Panel>
+        <DockPanel>
+            <!-- Bottom buttons -->
+            <Panel DockPanel.Dock="Bottom" Height="50">
+                <!-- Settings -->
+                <Button HorizontalAlignment="Left"
+                        VerticalAlignment="Bottom"
+                        Background="Transparent"
+                        Classes="btnMain"
+                        Margin="8,0,0,6"
+                        Command="{Binding Settings}">
+                    <Image Source="{SvgImage /Assets/settings-2-svgrepo-com.svg}" />
+                </Button>
+                <!-- Info -->
+                <Button VerticalAlignment="Bottom"
+                        HorizontalAlignment="Right"
+                        Background="Transparent"
+                        Command="{Binding About}"
+                        Classes="btnMain"
+                        Margin="8,0,0,6">
+                    <Image Source="{SvgImage /Assets/info-borderless-svgrepo-com.svg}" />
+                </Button>
+                <StackPanel HorizontalAlignment="Center"
+                            Orientation="Horizontal">
+                    <!-- Add / Remove -->
+                    <Button Classes="btnMain"
+                            Command="{Binding AddItem}"
+                            Padding="8"
+                            Margin="4">
+                        <Image Source="{SvgImage /Assets/plus-large-svgrepo-com.svg}" />
 
-					</Button>
-					<Button Classes="btnMain"
-							Command="{Binding RemoveItem}"
-							Padding="8">
-						<Image Source="{SvgImage /Assets/minus-svgrepo-com.svg}"/>
+                    </Button>
+                    <Button Classes="btnMain"
+                            Command="{Binding RemoveItem}"
+                            Padding="8">
+                        <Image Source="{SvgImage /Assets/minus-svgrepo-com.svg}" />
 
-					</Button>
-				</StackPanel>
-			</Panel>
+                    </Button>
+                </StackPanel>
+            </Panel>
 
-			<!-- Drive list -->
-			<ListBox
-				Name="listBox"
-				ItemsSource="{Binding DriveList}"
-				SelectedItem="{Binding SelectedItem}"
-				DoubleTapped=""
-				Background="Transparent">
-				<ListBox.ItemTemplate>
-					<DataTemplate>
-						<DockPanel DoubleTapped="OnDoubleClick">
-							<Panel DockPanel.Dock="Right">
-								<!-- Command parameter contains MappingModel-->
-								<Button
-									Content="Detach"
-									Command="{Binding $parent[ListBox].DataContext.DisconnectDriveCommand}"
-									IsVisible="{Binding DisconnectCommandVisible}"
-									CommandParameter="{Binding}"
-									VerticalAlignment="Center"
-									VerticalContentAlignment="Center"/>
-								<Button
-									Content="Attach"
-									IsVisible="{Binding ConnectCommandVisible}"
-									Command="{Binding $parent[ListBox].DataContext.ConnectDriveCommand}"
-									CommandParameter="{Binding}"
-									VerticalAlignment="Center"
-									VerticalContentAlignment="Center"/>
-							</Panel>
-							<StackPanel
-								Background="Transparent"
-								Orientation="Vertical"
-								VerticalAlignment="Center">
-								<!-- Drive Letter-->
-								<StackPanel Margin="1" Orientation="Horizontal">
-									<TextBlock
-										Classes="letter"
-										Margin="0,0,0,0"
-										FontSize="18"
-										Text="{Binding DriveLetterColon}"/>
-									<TextBlock
-										Classes="letter"
-										Foreground="Gray"
-										Margin="8,0,0,0"
-										VerticalAlignment="Bottom"
-										Text="{Binding VolumeLabel}"/>
-								</StackPanel>
-								<!-- Network path-->
-								<TextBlock
-									Classes="detail"
-									Margin="8,0,0,8"
-									Text="{Binding NetworkPath}"							/>
-								<!-- Statuses -->
-								<StackPanel Margin="4,0,0,0" Orientation="Horizontal">
-									<Border
-										Background="{Binding MappingStateProp, Converter={StaticResource StateToColorConverter}}"
-										Padding="4,2,4,2"
-										Margin="0,0,4,0"
-										ClipToBounds="True"
-										CornerRadius="4">
-										<TextBlock
-										Classes="detail"
-										Text="{Binding MappingStateProp, Converter={StaticResource StateToTextConverter}}"
-										Foreground="White"/>
-									</Border>
-									<Border
-										Background="{Binding ShareStateProp, Converter={StaticResource StateToColorConverter}}"
-										Padding="4,2,4,2"
-										ClipToBounds="True"
-										CornerRadius="4">
-										<TextBlock
-											Classes="textDetail"
-											Text="{Binding ShareStateProp, Converter={StaticResource StateToTextConverter}}"
-											Foreground="White"/>
-									</Border>
-								</StackPanel>
-							</StackPanel>
-						</DockPanel>
-					</DataTemplate>
-				</ListBox.ItemTemplate>
-			</ListBox>
-		</DockPanel>
-	</Panel>
+            <!-- Drive list -->
+            <ListBox
+                Name="listBox"
+                ItemsSource="{Binding DriveList}"
+                SelectedItem="{Binding SelectedItem}"
+                DoubleTapped="OnDoubleClick"
+                Background="Transparent">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <DockPanel DoubleTapped="OnDoubleClick">
+                            <Panel DockPanel.Dock="Right">
+                                <!-- Command parameter contains MappingModel-->
+                                <Button
+                                    Content="Detach"
+                                    Command="{Binding $parent[ListBox].DataContext.DisconnectDriveCommand} "
+                                    IsVisible="{Binding DisconnectCommandVisible}"
+                                    CommandParameter="{Binding}"
+                                    VerticalAlignment="Center"
+                                    VerticalContentAlignment="Center" />
+                                <Button
+                                    Content="Attach"
+                                    IsVisible="{Binding ConnectCommandVisible}"
+                                    Command="{Binding $parent[ListBox].DataContext.ConnectDriveCommand}"
+                                    CommandParameter="{Binding}"
+                                    VerticalAlignment="Center"
+                                    VerticalContentAlignment="Center" />
+                            </Panel>
+                            <StackPanel
+                                Background="Transparent"
+                                Orientation="Vertical"
+                                VerticalAlignment="Center">
+                                <!-- Drive Letter-->
+                                <StackPanel Margin="1" Orientation="Horizontal">
+                                    <TextBlock
+                                        Classes="letter"
+                                        Margin="0,0,0,0"
+                                        FontSize="18"
+                                        Text="{Binding DriveLetterColon}" />
+                                    <TextBlock
+                                        Classes="letter"
+                                        Foreground="Gray"
+                                        Margin="8,0,0,0"
+                                        VerticalAlignment="Bottom"
+                                        Text="{Binding VolumeLabel}" />
+                                </StackPanel>
+                                <!-- Network path-->
+                                <TextBlock
+                                    Classes="detail"
+                                    Margin="8,0,0,8"
+                                    Text="{Binding NetworkPath}" />
+                                <!-- Statuses -->
+                                <StackPanel Margin="4,0,0,0" Orientation="Horizontal">
+                                    <Border
+                                        Background="{Binding MappingStateProp, Converter={StaticResource StateToColorConverter}}"
+                                        Padding="4,2,4,2"
+                                        Margin="0,0,4,0"
+                                        ClipToBounds="True"
+                                        CornerRadius="4"
+                                        ToolTip.Tip="Drive status">
+                                        <TextBlock
+                                            Classes="detail"
+                                            Text="{Binding MappingStateProp, Converter={StaticResource StateToTextConverter}}"
+                                            Foreground="White" />
+                                    </Border>
+                                    <Border
+                                        Background="{Binding ShareStateProp, Converter={StaticResource StateToColorConverter}}"
+                                        Padding="4,2,4,2"
+                                        ClipToBounds="True"
+                                        CornerRadius="4"
+                                        ToolTip.Tip="Share status">
+                                        <TextBlock
+                                            Classes="textDetail"
+                                            Text="{Binding ShareStateProp, Converter={StaticResource StateToTextConverter}}"
+                                            Foreground="White" />
+                                    </Border>
+                                </StackPanel>
+                            </StackPanel>
+                        </DockPanel>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+        </DockPanel>
+    </Panel>
 </UserControl>

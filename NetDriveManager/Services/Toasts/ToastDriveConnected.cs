@@ -1,43 +1,42 @@
-﻿using Microsoft.Toolkit.Uwp.Notifications;
+﻿using System;
+using Windows.UI.Notifications;
+using Microsoft.Toolkit.Uwp.Notifications;
 using NetMapper.Enums;
 using NetMapper.Models;
-using System;
-using Windows.UI.Notifications;
 
-namespace NetMapper.Services.Toasts
+namespace NetMapper.Services.Toasts;
+
+public class ToastDriveConnected : ToastBase<ToastActionsSimple>
 {
-    public class ToastDriveConnected : ToastBase<ToastActionsSimple>
+    private const string TAG = "INFO";
+
+    public ToastDriveConnected(MapModel m, Action<MapModel, ToastActionsSimple> del) : base(m, del)
     {
-        private const string TAG = "INFO";
-        private string ToastMessage => $"{thisModel.DriveLetterColon} [ {thisModel.VolumeLabel} ] connected.";
-
-        public ToastDriveConnected(MapModel m, Action<MapModel, ToastActionsSimple> del) : base(m, del)
+        if (_previousMsg != null) // toast still visible, update
         {
-            if (previousMsg != null) // toast still visible, update
-            {
-                Update(ToastMessage, TAG);
-                return;
-            }
-            
-            // toast not exist, create
-            var toastContent = new ToastContentBuilder()
-               .AddArgument("A", ToastActionsSimple.ShowWindow)
-               .AddVisualChild(new AdaptiveText
-               {
-                   Text = new BindableString(MSG_CONTENT) // bound to ToastMessage prop
-               })
-               .SetToastScenario(ToastScenario.Reminder);
-
-            var notificationData = new NotificationData();
-            notificationData.Values[MSG_CONTENT] = previousMsg = ToastMessage;
-
-            var Toast = new ToastNotification(toastContent.GetXml())
-            {
-                Tag = TAG,
-                Data = notificationData
-            };           
-
-            Show(Toast);
+            Update(ToastMessage, TAG);
+            return;
         }
+
+        // toast not exist, create
+        var toastContent = new ToastContentBuilder()
+            .AddVisualChild(new AdaptiveText
+            {
+                Text = new BindableString(MSG_CONTENT) // bound to ToastMessage prop
+            })
+            .AddArgument(TOAST_ACTION, ToastActionsSimple.ShowWindow)
+            .SetToastScenario(ToastScenario.Reminder);
+
+        var notificationData = new NotificationData();
+        notificationData.Values[MSG_CONTENT] = _previousMsg = ToastMessage;
+
+        //base
+        _toastNotification = new ToastNotification(toastContent.GetXml())
+        {
+            Tag = TAG,
+            Data = notificationData
+        };
     }
+
+    private string ToastMessage => $"{_mapModel.DriveLetterColon} [ {_mapModel.VolumeLabel} ] connected.";
 }

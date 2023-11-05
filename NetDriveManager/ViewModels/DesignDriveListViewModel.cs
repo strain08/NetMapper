@@ -1,20 +1,26 @@
-﻿using NetMapper.Models;
+﻿using System.Collections.ObjectModel;
 using NetMapper.Enums;
+using NetMapper.Models;
 
-namespace NetMapper.ViewModels
+namespace NetMapper.ViewModels;
+
+public class DesignDriveListViewModel : DriveListViewModel
 {
-    public class DesignDriveListViewModel : DriveListViewModel
+    public DesignDriveListViewModel()
     {
-        public DesignDriveListViewModel()
+        DriveList = new ObservableCollection<MapModel>
         {
-            DriveList = new()
+            new MapModel
             {
-                new MapModel { DriveLetter = 'X', NetworkPath = @"\\XOXO\mir1" , ShareStateProp=ShareState.Available, MappingStateProp=MappingState.Mapped },
-                new MapModel { DriveLetter = 'Y', NetworkPath = @"\\XOXO\mir2", ShareStateProp=ShareState.Unavailable, MappingStateProp=MappingState.Unmapped },
-                new MapModel { DriveLetter = 'Z', NetworkPath = @"\\XOXO\mir2\share" }
-            };
-
-
-        }
+                DriveLetter = 'X', NetworkPath = @"\\XOXO\mir1", ShareStateProp = ShareState.Available,
+                MappingStateProp = MappingState.Mapped
+            },
+            new MapModel
+            {
+                DriveLetter = 'Y', NetworkPath = @"\\XOXO\mir2", ShareStateProp = ShareState.Unavailable,
+                MappingStateProp = MappingState.Unmapped
+            },
+            new MapModel { DriveLetter = 'Z', NetworkPath = @"\\XOXO\mir2\share" }
+        };
     }
 }

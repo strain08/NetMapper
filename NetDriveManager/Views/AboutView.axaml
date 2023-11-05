@@ -4,52 +4,52 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d" d:DesignWidth="250" d:DesignHeight="450"
              x:Class="NetMapper.Views.AboutView"
-			 xmlns:vm="using:NetMapper.ViewModels"
-			 x:DataType="vm:AboutViewModel">
-	<Design.DataContext>
-		<vm:AboutViewModel/>
-	</Design.DataContext>
-	<DockPanel>
-		<TextBlock
-			DockPanel.Dock="Top"
-			FontWeight="Normal"
-			FontSize="18"
-			Margin="8,0,0,0"
-			Foreground="LightBlue"
-			Text="About"/>
-		<!-- OK -->
-		<StackPanel
-			Background="Transparent"
-			HorizontalAlignment="Center"
-			Orientation="Horizontal"
-			Height="50"
-			DockPanel.Dock="Bottom">
-			<Button Classes="btnMain"
-					Content="OK"
-					Width="80"
-					Command="{Binding OkCommand}"/>
-		</StackPanel>
-		<StackPanel>
-			<!-- OPTIONS -->
-			<TextBlock
-				Margin="16,16,0,0"
-				FontSize="16"
-				FontWeight="Bold"
-				Foreground="DarkGray"
-				Text="{Binding AppNameAndVersion}"/>
-			<TextBlock
-				Margin="18,0,0,0"
-				Foreground="Gray"
-				Text="{Binding BuildTime}"/>
-			
-			<StackPanel Classes="detail">
-				<Button Margin="18,8,0,0"
-						Command="{Binding HandleLinkClicked}"
-						Classes="hyperlink"
-						ToolTip.Tip="{Binding GitFullLink}"
-						Content="{Binding GitDisplayLink}"/>
-			</StackPanel>
+             xmlns:vm="using:NetMapper.ViewModels"
+             x:DataType="vm:AboutViewModel">
+    <Design.DataContext>
+        <vm:AboutViewModel />
+    </Design.DataContext>
+    <DockPanel>
+        <TextBlock
+            DockPanel.Dock="Top"
+            FontWeight="Normal"
+            FontSize="18"
+            Margin="8,0,0,0"
+            Foreground="LightBlue"
+            Text="About" />
+        <!-- OK -->
+        <StackPanel
+            Background="Transparent"
+            HorizontalAlignment="Center"
+            Orientation="Horizontal"
+            Height="50"
+            DockPanel.Dock="Bottom">
+            <Button Classes="btnMain"
+                    Content="OK"
+                    Width="80"
+                    Command="{Binding OkCommand}" />
+        </StackPanel>
+        <StackPanel>
+            <!-- OPTIONS -->
+            <TextBlock
+                Margin="16,16,0,0"
+                FontSize="16"
+                FontWeight="Bold"
+                Foreground="DarkGray"
+                Text="{Binding AppNameAndVersion}" />
+            <TextBlock
+                Margin="18,0,0,0"
+                Foreground="Gray"
+                Text="{Binding BuildTime}" />
 
-		</StackPanel>
-	</DockPanel>
+            <StackPanel Classes="detail">
+                <Button Margin="18,8,0,0"
+                        Command="{Binding HandleLinkClicked}"
+                        Classes="hyperlink"
+                        ToolTip.Tip="{Binding GitFullLink}"
+                        Content="{Binding GitDisplayLink}" />
+            </StackPanel>
+
+        </StackPanel>
+    </DockPanel>
 </UserControl>

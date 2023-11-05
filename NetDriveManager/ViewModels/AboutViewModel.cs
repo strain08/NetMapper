@@ -1,61 +1,63 @@
-﻿using NetMapper.Services;
-using NetMapper.Services.Helpers;
-using Splat;
-using System;
+﻿using System;
 using System.Diagnostics;
+using NetMapper.Attributes;
+using NetMapper.Services.Helpers;
+using NetMapper.Services.Interfaces;
 
-namespace NetMapper.ViewModels
+namespace NetMapper.ViewModels;
+
+public partial class AboutViewModel : ViewModelBase
 {
-    public class AboutViewModel : ViewModelBase
+    private readonly DateTime buildTime;
+
+    private readonly INavService nav;
+
+    public AboutViewModel() { }
+
+    [ResolveThis]
+    public AboutViewModel(INavService navService)
     {
-        public static string AppNameAndVersion
+        // get BuildTime from assembly
+        buildTime = AppUtil.BuildTime();
+        nav = navService;
+    }
+
+    public static string AppNameAndVersion
+    {
+        get
         {
-            get
-            {
-                FileVersionInfo fvi = AppUtil.GetVersionInfo();
-                string AppName = fvi.ProductName ?? fvi.FileName;
-                string versionMajor = fvi.FileMajorPart.ToString();
-                string versionMinor = fvi.FileMinorPart.ToString();
-                string result = AppName + " " + versionMajor + "." + versionMinor + "b";
-                return result;
-            }
+            var fvi = AppUtil.GetVersionInfo();
+            var AppName = fvi.ProductName ?? fvi.FileName;
+            var versionMajor = fvi.FileMajorPart.ToString();
+            var versionMinor = fvi.FileMinorPart.ToString();
+            var result = AppName + " " + versionMajor + "." + versionMinor + "b";
+            return result;
         }
-        public static string GitDisplayLink => "github.com/strain08/NetMapper";
-        public static string GitFullLink => "https://github.com/strain08/NetMapper";
+    }
 
-        public string BuildTime =>
-            "build: " +
-            buildTime.Year.ToString() +
-            "." +
-            buildTime.Month.ToString() +
-            "." +
-            buildTime.Day.ToString();
+    public static string GitDisplayLink => "github.com/strain08/NetMapper";
+    public static string GitFullLink => "https://github.com/strain08/NetMapper";
 
-        private readonly DateTime buildTime;
+    public string BuildTime =>
+        "build: " +
+        buildTime.Year +
+        "." +
+        buildTime.Month +
+        "." +
+        buildTime.Day;
 
-        private readonly NavService navService;
-
-        public AboutViewModel()
+    public void HandleLinkClicked()
+    {
+        ProcessStartInfo psi = new()
         {
-            // get BuildTime from assembly
-            buildTime = AppUtil.BuildTime();
-            navService = Locator.Current.GetRequiredService<NavService>();
+            UseShellExecute = true,
+            FileName = GitFullLink
+        };
+        Process.Start(psi);
+    }
 
-        }
-        public void HandleLinkClicked()
-        {
-            ProcessStartInfo psi = new()
-            {
-                UseShellExecute = true,
-                FileName = GitFullLink
-            };
-            Process.Start(psi);
-
-        }
-        public void OkCommand()
-        {
-            //VMServices.MainWindowViewModel!.Content = VMServices.DriveListViewModel;
-            navService.GoTo<DriveListViewModel>();
-        }
+    public void OkCommand()
+    {
+        nav.GoTo<DriveListViewModel>();
     }
 }

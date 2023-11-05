@@ -1,8 +1,6 @@
-﻿namespace NetMapper.Models
+﻿namespace NetMapper.Models;
 
+public class DriveLetterModel
 {
-    public class DriveLetterModel
-    {
-        public string Letter { get; set; } = string.Empty;
-    }
+    public string Letter { get; set; } = string.Empty;
 }

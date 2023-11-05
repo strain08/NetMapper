@@ -1,3 +1,4 @@
+using System;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
@@ -8,76 +9,67 @@ using NetMapper.Services;
 using NetMapper.ViewModels;
 using Serilog;
 using Splat;
-using System;
-namespace NetMapper
+
+namespace NetMapper;
+
+public class App : Application
 {
-    public partial class App : Application
+    public override void Initialize()
     {
-        public override void Initialize()
-        {
-            AvaloniaXamlLoader.Load(this);
-        }
-
-        public static void AppContext(Action<IClassicDesktopStyleApplicationLifetime> command)
-        {
-            if (App.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime application)
-            {
-                command.Invoke(application);
-            }
-
-        }
-        public override void OnFrameworkInitializationCompleted()
-        {
-            if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
-            {
-                // Line below is needed to remove Avalonia data validation.
-                // Without this line you will get duplicate validations from both Avalonia and CT
-                BindingPlugins.DataValidators.RemoveAt(0);
-
-                // Register services with Splat
-                Bootstrapper.Register(Locator.CurrentMutable, Locator.Current);
-
-                desktop.ShutdownMode = ShutdownMode.OnExplicitShutdown;
-                desktop.ShutdownRequested += Desktop_ShutdownRequested;
-                desktop.Exit += Desktop_Exit;
-            }
-
-            if (Design.IsDesignMode)
-            {
-                DataContext = new ApplicationViewModel();
-            }
-            else
-            {
-                DataContext = new ApplicationViewModel(
-                    Locator.Current.GetRequiredService<ISettingsService>(),
-                    Locator.Current.GetRequiredService<IDriveListService>());
-            }
-            base.OnFrameworkInitializationCompleted();
-        }
-
-        private void Desktop_Exit(object? sender, ControlledApplicationLifetimeExitEventArgs e)
-        {
-            AppShutdown();
-        }
-
-        private void Desktop_ShutdownRequested(object? sender, ShutdownRequestedEventArgs e)
-        {
-            AppShutdown();
-        }
-
-        public void OnTrayClicked(object sender, EventArgs e)
-        {
-            var mainWindow = DataContext as ApplicationViewModel;
-            mainWindow?.ShowWindowCommand();
-        }
-
-        private static void AppShutdown()
-        {
-            ToastNotificationManagerCompat.Uninstall();
-            Locator.Current.GetRequiredService<ISettingsService>().SaveAll();
-            Log.Information("Application exit.");
-            Log.CloseAndFlush();
-        }
+        AvaloniaXamlLoader.Load(this);
     }
 
+    public static void AppContext(Action<IClassicDesktopStyleApplicationLifetime> command)
+    {
+        if (Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime application)
+            command.Invoke(application);
+    }
+
+    public override void OnFrameworkInitializationCompleted()
+    {
+        if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
+        {
+            // Line below is needed to remove Avalonia data validation.
+            // Without this line you will get duplicate validations from both Avalonia and CT
+            BindingPlugins.DataValidators.RemoveAt(0);
+
+            // Register services with Splat
+            Bootstrapper.Register(Locator.CurrentMutable, Locator.Current);
+
+            desktop.ShutdownMode = ShutdownMode.OnExplicitShutdown;
+            desktop.ShutdownRequested += Desktop_ShutdownRequested;
+            desktop.Exit += Desktop_Exit;
+        }
+
+
+        if (Design.IsDesignMode)
+            DataContext = new ApplicationViewModel();
+        else
+            DataContext = Locator.Current.CreateWithConstructorInjection<ApplicationViewModel>();
+        base.OnFrameworkInitializationCompleted();
+    }
+
+    private void Desktop_Exit(object? sender, ControlledApplicationLifetimeExitEventArgs e)
+    {
+        AppShutdown();
+    }
+
+    private void Desktop_ShutdownRequested(object? sender, ShutdownRequestedEventArgs e)
+    {
+        AppShutdown();
+    }
+
+    public void OnTrayClicked(object sender, EventArgs e)
+    {
+        var mainWindow = DataContext as ApplicationViewModel;
+        mainWindow?.ShowWindowCommand();
+    }
+
+    private static void AppShutdown()
+    {
+        ToastNotificationManagerCompat.Uninstall();
+        Locator.Current.GetRequiredService<ISettingsService>().SaveAll();
+        Log.Information("Application exit.");
+        Log.CloseAndFlush();
+    }
 }

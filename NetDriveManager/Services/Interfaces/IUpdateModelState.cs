@@ -1,9 +1,8 @@
 ﻿using NetMapper.Models;
 
-namespace NetMapper.Services.Interfaces
+namespace NetMapper.Services.Interfaces;
+
+public interface IUpdateModelState
 {
-    public interface IUpdateModelState
-    {
-        void Update(MapModel m);
-    }
+    void Update(MapModel m);
 }

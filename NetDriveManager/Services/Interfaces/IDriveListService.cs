@@ -1,15 +1,13 @@
-﻿using NetMapper.Models;
-using System;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
+using NetMapper.Models;
 
-namespace NetMapper.Services
+namespace NetMapper.Services;
+
+public interface IDriveListService
 {
-    public interface IDriveListService
-    {
-        ObservableCollection<MapModel> DriveList { get; set; }        
+    ObservableCollection<MapModel> DriveList { get; set; }
 
-        void AddDrive(MapModel model);
-        void EditDrive(MapModel oldModel, MapModel newModel);
-        void RemoveDrive(MapModel model);
-    }
+    void AddDrive(MapModel model);
+    void EditDrive(MapModel oldModel, MapModel newModel);
+    void RemoveDrive(MapModel model);
 }

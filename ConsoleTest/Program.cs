@@ -1,45 +1,28 @@
-﻿using Microsoft.Toolkit.Uwp.Notifications;
-using NetMapper.Models;
-using NetMapper.Services.Toasts;
-using System.Diagnostics;
-using NetMapper.Services.Helpers;
-using Windows.Storage.FileProperties;
+﻿using System.Reflection;
+using ConsoleTest.Builder;
 
-namespace ConsoleTest
+namespace ConsoleTest;
+
+internal class Program
 {
-    internal class Program
-    {        
-        static void Main(string[] args)
-        {
+    private static void Main(string[] args)
+    {
+        //ToastTest.ToastTest1();
+        IToastBuilder t = new ConcreteBuilder();
+        var d = t.GetDirector();
+        d.ToastA();
 
-            //Console.WriteLine(Interop.ConnectNetworkDrive('Z', @"\\XOXO\mir1\share", "jailman", "Meconium1980"));
-            //Console.ReadLine();
-            ToastTest();
+
+        var constructors = new List<ConstructorInfo>();
+        var types = Assembly.GetExecutingAssembly().GetTypes();
+        foreach (var type in types) constructors.AddRange(type.GetConstructors());
+
+        foreach (var items in constructors)
+        {
+            var Params = items.GetParameters();
+            foreach (var itema in Params) Console.WriteLine(itema.ParameterType + " " + itema.Name);
         }
 
-        private static void ToastTest()
-        {
-            MapModel m = new() { NetworkPath = @"\\XOXO\mir1", DriveLetter = 'X' };
-            string? k = string.Empty;
-            while (k != "a")
-            {
-                k = Console.ReadLine();
-                var x = ToastNotificationManagerCompat.History.GetHistory();
-                Debug.WriteLine("element count:" + x.Count);
-                foreach (var y in x)
-                {
-                    if (y != null)
-                    {
-                        Debug.WriteLine("Tag:" + y.Tag);
-                    }
-                }
-          
-
-                var t = new ToastDriveConnected(m, (m, a) => { });
-                
-            }
-
-            ToastNotificationManagerCompat.Uninstall();
-        }
+        Console.ReadLine();
     }
 }

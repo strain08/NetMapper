@@ -1,22 +1,22 @@
+using System.Diagnostics;
 using Avalonia;
 using Avalonia.Controls;
-using System.Diagnostics;
 
-namespace NetMapper.Views
+namespace NetMapper.Views;
+
+public partial class MainWindow : Window
 {
-    public partial class MainWindow : Window
+    public MainWindow()
     {
-        public MainWindow()
-        {
-            InitializeComponent();
+        InitializeComponent();
 #if DEBUG
-            this.AttachDevTools();
+        this.AttachDevTools();
 #endif
-        }
-        protected override void OnClosing(WindowClosingEventArgs e)
-        {
-            Debug.Print("Closing");
-            base.OnClosing(e);
-        }
+    }
+
+    protected override void OnClosing(WindowClosingEventArgs e)
+    {
+        Debug.Print("Closing");
+        base.OnClosing(e);
     }
 }

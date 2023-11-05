@@ -1,77 +1,78 @@
-﻿using Avalonia.Controls;
+﻿using System;
+using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
-using NetMapper.Enums;
+using NetMapper.Attributes;
 using NetMapper.Models;
 using NetMapper.Services;
-using Splat;
-using System;
-using System.Collections.ObjectModel;
+using NetMapper.Services.Interfaces;
 
-namespace NetMapper.ViewModels
+namespace NetMapper.ViewModels;
+
+public partial class DriveListViewModel : ViewModelBase
 {
-    public partial class DriveListViewModel : ViewModelBase
+    private readonly IDriveConnectService driveConnectService;
+
+    private readonly IDriveListService driveListService;
+    private readonly INavService nav;
+
+    [ObservableProperty] private MapModel?
+        selectedItem;
+
+    // CTOR
+    public DriveListViewModel()
     {
-        // PROP
-        public ObservableCollection<MapModel>
-            DriveList
-        { get; set; }
+    }
 
-        [ObservableProperty]
-        MapModel?
-            selectedItem;
+    [ResolveThis]
+    public DriveListViewModel(
+        IDriveListService driveListService,
+        IDriveConnectService driveConnectService,
+        INavService navService)
+    {
+        this.driveListService = driveListService;
+        this.driveConnectService = driveConnectService;
+        nav = navService;
+        DriveList = driveListService.DriveList;
+    }
 
-        readonly IDriveListService driveListService;
-        readonly IDriveConnectService driveConnectService;
-        readonly NavService navService;
+    // PROP
+    public ObservableCollection<MapModel>
+        DriveList { get; set; }
 
-        // CTOR
-        public DriveListViewModel()
-        {
-            if (Design.IsDesignMode) return; // design mode bypass            
-
-            driveListService = Locator.Current.GetRequiredService<IDriveListService>();
-            driveConnectService = Locator.Current.GetRequiredService<IDriveConnectService>();
-            navService = Locator.Current.GetRequiredService<NavService>();
-            DriveList = driveListService.DriveList;            
-
-        }
-
-        // COMMS        
-        public void DisconnectDriveCommand(object commandParameter)
-        {
-            var m = commandParameter as MapModel
+    // COMMS        
+    public void DisconnectDriveCommand(object commandParameter)
+    {
+        var m = commandParameter as MapModel
                 ?? throw new InvalidOperationException("Error getting command parameter for DisconnectDriveCommand");
-            m.Settings.AutoConnect = false; // prevent auto reconnection in Mapping Loop
-            driveConnectService.DisconnectDrive(m);
-        }
+        m.Settings.AutoConnect = false; // prevent auto reconnection in Mapping Loop
+        driveConnectService.DisconnectDrive(m);
+    }
 
-        public void ConnectDriveCommand(object commandParameter)
-        {
-            var m = commandParameter as MapModel
-                ?? throw new InvalidOperationException("Error getting command parameter for ConnectDriveCommand");            
-            driveConnectService.ConnectDrive(m);
-        }
+    public void ConnectDriveCommand(object commandParameter)
+    {
+        var m = commandParameter as MapModel
+                ?? throw new InvalidOperationException("Error getting command parameter for ConnectDriveCommand");
+        driveConnectService.ConnectDrive(m);
+    }
 
-        public void RemoveItem()
-        {
-            if (SelectedItem != null && driveListService != null)
-            {
-                driveListService.RemoveDrive(SelectedItem);
-            }
-        }
+    public void RemoveItem()
+    {
+        if (SelectedItem == null) return;
+        driveListService.RemoveDrive(SelectedItem);
+    }
 
-        public void AddItem()
-        {
-            navService.GoTo(new DriveDetailViewModel());
-        }
-        public void About()
-        {
-            navService.GoTo(new AboutViewModel());
-        }
-        public void Settings()
-        {
-            navService.GoTo(new SettingsViewModel());
-        }
+    public void AddItem()
+    {
+        nav.GoToNew<DriveDetailViewModel>();
+    }
 
+    public void About()
+    {
+        nav.GoToNew<AboutViewModel>();
+    }
+
+    public void Settings()
+    {
+        nav.GoToNew<AboutViewModel>();
     }
 }

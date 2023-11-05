@@ -1,63 +1,48 @@
-﻿using NetMapper.Models;
+﻿using System.Collections.Generic;
+using NetMapper.Models;
 using NetMapper.Services.Interfaces;
 using NetMapper.Services.Stores;
 using Splat;
-using System;
-using System.Collections.Generic;
 
-namespace NetMapper.Services
+namespace NetMapper.Services;
+
+public static class Bootstrapper
 {
-
-    public static class Bootstrapper
+    public static void Register(IMutableDependencyResolver s, IReadonlyDependencyResolver r)
     {
-        public static void Register(IMutableDependencyResolver s, IReadonlyDependencyResolver r)
-        {
-            // navigation service
-            s.RegisterLazySingleton(() => new NavService());
+        // navigation service
+        s.RegisterConstant<INavService>(new NavService());
 
-            // Json Settings Store
-            s.Register<IDataStore<AppSettingsModel>>(() => new JsonStore<AppSettingsModel>("NetMapperSettings.json"));
+        // Json Settings Store
+        s.Register<IDataStore<AppSettingsModel>>(() => new JsonStore<AppSettingsModel>("NetMapperSettings.json"));
 
-            // Json Drive List Store
-            s.Register<IDataStore<List<MapModel>>>(() => new JsonStore<List<MapModel>>("NetMapperData.json"));
+        // Json Drive List Store
+        s.Register<IDataStore<List<MapModel>>>(() => new JsonStore<List<MapModel>>("NetMapperData.json"));
 
-            // Settings
-            s.RegisterConstant<ISettingsService>(new SettingsService(
-                r.GetRequiredService<IDataStore<AppSettingsModel>>()));
+        // Settings
+        s.RegisterConstant<ISettingsService>(new SettingsService(
+            r.GetRequiredService<IDataStore<AppSettingsModel>>()));
 
-            // Connect service
-            s.RegisterLazySingleton<IDriveConnectService>(() => new DriveConnectService(
-                r.GetRequiredService<NavService>()
-                ));
+        // Connect service
+        s.RegisterLazySingleton<IDriveConnectService>(() => new DriveConnectService(
+            r.GetRequiredService<INavService>()
+        ));
 
-            // Drive List CRUD
-            s.RegisterLazySingleton<IDriveListService>(() => new DriveListService(
-                r.GetRequiredService<IDataStore<List<MapModel>>>()));
+        // Drive List CRUD
+        s.RegisterLazySingleton<IDriveListService>(() => new DriveListService(
+            r.GetRequiredService<IDataStore<List<MapModel>>>()));
 
-            // Model state updater
-            s.Register<IUpdateModelState>(() => new UpdateModelState());
-            
-            // System state updater
-            s.Register<IUpdateSystemState>(() => new UpdateSystemState(
-                r.GetRequiredService<IDriveConnectService>()));
-            
-            // Pooling Service
-            s.RegisterConstant(new PoolingService(
-                r.GetRequiredService<IDriveListService>(),
-                r.GetRequiredService<IUpdateModelState>(),
-                r.GetRequiredService<IUpdateSystemState>()));            
-        }
+        // Model state updater
+        s.Register<IUpdateModelState>(() => new UpdateModelState());
 
-        public static TService GetRequiredService<TService>(this IReadonlyDependencyResolver resolver) where TService : class
-        {
-            TService service = resolver.GetService<TService>() ??
-                throw new InvalidOperationException($"Splat failed to resolve object of type {typeof(TService)}");  // throw error with detailed description
+        // System state updater
+        s.Register<IUpdateSystemState>(() => new UpdateSystemState(
+            r.GetRequiredService<IDriveConnectService>()));
 
-            return service; // return instance if not null
-        }
-
+        // Pooling Service
+        s.RegisterConstant(new PoolingService(
+            r.GetRequiredService<IDriveListService>(),
+            r.GetRequiredService<IUpdateModelState>(),
+            r.GetRequiredService<IUpdateSystemState>()));
     }
-
-
-
 }

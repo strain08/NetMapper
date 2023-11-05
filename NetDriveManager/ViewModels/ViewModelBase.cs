@@ -1,80 +1,68 @@
-﻿using Avalonia.Controls;
-using CommunityToolkit.Mvvm.ComponentModel;
-using NetMapper.Services.Helpers;
-using NetMapper.Views;
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
+using CommunityToolkit.Mvvm.ComponentModel;
+using NetMapper.Services.Helpers;
 
-namespace NetMapper.ViewModels
+namespace NetMapper.ViewModels;
+
+public class ViewModelBase : ObservableObject, INotifyDataErrorInfo
 {
-    public partial class ViewModelBase : ObservableObject, INotifyDataErrorInfo
-    {  
-        private static readonly string[] NO_ERRORS = Array.Empty<string>();
-        private readonly Dictionary<string, List<string>> _errorsByPropertyName = new();        
+    private static readonly string[] NO_ERRORS = Array.Empty<string>();
+    private readonly Dictionary<string, List<string>> _errorsByPropertyName = new();
 
-        public event EventHandler<DataErrorsChangedEventArgs>? ErrorsChanged;
+    public event EventHandler<DataErrorsChangedEventArgs>? ErrorsChanged;
 
-        public bool HasErrors => _errorsByPropertyName.Count > 0;
+    public bool HasErrors => _errorsByPropertyName.Count > 0;
 
-        public virtual IEnumerable GetErrors(string? propertyName)
+    public virtual IEnumerable GetErrors(string? propertyName)
+    {
+        if (_errorsByPropertyName.TryGetValue(propertyName!, out var errorList)) return errorList;
+        return NO_ERRORS;
+    }
+
+    protected void AddError(string propertyName, string error)
+    {
+        if (_errorsByPropertyName.TryGetValue(propertyName, out var errorList))
         {
-            if (_errorsByPropertyName.TryGetValue(propertyName!, out var errorList))
-            {
-                return errorList;
-            }
-            return NO_ERRORS;
-
+            if (!errorList.Contains(error)) errorList.Add(error);
+        }
+        else
+        {
+            _errorsByPropertyName.Add(propertyName, new List<string> { error });
         }
 
-        protected void AddError(string propertyName, string error)
+        ErrorsChanged?.Invoke(this, new DataErrorsChangedEventArgs(propertyName));
+    }
+
+    protected void RemoveError(string propertyName)
+    {
+        _errorsByPropertyName.Remove(propertyName);
+        ErrorsChanged?.Invoke(this, new DataErrorsChangedEventArgs(propertyName));
+    }
+
+    protected bool ValidateNetworkPath(string propertyName, string? value, int maxLength = 255)
+    {
+        if (string.IsNullOrEmpty(value))
         {
-            if (_errorsByPropertyName.TryGetValue(propertyName, out var errorList))
-            {
-                if (!errorList.Contains(error))
-                {
-                    errorList.Add(error);
-                }
-            }
-            else
-            {
-                _errorsByPropertyName.Add(propertyName, new List<string> { error });
-            }
-            ErrorsChanged?.Invoke(this, new DataErrorsChangedEventArgs(propertyName));
+            AddError(propertyName, "Path must not be empty.");
+            return false;
         }
 
-        protected void RemoveError(string propertyName)
+        if (value.Length > maxLength)
         {
-
-            _errorsByPropertyName.Remove(propertyName);
-            ErrorsChanged?.Invoke(this, new DataErrorsChangedEventArgs(propertyName));
-
+            AddError(propertyName, $"Path must be at most {maxLength} characters long.");
+            return false;
         }
 
-        protected bool ValidateNetworkPath(string propertyName, string? value, int maxLength = 255)
+        if (!Interop.IsNetworkPath(value))
         {
-            if (string.IsNullOrEmpty(value))
-            {
-                AddError(propertyName, $"Path must not be empty.");
-                return false;
-            }
-           
-            if (value.Length > maxLength)
-            {
-                AddError(propertyName, $"Path must be at most {maxLength} characters long.");
-                return false;
-            }
-            if (!Interop.IsNetworkPath(value))
-            {
-                AddError(propertyName, $"Not a valid network path.");
-                return false;
-            }
-            RemoveError(propertyName);
-            return true;
+            AddError(propertyName, "Not a valid network path.");
+            return false;
         }
 
-       
-        
+        RemoveError(propertyName);
+        return true;
     }
 }

@@ -4,71 +4,70 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d" d:DesignWidth="250" d:DesignHeight="450"
              x:Class="NetMapper.Views.SettingsView"
-			 xmlns:vm="using:NetMapper.ViewModels" 
-			 x:DataType="vm:SettingsViewModel">
-	<UserControl.Styles>
-		<Style Selector="StackPanel.detail">
-			<Setter Property="Margin" Value="16,8,16,0"/>
-		</Style>
-		<Style Selector="TextBox.detail">
-			<Setter Property="Margin" Value="4,2,0,0"/>
-			<Setter Property="Height" Value="10"/>
-		</Style>
-		<Style Selector="ComboBox.detail">
-			<Setter Property="Margin" Value="4,2,0,0"/>
-		</Style>
-		<Style Selector="TextBlock.detail">
-			<Setter Property="Margin" Value="0,0,0,0"/>
-		</Style>
-	</UserControl.Styles>
+             xmlns:vm="using:NetMapper.ViewModels"
+             x:DataType="vm:SettingsViewModel">
+    <UserControl.Styles>
+        <Style Selector="StackPanel.detail">
+            <Setter Property="Margin" Value="16,8,16,0" />
+        </Style>
+        <Style Selector="TextBox.detail">
+            <Setter Property="Margin" Value="4,2,0,0" />
+            <Setter Property="Height" Value="10" />
+        </Style>
+        <Style Selector="ComboBox.detail">
+            <Setter Property="Margin" Value="4,2,0,0" />
+        </Style>
+        <Style Selector="TextBlock.detail">
+            <Setter Property="Margin" Value="0,0,0,0" />
+        </Style>
+    </UserControl.Styles>
 
-	<DockPanel>
-		<!-- ACTION TITLE -->
-		<TextBlock
-			DockPanel.Dock="Top"
-			FontWeight="Normal"
-			FontSize="18"
-			Margin="8,0,0,0"
-			Foreground="LightBlue"
-			Text="Settings"/>
-		<!-- OK / CANCEL -->
-		<StackPanel
-			Background="Transparent"
-			HorizontalAlignment="Center"
-			Orientation="Horizontal"
-			Height="50"
-			DockPanel.Dock="Bottom">
-			<Button Classes="btnMain"
-					Content="OK"
-					Width="80"
-					Command="{Binding OkCommand}"/>
-			<Button Classes="btnMain"
-					Width="80"
-					Content="Cancel"
-					Command="{Binding CancelCommand}"/>
-		</StackPanel>
-		<StackPanel>
-			<!-- OPTIONS -->
-			<TextBlock 
-				Margin="16,16,0,0" 
-				FontSize="16" 
-				FontWeight="Bold" 
-				Foreground="Gray"
-				Text="General"
-				/>
-			<StackPanel Classes="detail">
-				<CheckBox
-					IsChecked="{Binding DisplaySettings.SetLoadAtStartup}"
-					Content="Start with Windows"
-					ToolTip.Tip="Launch at login"/>
-			</StackPanel>
-			<StackPanel Classes="detail">
-				<CheckBox
-					IsChecked="{Binding DisplaySettings.SetMinimizeToTaskbar}"
-					Content="Minimize to system tray"
-					ToolTip.Tip="Launch at login"/>
-			</StackPanel>
-			<!--
+    <DockPanel>
+        <!-- ACTION TITLE -->
+        <TextBlock
+            DockPanel.Dock="Top"
+            FontWeight="Normal"
+            FontSize="18"
+            Margin="8,0,0,0"
+            Foreground="LightBlue"
+            Text="Settings" />
+        <!-- OK / CANCEL -->
+        <StackPanel
+            Background="Transparent"
+            HorizontalAlignment="Center"
+            Orientation="Horizontal"
+            Height="50"
+            DockPanel.Dock="Bottom">
+            <Button Classes="btnMain"
+                    Content="OK"
+                    Width="80"
+                    Command="{Binding OkCommand}" />
+            <Button Classes="btnMain"
+                    Width="80"
+                    Content="Cancel"
+                    Command="{Binding CancelCommand}" />
+        </StackPanel>
+        <StackPanel>
+            <!-- OPTIONS -->
+            <TextBlock
+                Margin="16,16,0,0"
+                FontSize="16"
+                FontWeight="Bold"
+                Foreground="Gray"
+                Text="General" />
+            <StackPanel Classes="detail">
+                <CheckBox
+                    IsChecked="{Binding DisplaySettings.SetLoadAtStartup}"
+                    Content="Start with Windows"
+                    ToolTip.Tip="Launch at login" />
+            </StackPanel>
+            <StackPanel Classes="detail">
+                <CheckBox
+                    IsChecked="{Binding DisplaySettings.SetMinimizeToTaskbar}"
+                    Content="Minimize to system tray"
+                    ToolTip.Tip="Launch at login" />
+            </StackPanel>
+            <!--
 			<TextBlock
 				Margin="16,16,0,0"
 				FontSize="16"
@@ -84,6 +83,6 @@
 					ToolTip.Tip="Remove drive mapping when connection down or share becomes unavailable."/>
 			</StackPanel>
 			-->
-		</StackPanel>
-	</DockPanel>
+        </StackPanel>
+    </DockPanel>
 </UserControl>

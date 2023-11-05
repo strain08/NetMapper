@@ -1,12 +1,8 @@
-﻿using NetMapper.Models;
+﻿namespace NetMapper.Services.Settings;
 
-namespace NetMapper.Services.Settings
+public class SetMinimizeTaskbar : SettingBase
 {
-    public class SetMinimizeTaskbar : SettingBase
+    public override void Apply()
     {
-        public override void Apply()
-        {
-            
-        }
     }
 }
