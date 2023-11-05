@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AvaloniaProject">
+    <option name="projectPerEditor">
+      <map>
+        <entry key="NetDriveManager/Views/AboutView.axaml" value="NetDriveManager/NetMapper.csproj" />
+        <entry key="NetDriveManager/Views/DriveDetailView.axaml" value="NetDriveManager/NetMapper.csproj" />
+        <entry key="NetDriveManager/Views/DriveListView.axaml" value="NetDriveManager/NetMapper.csproj" />
+      </map>
+    </option>
+  </component>
+</project>
