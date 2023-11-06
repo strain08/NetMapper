@@ -25,15 +25,21 @@ public class DriveListService : IDriveListService
 
     public void RemoveDrive(MapModel model)
     {
+       
         var i = DriveList.IndexOf(model);
+        if (i == -1)
+            throw new KeyNotFoundException($"Element not found in {DriveList}");
+        
         DriveList.RemoveAt(i);
+       
     }
 
     public void EditDrive(MapModel oldModel, MapModel newModel)
     {
         var i = DriveList.IndexOf(oldModel);
+        if (i == -1)
+            throw new KeyNotFoundException($"Element not found in {DriveList}");        
         DriveList.RemoveAt(i);
-
         DriveList.Insert(i, newModel);
     }
 
