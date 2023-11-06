@@ -1,5 +1,4 @@
-﻿using System.Threading.Tasks;
-using Avalonia.Threading;
+﻿using Avalonia.Threading;
 using NetMapper.Attributes;
 using NetMapper.Enums;
 using NetMapper.Models;
@@ -8,6 +7,7 @@ using NetMapper.Services.Interfaces;
 using NetMapper.Services.Toasts;
 using NetMapper.ViewModels;
 using Serilog;
+using System.Threading.Tasks;
 
 namespace NetMapper.Services;
 
@@ -70,7 +70,7 @@ public class DriveConnectService : IDriveConnectService
         switch (answer)
         {
             case ToastActionsDisconnect.Retry:
-                DisconnectDrive(m);
+                _ = DisconnectDrive(m);
                 break;
 
             case ToastActionsDisconnect.Force:

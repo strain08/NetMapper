@@ -1,9 +1,10 @@
-﻿using System;
+﻿using Avalonia.Controls;
+using NetMapper.Attributes;
+using Splat;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using NetMapper.Attributes;
-using Splat;
 
 internal static class BootstrapperHelpers
 {
@@ -54,6 +55,69 @@ internal static class BootstrapperHelpers
 
         throw new InvalidOperationException(
             $"Unable to create required dependency of type {typeof(T).FullName}: Activator.CreateInstance() returned null");
+    }
+    /// <summary>
+    ///     Creates a control by autoresolving it's constructor with Splat.
+    ///     <br>Requires View Class with a ctor marked with [ResolveThis]</br>
+    /// </summary>
+    /// <param name="resolver">Splat immutable resolver</param>
+    /// <param name="classType">View class</param>
+    /// <returns>Initialized control</returns>
+    /// <exception cref="InvalidOperationException"></exception>
+    public static Control CreateControlWithConstructorInjection(this IReadonlyDependencyResolver resolver, Type classType)
+    {
+        object GetService(Type type)
+        {
+            if (resolver.GetService(type) is object obj)
+                return obj;
+
+            throw new InvalidOperationException(
+                $"Unable to create required dependency of type {type.FullName}: IReadonlyDependencyResolver.GetService() returned null");
+        }
+
+        ConstructorInfo?
+            resolveConstructor = null,
+            ctorParamless = null,
+            ctorWithAttr = null;
+
+        var ctorArray = classType.GetConstructors();
+
+        // throw if classType has no constructors
+        if (ctorArray.Length == 0)
+            throw new InvalidOperationException($"{classType.FullName} has no constructors.");
+
+        // find constructors
+        foreach (var ctor in ctorArray)
+        {
+            // if constructor has no params
+            if (ctor.GetParameters().Any() == false)
+                ctorParamless = ctor;            
+
+            // locate constructor with attribute [ResolveThis]
+            if (ctor.CustomAttributes.FirstOrDefault(a => a.AttributeType == typeof(ResolveThis)) != null)            
+                ctorWithAttr = ctor;            
+        }
+
+        // if it has no [ResolveThis] ctor but has a parameterless ctor
+        if (ctorParamless is not null && ctorWithAttr is null)
+            return (Control)Activator.CreateInstance(classType)!;
+
+        // if it has a constructor with [ResolveThis]
+        if (ctorWithAttr is not null)
+            resolveConstructor = ctorWithAttr;
+
+        // resolve constructor has not been initialized, throw
+        if (resolveConstructor is null)
+            throw new InvalidOperationException(
+                $"{classType.FullName}: Can not find constructor with attribute [{typeof(ResolveThis).Name}]");
+
+        // resolveConstructor not null
+        IEnumerable<Type> types = resolveConstructor.GetParameters().Select(p => p.ParameterType).ToArray();
+        if (Activator.CreateInstance(classType, types.Select(GetService).ToArray()) is Control c)
+            return c;
+
+        throw new InvalidOperationException(
+            $"Unable to create required dependency of type {classType.FullName}: Activator.CreateInstance() returned null");
     }
 
     /// <summary>

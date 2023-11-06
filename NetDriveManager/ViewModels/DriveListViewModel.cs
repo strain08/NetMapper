@@ -30,7 +30,9 @@ public partial class DriveListViewModel : ViewModelBase
         nav = navService;
         DriveList = driveListService.DriveList;
     }
+#nullable disable
     public DriveListViewModel() { }
+#nullable enable
 
     // COMMANDS        
     public void DisconnectDriveCommand(object commandParameter)
@@ -52,6 +54,7 @@ public partial class DriveListViewModel : ViewModelBase
     {
         if (SelectedItem == null) return;
         driveListService.RemoveDrive(SelectedItem);
+        driveListService.SaveAll();
     }
 
     public void AddItem()
@@ -66,6 +69,6 @@ public partial class DriveListViewModel : ViewModelBase
 
     public void Settings()
     {
-        nav.GoToNew<AboutViewModel>();
+        nav.GoToNew<SettingsViewModel>();
     }
 }

@@ -63,12 +63,12 @@
             <ListBox
                 Name="listBox"
                 ItemsSource="{Binding DriveList}"
-                SelectedItem="{Binding SelectedItem}"
-                DoubleTapped="OnDoubleClick"
+                SelectedItem="{Binding SelectedItem}"                
                 Background="Transparent">
                 <ListBox.ItemTemplate>
                     <DataTemplate>
-                        <DockPanel>
+						<!--Should react only when doubleclick over an item-->
+                        <DockPanel DoubleTapped="OnDoubleClick"> 
                             <Panel DockPanel.Dock="Right">
                                 <!-- Command parameter contains MappingModel-->
                                 <Button

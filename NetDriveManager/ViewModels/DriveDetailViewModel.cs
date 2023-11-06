@@ -24,7 +24,8 @@ public partial class DriveDetailViewModel : ViewModelBase
     [ObservableProperty] private MapModel selectedItem = new();
 
     [ResolveThis]
-    public DriveDetailViewModel(IDriveListService driveListService,
+    public DriveDetailViewModel(
+        IDriveListService driveListService,
         IDriveConnectService driveConnectService,
         INavService nav)
     {
@@ -91,6 +92,8 @@ public partial class DriveDetailViewModel : ViewModelBase
         {
             driveListService.AddDrive(DisplayItem);
         }
+        
+        driveListService.SaveAll();
 
         nav.GetViewModel<DriveListViewModel>().SelectedItem = DisplayItem;
         nav.GoTo<DriveListViewModel>();

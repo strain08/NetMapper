@@ -23,9 +23,9 @@ public partial class ApplicationViewModel : ViewModelBase, IRecipient<PropertyCh
     [ObservableProperty] 
     private string tooltipText = string.Empty;
 
-    public ApplicationViewModel()
-    {
-    } // preview does not work w/o empty ctor
+#nullable disable
+    public ApplicationViewModel() { } // preview does not work w/o empty ctor
+#nullable enable
 
     [ResolveThis]
     public ApplicationViewModel(
@@ -33,7 +33,7 @@ public partial class ApplicationViewModel : ViewModelBase, IRecipient<PropertyCh
         IDriveListService driveListService,
         INavService navService)
     {
-        //if (Design.IsDesignMode) return; 
+        
         nav = navService;
         settings = settingsService;
         listService = driveListService;

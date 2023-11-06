@@ -30,7 +30,8 @@ public class SettingsService : ISettingsService
     {
         appSettings = value;
 
-        foreach (var setting in SettingsDictionary) setting.Value.SetAppSettings(appSettings);
+        foreach (var setting in SettingsDictionary) 
+            setting.Value.SetAppSettings(appSettings);
     }
 
     public void AddModule(ISettingModule settingModule)
@@ -38,7 +39,7 @@ public class SettingsService : ISettingsService
         try
         {
             SettingsDictionary.Add(settingModule.GetType(), settingModule);
-            settingModule.SetAppSettings(GetAppSettings());
+            settingModule.SetAppSettings(appSettings);
         }
         catch (ArgumentException)
         {

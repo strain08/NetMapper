@@ -1,7 +1,9 @@
 using System;
 using Avalonia.Controls;
 using Avalonia.Controls.Templates;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using NetMapper.ViewModels;
+using Splat;
 
 namespace NetMapper;
 
@@ -13,7 +15,12 @@ public class ViewLocator : IDataTemplate
         var type = Type.GetType(name);
 
         if (type != null)
-            return (Control)Activator.CreateInstance(type)!;
+        {
+            if (Design.IsDesignMode)
+                return (Control)Activator.CreateInstance(type)!;
+            else
+                return Locator.Current.CreateControlWithConstructorInjection(type)!;
+        }
         return new TextBlock { Text = "Not Found: " + name };
     }
 

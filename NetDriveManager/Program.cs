@@ -1,9 +1,9 @@
-﻿using System;
-using System.IO;
-using System.Threading;
-using Avalonia;
+﻿using Avalonia;
 using NetMapper.Services.Helpers;
 using Serilog;
+using System;
+using System.IO;
+using System.Threading;
 
 namespace NetMapper;
 
@@ -17,11 +17,10 @@ internal class Program
     [STAThread]
     public static void Main(string[] args)
     {
-        var startupFolder = AppUtil.GetStartupFolder();
-        var logFile = Path.Combine(startupFolder, AppUtil.GetAppName() + ".log");
-
         if (!Mutex.WaitOne(TimeSpan.Zero, true)) return; // check if app aleady started
 
+        var startupFolder = AppUtil.GetStartupFolder();
+        var logFile = Path.Combine(startupFolder, AppUtil.GetAppName() + ".log");
         Log.Logger = new LoggerConfiguration()
             .WriteTo.Console()
             .WriteTo.File(logFile)
@@ -31,8 +30,7 @@ internal class Program
 
         try
         {
-            BuildAvaloniaApp()
-                .StartWithClassicDesktopLifetime(args);
+            _ = BuildAvaloniaApp().StartWithClassicDesktopLifetime(args);
             Mutex.ReleaseMutex();
         }
         catch (Exception ex)

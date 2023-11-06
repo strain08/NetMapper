@@ -1,39 +1,42 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
+using NetMapper.Attributes;
 using NetMapper.Models;
 using NetMapper.Services;
 using NetMapper.Services.Interfaces;
-using Splat;
 
 namespace NetMapper.ViewModels;
 
 public partial class SettingsViewModel : ViewModelBase
 {
-    private readonly INavService navService;
+    [ObservableProperty]
+    AppSettingsModel displaySettings;
 
-    private readonly ISettingsService settingsService;
+    private readonly INavService nav;
+    private readonly ISettingsService settings;
 
-    [ObservableProperty] private AppSettingsModel displaySettings;
+#nullable disable
+    public SettingsViewModel() { }
+#nullable enable
 
-    public SettingsViewModel()
+    [ResolveThis]
+    public SettingsViewModel(INavService navService, ISettingsService settingsService)
     {
-        //if (Design.IsDesignMode) return; // design mode bypass            
-        settingsService = Locator.Current.GetRequiredService<ISettingsService>();
-        navService = Locator.Current.GetRequiredService<INavService>();
-
+        nav = navService;
+        settings = settingsService;
         DisplaySettings = settingsService.GetAppSettings().Clone();
     }
 
     public void OkCommand()
     {
-        settingsService.SetAppSettings(DisplaySettings.Clone());
-        settingsService.ApplyAll();
-        settingsService.SaveAll();
+        settings.SetAppSettings(DisplaySettings.Clone());
+        settings.ApplyAll();
+        settings.SaveAll();
 
-        navService.GoTo<DriveListViewModel>();
+        nav.GoTo<DriveListViewModel>();
     }
 
     public void CancelCommand()
     {
-        navService.GoTo<DriveListViewModel>();
+        nav.GoTo<DriveListViewModel>();
     }
 }

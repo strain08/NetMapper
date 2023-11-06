@@ -1,10 +1,11 @@
 ﻿using System.Collections.Generic;
 using NetMapper.Models;
+using NetMapper.Services;
 using NetMapper.Services.Interfaces;
 using NetMapper.Services.Stores;
 using Splat;
 
-namespace NetMapper.Services;
+namespace NetMapper;
 
 public static class Bootstrapper
 {

@@ -30,13 +30,15 @@
             FontSize="18"
             Margin="8,0,0,0"
             Foreground="LightBlue"
-            Text="{Binding OperationTitle}" />
-        <StackPanel
+            Text="{Binding OperationTitle, FallbackValue='Operation title'}"
+			/>
+		<!-- BUTTONS -->
+		<StackPanel
+			DockPanel.Dock="Bottom"
             Background="Transparent"
             HorizontalAlignment="Center"
             Orientation="Horizontal"
-            Height="50"
-            DockPanel.Dock="Bottom">
+            Height="50">
             <Button Classes="btnMain"
                     Content="OK"
                     Width="80"
@@ -50,7 +52,9 @@
         <StackPanel>
             <!-- DRIVE LETTER -->
             <StackPanel Classes="detail">
-                <TextBlock Classes="detail" Text="Drive letter" />
+                <TextBlock
+					Classes="detail" 
+					Text="Drive letter" />
                 <ComboBox
                     ItemsSource="{Binding DriveLettersList}"
                     SelectedItem="{Binding DisplayItem.DriveLetter}"

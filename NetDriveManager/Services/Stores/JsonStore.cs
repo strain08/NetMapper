@@ -10,24 +10,15 @@ namespace NetMapper.Services;
 public class JsonStore<T> : IDataStore<T> where T : new()
 {
     private readonly string jsonFile;
+    private T? StoreData { get; set; }
 
     // CTOR
-
     public JsonStore(string jsonFileName)
     {
         var strWorkPath = AppUtil.GetStartupFolder();
         jsonFile = Path.Combine(strWorkPath, jsonFileName);
     }
-
-    private T? StoreData { get; set; }
-
-    // UPDATE
-    public void Update(T updatedData)
-    {
-        StoreData = updatedData;
-        Save();
-    }
-
+    
     public T GetData()
     {
         if (StoreData != null) return StoreData;
@@ -35,8 +26,12 @@ public class JsonStore<T> : IDataStore<T> where T : new()
         return StoreData ?? throw new ArgumentNullException();
     }
 
-
-    // READ
+    public void Update(T updatedData)
+    {
+        StoreData = updatedData;
+        Save();
+    }    
+        
     private void Load()
     {
         // file does not exist, try create new one
@@ -60,18 +55,17 @@ public class JsonStore<T> : IDataStore<T> where T : new()
             Save();
         }
     }
-
-    // WRITE
+        
     private void Save()
     {
         var jsonOptions = new JsonSerializerOptions
         {
             WriteIndented = true
         };
-
+        
+        StoreData ??= new T(); // initialize if null
         try
-        {
-            StoreData ??= new T();
+        {            
             var jsonString = JsonSerializer.Serialize(StoreData, StoreData.GetType(), jsonOptions);
             File.WriteAllText(jsonFile, jsonString);
         }

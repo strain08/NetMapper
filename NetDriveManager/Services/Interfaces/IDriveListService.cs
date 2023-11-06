@@ -10,4 +10,5 @@ public interface IDriveListService
     void AddDrive(MapModel model);
     void EditDrive(MapModel oldModel, MapModel newModel);
     void RemoveDrive(MapModel model);
+    void SaveAll();
 }
