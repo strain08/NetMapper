@@ -72,7 +72,7 @@ public partial class DriveDetailViewModel : ViewModelBase
         var cAvailableLeters = new List<char>(Interop.GetAvailableDriveLetters());
 
         // remove unmapped managed drive letters
-        foreach (var d in driveListService.DriveList)
+        foreach (var d in driveListService.DriveCollection)
             cAvailableLeters.Remove(d.DriveLetter);
 
         foreach (var cLetter in cAvailableLeters)

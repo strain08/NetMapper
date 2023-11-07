@@ -9,42 +9,42 @@ public class DriveListService : IDriveListService
 {
     private readonly IDataStore<List<MapModel>> _store;
     
-    public ObservableCollection<MapModel> DriveList { get; set; }
+    public ObservableCollection<MapModel> DriveCollection { get; set; }
     
     // CTOR
     public DriveListService(IDataStore<List<MapModel>> storeService)
     {
         _store = storeService;
-        DriveList = new ObservableCollection<MapModel>(_store.GetData());
+        DriveCollection = new ObservableCollection<MapModel>(_store.GetData());
     }
 
     public void AddDrive(MapModel model)
     {
-        DriveList.Add(model);
+        DriveCollection.Add(model);
     }
 
     public void RemoveDrive(MapModel model)
     {
        
-        var i = DriveList.IndexOf(model);
+        var i = DriveCollection.IndexOf(model);
         if (i == -1)
-            throw new KeyNotFoundException($"Element not found in {DriveList}");
+            throw new KeyNotFoundException($"Element not found in {DriveCollection}");
         
-        DriveList.RemoveAt(i);
+        DriveCollection.RemoveAt(i);
        
     }
 
     public void EditDrive(MapModel oldModel, MapModel newModel)
     {
-        var i = DriveList.IndexOf(oldModel);
+        var i = DriveCollection.IndexOf(oldModel);
         if (i == -1)
-            throw new KeyNotFoundException($"Element not found in {DriveList}");        
-        DriveList.RemoveAt(i);
-        DriveList.Insert(i, newModel);
+            throw new KeyNotFoundException($"Element not found in {DriveCollection}");        
+        DriveCollection.RemoveAt(i);
+        DriveCollection.Insert(i, newModel);
     }
 
     public void SaveAll()
     {
-        _store.Update(new List<MapModel>(DriveList));
+        _store.Update(new List<MapModel>(DriveCollection));
     }
 }

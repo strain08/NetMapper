@@ -68,7 +68,7 @@ public partial class ApplicationViewModel : ViewModelBase, IRecipient<PropertyCh
     {
         TooltipText = string.Empty;
 
-        foreach (var item in listService.DriveList)
+        foreach (var item in listService.DriveCollection)
         {
             TooltipText += item.DriveLetterColon;
             switch (item.MappingStateProp)

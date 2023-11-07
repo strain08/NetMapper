@@ -5,7 +5,7 @@ namespace NetMapper.Services;
 
 public interface IDriveListService
 {
-    ObservableCollection<MapModel> DriveList { get; set; }
+    ObservableCollection<MapModel> DriveCollection { get; set; }
 
     void AddDrive(MapModel model);
     void EditDrive(MapModel oldModel, MapModel newModel);

@@ -21,10 +21,10 @@ internal class NetMonService
     private void NetworkAvailabilityChanged(object? sender, NetworkAvailabilityEventArgs e)
     {
         if (e.IsAvailable)
-            foreach (var m in driveListService.DriveList.Where(m => m.Settings.AutoConnect))
+            foreach (var m in driveListService.DriveCollection.Where(m => m.Settings.AutoConnect))
                 driveConnectService.ConnectDrive(m);
         else
-            foreach (var m in driveListService.DriveList.Where(m => m.Settings.AutoDisconnect))
+            foreach (var m in driveListService.DriveCollection.Where(m => m.Settings.AutoDisconnect))
                 driveConnectService.DisconnectDrive(m);
     }
 }

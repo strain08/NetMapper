@@ -28,7 +28,7 @@ public partial class DriveListViewModel : ViewModelBase
         this.driveListService = driveListService;
         this.driveConnectService = driveConnectService;
         nav = navService;
-        DriveList = driveListService.DriveList;
+        DriveList = driveListService.DriveCollection;
     }
 #nullable disable
     public DriveListViewModel() { }

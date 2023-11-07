@@ -14,7 +14,6 @@ namespace NetMapper.Tests
         {
             _db.GetData().Returns(new List<MapModel>());
             _sut = new DriveListService(_db);
-
         }
 
         [Fact]
@@ -22,66 +21,84 @@ namespace NetMapper.Tests
         {
             // Arrange
             var mapModel = new MapModel();
-            _sut.DriveList.Clear();
+            _sut.DriveCollection.Clear();
             // Act
             _sut.AddDrive(mapModel);
             // Assert
-            Assert.Contains(mapModel, _sut.DriveList);
+            Assert.Contains(mapModel, _sut.DriveCollection);
         }
 
         [Fact]
-        public void RemoveDrive_ShouldRemoveDriveFromList()
+        public void RemoveDrive_ShouldRemoveItemFromList()
         {
             // Arrange
             var mapModel = new MapModel();
-            _sut.DriveList.Clear();
+            _sut.DriveCollection.Clear();
             _sut.AddDrive(mapModel);
             // Act
             _sut.RemoveDrive(mapModel);
             // Assert
-            Assert.DoesNotContain(mapModel, _sut.DriveList);
-            Assert.Empty(_sut.DriveList);
+            Assert.DoesNotContain(mapModel, _sut.DriveCollection);
+            Assert.Empty(_sut.DriveCollection);
         }
         
         [Fact]
-        public void RemoveDrive_ShoulThrowRemovingNonexistingModel()
+        public void RemoveDrive_ShoulThrowRemovingNonexistingItem()
         {
             // Arrange
-            var oldMapModel = new MapModel();
             var newMapModel = new MapModel();
-            _sut.DriveList.Clear();
+            _sut.DriveCollection.Clear();
 
             // Act & Assert
-            Assert.Throws<KeyNotFoundException>(() => { _sut.EditDrive(oldMapModel, newMapModel); });
+            _ = Assert.Throws<KeyNotFoundException>(() => 
+            { 
+                _sut.RemoveDrive(newMapModel); 
+            });
         }
         
         [Fact]
-        public void EditDrive_ShouldReplaceOldModelWithNewModel()
+        public void EditDrive_ShouldReplaceOldItemWithNewItem()
         {
             // Arrange
             var oldMapModel = new MapModel();
             var newMapModel = new MapModel();
-            _sut.DriveList.Clear();
+            _sut.DriveCollection.Clear();
             _sut.AddDrive(oldMapModel);
 
             // Act
             _sut.EditDrive(oldMapModel, newMapModel);
 
             // Assert
-            Assert.Contains(newMapModel, _sut.DriveList);
-            Assert.DoesNotContain(oldMapModel, _sut.DriveList);
+            Assert.Contains(newMapModel, _sut.DriveCollection);
+            Assert.DoesNotContain(oldMapModel, _sut.DriveCollection);
         }
 
         [Fact]
-        public void EditDrive_ShoulThrowReplaceNonexistingOldModel()
+        public void EditDrive_ShouldThrowReplaceNonexistingOldModel()
         {
             // Arrange
             var oldMapModel = new MapModel();
             var newMapModel = new MapModel();
-            _sut.DriveList.Clear();
+            _sut.DriveCollection.Clear();
 
             // Act & Assert
-            Assert.Throws<KeyNotFoundException>(() => { _sut.EditDrive(oldMapModel, newMapModel); });
+            Assert.Throws<KeyNotFoundException>(() => 
+            { 
+                _sut.EditDrive(oldMapModel, newMapModel); 
+            });
+        }
+        [Fact]
+        public void SaveAll_ShouldCallStoreUpdate()
+        {
+            // Arrange
+            _sut.DriveCollection.Clear();
+            var mapModel = new MapModel();
+            _sut.AddDrive(mapModel);
+
+            // Act
+            _sut.SaveAll();
+            // Assert
+            _db.Received(1).Update(Arg.Any<List<MapModel>>());
         }
     }
 }

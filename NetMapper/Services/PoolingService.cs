@@ -35,7 +35,7 @@ public class PoolingService
         List<Task> taskList = new();
         while (true)
         {
-            foreach (var m in driveListService.DriveList)
+            foreach (var m in driveListService.DriveCollection)
                 taskList.Add(Task.Run(() =>
                 {
                     updateModelState.Update(m);
