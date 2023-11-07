@@ -10,8 +10,8 @@ namespace NetMapper.ViewModels;
 
 public partial class DriveListViewModel : ViewModelBase
 {
-    private readonly IDriveConnectService driveConnectService;
-    private readonly IDriveListService driveListService;
+    private readonly IDriveConnectService connectService;
+    private readonly IDriveListService listService;
     private readonly INavService nav;
 
     [ObservableProperty]
@@ -25,8 +25,8 @@ public partial class DriveListViewModel : ViewModelBase
         IDriveConnectService driveConnectService,
         INavService navService)
     {
-        this.driveListService = driveListService;
-        this.driveConnectService = driveConnectService;
+        listService = driveListService;
+        connectService = driveConnectService;
         nav = navService;
         DriveList = driveListService.DriveCollection;
     }
@@ -40,21 +40,21 @@ public partial class DriveListViewModel : ViewModelBase
         var m = commandParameter as MapModel
                 ?? throw new InvalidOperationException("Error getting command parameter for DisconnectDriveCommand");
         m.Settings.AutoConnect = false; // prevent auto reconnection in Mapping Loop
-        driveConnectService.DisconnectDrive(m);
+        connectService.DisconnectDrive(m);
     }
 
     public void ConnectDriveCommand(object commandParameter)
     {
         var m = commandParameter as MapModel
                 ?? throw new InvalidOperationException("Error getting command parameter for ConnectDriveCommand");
-        driveConnectService.ConnectDrive(m);
+        connectService.ConnectDrive(m);
     }
 
     public void RemoveItem()
     {
         if (SelectedItem == null) return;
-        driveListService.RemoveDrive(SelectedItem);
-        driveListService.SaveAll();
+        listService.RemoveDrive(SelectedItem);
+        listService.SaveAll();
     }
 
     public void AddItem()
