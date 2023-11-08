@@ -72,7 +72,12 @@ public class ToastBase<TAnswer> : IDisposable where TAnswer : struct, Enum
         _previousMsg = null;
         var eventArgs = obj as ToastActivatedEventArgs;
         var args = ToastArguments.Parse(eventArgs?.Arguments);
-        toastAction.Invoke(_mapModel, args.GetEnum<TAnswer>(TOAST_ACTION));
+        try
+        {
+            TAnswer answer = args.GetEnum<TAnswer>(TOAST_ACTION);
+            toastAction.Invoke(_mapModel, answer);
+        }
+        catch { }
 
         if (_toastNotification == null) return;
         _toastNotification.Activated -= Activated;

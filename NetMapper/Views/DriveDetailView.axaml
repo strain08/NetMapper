@@ -6,6 +6,9 @@
              xmlns:vm="using:NetMapper.ViewModels"
              x:DataType="vm:DriveDetailViewModel"
              x:Class="NetMapper.Views.DriveDetailView">
+	<Design.DataContext>
+		<vm:DriveDetailViewModel/>
+	</Design.DataContext>
     <UserControl.Styles>
         <Style Selector="StackPanel.detail">
             <Setter Property="Margin" Value="16,8,16,0" />
@@ -57,7 +60,7 @@
 					Text="Drive letter" />
                 <ComboBox
                     ItemsSource="{Binding DriveLettersList}"
-                    SelectedItem="{Binding DisplayItem.DriveLetter}"
+                    SelectedItem="{Binding DriveLetter}"
                     Classes="detail">
                     <ComboBox.ItemTemplate>
                         <DataTemplate>
@@ -74,21 +77,24 @@
                     Text="Network path" />
                 <TextBox
                     Classes="detail"
-                    Text="{Binding DisplayItem.NetworkPath}"
+                    Text="{Binding NetworkPath}"
                     VerticalAlignment="Center"
-                    Watermark="\\SERVER\share" />
+                    Watermark="\\SERVER\share" 
+					
+					 />
+				
             </StackPanel>
 
             <!-- OPTIONS -->
             <StackPanel Classes="detail">
                 <CheckBox
-                    IsChecked="{Binding DisplayItem.Settings.AutoConnect}"
+                    IsChecked="{Binding AutoConnect}"
                     Content="Auto-connect"
                     ToolTip.Tip="Connect when share is available." />
             </StackPanel>
             <StackPanel Classes="detail">
                 <CheckBox
-                    IsChecked="{Binding DisplayItem.Settings.AutoDisconnect}"
+                    IsChecked="{Binding AutoDisconnect}"
                     Content="Auto-disconnect"
                     ToolTip.Tip="Remove drive mapping when connection down or share becomes unavailable." />
             </StackPanel>

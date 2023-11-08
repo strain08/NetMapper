@@ -4,9 +4,9 @@ namespace NetMapper.Models;
 
 public partial class MappingSettingsModel : ObservableObject
 {
-    [ObservableProperty] private bool autoConnect;
+    [ObservableProperty]  bool autoConnect;
 
-    [ObservableProperty] private bool autoDisconnect;
+    [ObservableProperty] bool autoDisconnect;
 
     public MappingSettingsModel Clone()
     {

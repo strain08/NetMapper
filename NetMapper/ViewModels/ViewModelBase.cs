@@ -1,9 +1,9 @@
-﻿using System;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+using NetMapper.Services.Helpers;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
-using CommunityToolkit.Mvvm.ComponentModel;
-using NetMapper.Services.Helpers;
 
 namespace NetMapper.ViewModels;
 
@@ -26,7 +26,8 @@ public class ViewModelBase : ObservableObject, INotifyDataErrorInfo
     {
         if (_errorsByPropertyName.TryGetValue(propertyName, out var errorList))
         {
-            if (!errorList.Contains(error)) errorList.Add(error);
+            if (errorList.Contains(error) == false)
+                errorList.Add(error);
         }
         else
         {
@@ -42,25 +43,66 @@ public class ViewModelBase : ObservableObject, INotifyDataErrorInfo
         ErrorsChanged?.Invoke(this, new DataErrorsChangedEventArgs(propertyName));
     }
 
-    protected bool ValidateNetworkPath(string propertyName, string? value, int maxLength = 255)
+    protected void RemoveErrorFromProperty(string propertyName, string error)
     {
+        if (_errorsByPropertyName.TryGetValue(propertyName, out var errorList)
+            && errorList.Contains(error))
+        {
+            errorList.Remove(error);
+            ErrorsChanged?.Invoke(this, new DataErrorsChangedEventArgs(propertyName));
+        }
+    }
+
+    protected bool ValidateNetworkPath(string propertyName, string value, int maxLength = 255)
+    {
+
+        var pathEmptyError = "Path must not be empty.";
         if (string.IsNullOrEmpty(value))
         {
-            AddError(propertyName, "Path must not be empty.");
+            AddError(propertyName, pathEmptyError);
             return false;
         }
+        else RemoveErrorFromProperty(propertyName, pathEmptyError);
 
+
+        var maxLengthError = $"Path must be at most {maxLength} characters long.";
         if (value.Length > maxLength)
         {
-            AddError(propertyName, $"Path must be at most {maxLength} characters long.");
+            AddError(propertyName, maxLengthError);
             return false;
         }
-
+        else RemoveErrorFromProperty(propertyName, maxLengthError);
+        
+        var netPathError = "Not a valid network path.";        
         if (!Interop.IsNetworkPath(value))
         {
-            AddError(propertyName, "Not a valid network path.");
+            AddError(propertyName, netPathError);
             return false;
         }
+        else RemoveErrorFromProperty(propertyName, netPathError);
+
+        RemoveError(propertyName);
+        return true;
+    }
+
+    protected bool ValidateDriveLetter(string propertyName, char? value)
+    {
+        var nullLetter = "Drive letter null.";
+        if (value is null)
+        {
+            AddError(propertyName, nullLetter);
+            return false;
+        }
+        else RemoveErrorFromProperty(propertyName, nullLetter);
+
+        var notLetter = "Select a drive letter.";
+        char notNullChar = (char)value;
+        if (!char.IsLetter(notNullChar))
+        {
+            AddError(propertyName, notLetter);
+            return false;
+        }
+        else RemoveErrorFromProperty(propertyName, notLetter);
 
         RemoveError(propertyName);
         return true;

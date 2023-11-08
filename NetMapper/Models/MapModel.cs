@@ -6,10 +6,11 @@ namespace NetMapper.Models;
 public partial class MapModel : ObservableObject
 {
     // PUBLIC PROP
-    [ObservableProperty] private char driveLetter;
+    [ObservableProperty] 
+    private char driveLetter;
 
-
-    [ObservableProperty] private string? volumeLabel;
+    [ObservableProperty] 
+    private string? volumeLabel;
 
     [JsonIgnore]
     public string DriveLetterColon
@@ -18,7 +19,12 @@ public partial class MapModel : ObservableObject
         set => DriveLetter = value[0];
     }
 
-    public string NetworkPath { get; set; } = string.Empty;
+    private string networkPath = string.Empty;
+    public string NetworkPath 
+    { 
+        get => networkPath; 
+        set => networkPath = value.Trim();         
+    }
 
     public MappingSettingsModel Settings { get; set; } = new();
 

@@ -1,4 +1,6 @@
-﻿using System;
+﻿using NetMapper.Enums;
+using NetMapper.Models;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -7,8 +9,6 @@ using System.Management;
 using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using NetMapper.Enums;
-using NetMapper.Models;
 
 namespace NetMapper.Services.Helpers;
 
@@ -204,10 +204,17 @@ public static class Interop
 
     public static bool IsNetworkPath(string path)
     {
-        // source: https://regexlib.com/REDetails.aspx?regexp_id=2285
-        var uncPattern =
-            @"^((\\\\[a-zA - Z0 - 9 -]+\\[a-zA - Z0 - 9`~!@#$%^&(){}'._-]+([ ]+[a-zA-Z0-9`~!@#$%^&(){}'._-]+)*)|([a-zA-Z]:))(\\[^ \\/:*?""<>|]+([ ]+[^ \\/:*?""<>|]+)*)*\\?$";
+        //// source: https://regexlib.com/REDetails.aspx?regexp_id=2285
+        //var uncPattern =
+        //    @"^((\\\\[a-zA - Z0 - 9 -]+\\[a-zA - Z0 - 9`~!@#$%^&(){}'._-]+([ ]+[a-zA-Z0-9`~!@#$%^&(){}'._-]+)*)|([a-zA-Z]:))(\\[^ \\/:*?""<>|]+([ ]+[^ \\/:*?""<>|]+)*)*\\?$";
+        Debug.WriteLine($"{path}");
+        var pathSlash = path.Replace("\\", "/");
+        var uncPattern = "^((\\/\\/[a-zA-Z0-9-]+\\/[a-zA-Z0-9`~!@#$%^&(){}'._-]+([ ]+[a-zA-Z0-9`~!@#$%^&(){}'._-]+)*)|([a-zA-Z]))(\\/[^ \\/:*?\"\"<>|]+([ ]+[^ \\/:*?\"\"<>|]+)*)*\\/?$";
+        //var g = Regex.Match(pathSlash, uncPattern).Groups;
+        //Debug.WriteLine(g.Count);
+        //Debug.WriteLine(Regex.Match(pathSlash, uncPattern).Success);
+        return Regex.Match(pathSlash, uncPattern).Success;
 
-        return Regex.Match(path, uncPattern).Success;
+
     }
 }

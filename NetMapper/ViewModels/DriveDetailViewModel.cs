@@ -1,27 +1,57 @@
-﻿using System.Collections.Generic;
+﻿using Avalonia.Metadata;
 using CommunityToolkit.Mvvm.ComponentModel;
 using NetMapper.Attributes;
 using NetMapper.Models;
 using NetMapper.Services;
 using NetMapper.Services.Helpers;
 using NetMapper.Services.Interfaces;
+using System.Collections.Generic;
 
 namespace NetMapper.ViewModels;
 
 public partial class DriveDetailViewModel : ViewModelBase
 {
     private readonly IDriveConnectService driveConnectService;
-
     private readonly IDriveListService driveListService;
-    private readonly INavService nav;
+    private readonly INavService nav;    
 
-    [ObservableProperty] private MapModel displayItem = new();
+    [ObservableProperty]    
+    bool isEditing = false;
 
-    private bool isEditing;
+    partial void OnIsEditingChanged(bool value)
+    {
+        if (value) OperationTitle = "Edit mapping";
+        else OperationTitle = "New mapping";
+    }
 
-    [ObservableProperty] private string? operationTitle;
+    public List<char> DriveLettersList { get; set; } = new();
+    
+    [ObservableProperty]
+    char driveLetter;
+    partial void OnDriveLetterChanged(char value) => ValidateAll();
 
-    [ObservableProperty] private MapModel selectedItem = new();
+    [ObservableProperty]
+    string networkPath = "";
+    partial void OnNetworkPathChanged(string value) => ValidateAll();
+
+    [ObservableProperty]
+    bool autoConnect;
+
+    [ObservableProperty]
+    bool autoDisconnect;
+
+    [ObservableProperty]
+    private string? operationTitle;    
+
+    [ObservableProperty]
+    private MapModel selectedItem = new();
+
+    [ObservableProperty]
+    bool isUserInputValid = false;
+
+#nullable disable
+    public DriveDetailViewModel() { }
+#nullable enable
 
     [ResolveThis]
     public DriveDetailViewModel(
@@ -34,22 +64,8 @@ public partial class DriveDetailViewModel : ViewModelBase
         this.nav = nav;
 
         LoadDriveLettersList();
-        IsEditing = false;
-    }
-
-    public List<char> DriveLettersList { get; set; } = new();
-
-    private bool IsEditing
-    {
-        get => isEditing;
-        set
-        {
-            if (value)
-                OperationTitle = "Edit mapping";
-            else
-                OperationTitle = "New mapping";
-            isEditing = value;
-        }
+        OnIsEditingChanged(false);
+        ValidateAll();
     }
 
     public DriveDetailViewModel EditItem(MapModel selectedItem)
@@ -61,11 +77,65 @@ public partial class DriveDetailViewModel : ViewModelBase
         DriveLettersList.Add(SelectedItem.DriveLetter);
         DriveLettersList.Sort();
 
-        DisplayItem = SelectedItem.Clone(); // decoupled copy of selected item
+        NetworkPath = SelectedItem.NetworkPath;
+        DriveLetter = SelectedItem.DriveLetter;
+        AutoConnect = SelectedItem.Settings.AutoConnect;
+        AutoDisconnect = SelectedItem.Settings.AutoDisconnect;
 
+        //ValidateAll();
         return this;
     }
 
+    public void Ok()
+    {
+        var editedItem = new MapModel
+        {
+            DriveLetter = DriveLetter,
+            NetworkPath = NetworkPath,
+            Settings = new()
+            {
+                AutoConnect = AutoConnect,
+                AutoDisconnect = AutoDisconnect
+            }
+        };
+        
+        if (IsEditing)
+        {
+            // disconnect previous letter if changed
+            if (SelectedItem.DriveLetter != editedItem.DriveLetter) 
+                driveConnectService.DisconnectDrive(SelectedItem); 
+            
+            driveListService.EditDrive(SelectedItem, editedItem);
+        }
+        else
+        {            
+            driveListService.AddDrive(editedItem);
+        }
+
+        driveListService.SaveAll();
+        
+        nav.GoTo<DriveListViewModel>();
+    }
+
+    public void Cancel()
+    {
+        nav.GoTo<DriveListViewModel>();
+    }
+
+    [DependsOn(nameof(IsUserInputValid))]
+    bool CanOk(object param)
+    {
+        return IsUserInputValid;
+    }
+
+    private bool ValidateAll()
+    {
+        var result = true;
+        result &= ValidateNetworkPath(nameof(NetworkPath), NetworkPath.Trim());
+        result &= ValidateDriveLetter(nameof(DriveLetter), DriveLetter);
+        IsUserInputValid = result;
+        return result;
+    }
 
     private void LoadDriveLettersList()
     {
@@ -77,30 +147,5 @@ public partial class DriveDetailViewModel : ViewModelBase
 
         foreach (var cLetter in cAvailableLeters)
             DriveLettersList.Add(cLetter);
-    }
-
-    public void Ok()
-    {
-        if (IsEditing)
-        {
-            if (SelectedItem.DriveLetter != DisplayItem.DriveLetter) // drive letter changed
-                driveConnectService.DisconnectDrive(SelectedItem); // disconnect previous drive
-
-            driveListService.EditDrive(SelectedItem, DisplayItem);
-        }
-        else
-        {
-            driveListService.AddDrive(DisplayItem);
-        }
-        
-        driveListService.SaveAll();
-
-        nav.GetViewModel<DriveListViewModel>().SelectedItem = DisplayItem;
-        nav.GoTo<DriveListViewModel>();
-    }
-
-    public void Cancel()
-    {
-        nav.GoTo<DriveListViewModel>();
     }
 }
