@@ -1,17 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using NetMapper.Interfaces;
 using NetMapper.Models;
-using NetMapper.Services.Interfaces;
-using NetMapper.Services.Stores;
 
 namespace NetMapper.Services;
 
 public class SettingsService : ISettingsService
 {
     private readonly Dictionary<Type, ISettingModule> SettingsDictionary = new();
-
     private readonly IDataStore<AppSettingsModel> SettingsStore;
-
     private AppSettingsModel appSettings;
 
     //CTOR
@@ -21,17 +18,15 @@ public class SettingsService : ISettingsService
         appSettings = store.GetData();
     }
 
-    public AppSettingsModel GetAppSettings()
+    public AppSettingsModel AppSettings
     {
-        return appSettings;
-    }
-
-    public void SetAppSettings(AppSettingsModel value)
-    {
-        appSettings = value;
-
-        foreach (var setting in SettingsDictionary) 
-            setting.Value.SetAppSettings(appSettings);
+        get => appSettings;
+        set
+        {
+            appSettings = value;
+            foreach (var setting in SettingsDictionary)
+                setting.Value.SetAppSettings(appSettings);
+        }
     }
 
     public void AddModule(ISettingModule settingModule)
@@ -61,6 +56,6 @@ public class SettingsService : ISettingsService
 
     public void SaveAll()
     {
-        SettingsStore.Update(GetAppSettings());
+        SettingsStore.Update(AppSettings);
     }
 }

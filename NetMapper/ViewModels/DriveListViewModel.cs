@@ -1,8 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using NetMapper.Attributes;
+using NetMapper.Interfaces;
 using NetMapper.Models;
-using NetMapper.Services;
-using NetMapper.Services.Interfaces;
 using System;
 using System.Collections.ObjectModel;
 
@@ -10,7 +9,7 @@ namespace NetMapper.ViewModels;
 
 public partial class DriveListViewModel : ViewModelBase
 {
-    private readonly IDriveConnectService connectService;
+    private readonly IConnectService connectService;
     private readonly IDriveListService listService;
     private readonly INavService nav;
 
@@ -22,7 +21,7 @@ public partial class DriveListViewModel : ViewModelBase
     [ResolveThis]
     public DriveListViewModel(
         IDriveListService driveListService,
-        IDriveConnectService driveConnectService,
+        IConnectService driveConnectService,
         INavService navService)
     {
         listService = driveListService;
@@ -40,14 +39,14 @@ public partial class DriveListViewModel : ViewModelBase
         var m = commandParameter as MapModel
                 ?? throw new InvalidOperationException("Error getting command parameter for DisconnectDriveCommand");
         m.Settings.AutoConnect = false; // prevent auto reconnection in Mapping Loop
-        connectService.DisconnectDrive(m);
+        connectService.Disconnect(m);
     }
 
     public void ConnectDriveCommand(object commandParameter)
     {
         var m = commandParameter as MapModel
                 ?? throw new InvalidOperationException("Error getting command parameter for ConnectDriveCommand");
-        connectService.ConnectDrive(m);
+        connectService.Connect(m);
     }
 
     public void RemoveItem()

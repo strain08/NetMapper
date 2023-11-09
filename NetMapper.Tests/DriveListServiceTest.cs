@@ -1,6 +1,6 @@
-﻿using NetMapper.Models;
+﻿using NetMapper.Interfaces;
+using NetMapper.Models;
 using NetMapper.Services;
-using NetMapper.Services.Stores;
 using NSubstitute;
 
 namespace NetMapper.Tests
@@ -8,11 +8,11 @@ namespace NetMapper.Tests
     public class DriveListServiceTest
     {
         private readonly IDriveListService _sut;
-        private readonly IDataStore<List<MapModel>> _db = Substitute.For<IDataStore<List<MapModel>>>();
+        private readonly IDataStore<AppDataModel> _db = Substitute.For<IDataStore<AppDataModel>>();
 
         public DriveListServiceTest()
         {
-            _db.GetData().Returns(new List<MapModel>());
+            _db.GetData().Returns(new AppDataModel());
             _sut = new DriveListService(_db);
         }
 
@@ -98,7 +98,7 @@ namespace NetMapper.Tests
             // Act
             _sut.SaveAll();
             // Assert
-            _db.Received(1).Update(Arg.Any<List<MapModel>>());
+            _db.Received(1).Update(Arg.Any<AppDataModel>());
         }
     }
 }

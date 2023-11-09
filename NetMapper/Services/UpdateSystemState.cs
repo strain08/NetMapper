@@ -1,20 +1,20 @@
-﻿using NetMapper.Models;
-using NetMapper.Services.Interfaces;
+﻿using NetMapper.Interfaces;
+using NetMapper.Models;
 
 namespace NetMapper.Services;
 
 public class UpdateSystemState : IUpdateSystemState
 {
-    private readonly IDriveConnectService connectService;
+    private readonly IConnectService connectService;
 
-    public UpdateSystemState(IDriveConnectService driveConnectService)
+    public UpdateSystemState(IConnectService driveConnectService)
     {
         connectService = driveConnectService;
     }
 
     public void Update(MapModel m)
     {
-        if (m.CanAutoConnect) connectService.ConnectDrive(m);
-        if (m.CanAutoDisconnect) connectService.DisconnectDrive(m);
+        if (m.CanAutoConnect) connectService.Connect(m);
+        if (m.CanAutoDisconnect) connectService.Disconnect(m);
     }
 }

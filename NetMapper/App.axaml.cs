@@ -5,7 +5,7 @@ using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Data.Core.Plugins;
 using Avalonia.Markup.Xaml;
 using Microsoft.Toolkit.Uwp.Notifications;
-using NetMapper.Services;
+using NetMapper.Interfaces;
 using NetMapper.ViewModels;
 using Serilog;
 using Splat;
@@ -33,14 +33,13 @@ public class App : Application
             // Without this line you will get duplicate validations from both Avalonia and CT
             BindingPlugins.DataValidators.RemoveAt(0);
             
-            // Register services with Splat
+            // Register services with Splat        
             Bootstrapper.Register(Locator.CurrentMutable, Locator.Current);
 
             desktop.ShutdownMode = ShutdownMode.OnExplicitShutdown;
             desktop.ShutdownRequested += Desktop_ShutdownRequested;
             desktop.Exit += Desktop_Exit;
         }
-
 
         if (Design.IsDesignMode)
             DataContext = new ApplicationViewModel();

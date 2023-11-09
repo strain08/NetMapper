@@ -6,10 +6,11 @@ namespace NetMapper.Models;
 public partial class MapModel : ObservableObject
 {
     // PUBLIC PROP
-    [ObservableProperty] 
+    [ObservableProperty]
     private char driveLetter;
 
-    [ObservableProperty] 
+    [ObservableProperty]
+    [property: JsonIgnore]
     private string? volumeLabel;
 
     [JsonIgnore]

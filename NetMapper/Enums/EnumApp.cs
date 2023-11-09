@@ -15,14 +15,10 @@ public enum MappingState
     LetterUnavailable
 }
 
-public enum ToastActionsDisconnect
+public enum ToastActions
 {
     Force,
     Retry,
     ShowWindow
 }
 
-public enum ToastActionsSimple
-{
-    ShowWindow
-}

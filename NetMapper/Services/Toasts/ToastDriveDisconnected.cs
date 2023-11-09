@@ -6,12 +6,12 @@ using NetMapper.Models;
 
 namespace NetMapper.Services.Toasts;
 
-public class ToastDriveDisconnected : ToastBase<ToastActionsSimple>
+public class ToastDriveDisconnected : ToastBase
 {
     private const string TAG = "INFO"; // toasts with same tag will be updated
 
     // CTOR
-    public ToastDriveDisconnected(MapModel m, Action<MapModel, ToastActionsSimple> del) : base(m, del)
+    public ToastDriveDisconnected(MapModel m, Action<MapModel, ToastActions> del) : base(m, del)
     {
         if (_previousMsg != null) // there is a visible notification, update
         {
@@ -20,15 +20,11 @@ public class ToastDriveDisconnected : ToastBase<ToastActionsSimple>
         }
 
         var toastContent = new ToastContentBuilder()
-            .AddArgument(TOAST_ACTION, ToastActionsSimple.ShowWindow)
+            .AddArgument(TOAST_ACTION, ToastActions.ShowWindow)
             .AddVisualChild(new AdaptiveText
             {
                 Text = new BindableString(MSG_CONTENT) // bound to ToastMessage prop
-            })
-            .AddVisualChild(new AdaptiveText
-            {
-                Text = new BindableString(MSG_CONTENT) // bound to ToastMessage prop
-            })
+            })            
             .SetToastScenario(ToastScenario.Reminder);
 
         // base

@@ -1,5 +1,5 @@
-﻿using NetMapper.Models;
-using NetMapper.Services.Stores;
+﻿using NetMapper.Interfaces;
+using NetMapper.Models;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 
@@ -7,15 +7,15 @@ namespace NetMapper.Services;
 
 public class DriveListService : IDriveListService
 {
-    private readonly IDataStore<List<MapModel>> _store;
+    private readonly IDataStore<AppDataModel> _store;
     
     public ObservableCollection<MapModel> DriveCollection { get; set; }
     
     // CTOR
-    public DriveListService(IDataStore<List<MapModel>> storeService)
+    public DriveListService(IDataStore<AppDataModel> storeService)
     {
         _store = storeService;
-        DriveCollection = new ObservableCollection<MapModel>(_store.GetData());
+        DriveCollection = new ObservableCollection<MapModel>(_store.GetData().Models);
     }
 
     public void AddDrive(MapModel model)
@@ -45,6 +45,8 @@ public class DriveListService : IDriveListService
 
     public void SaveAll()
     {
-        _store.Update(new List<MapModel>(DriveCollection));
+        var data = new AppDataModel();
+        data.Models = new List<MapModel>(DriveCollection);
+        _store.Update(data);
     }
 }

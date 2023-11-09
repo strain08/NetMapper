@@ -1,16 +1,16 @@
-﻿using System;
-using Windows.UI.Notifications;
-using Microsoft.Toolkit.Uwp.Notifications;
+﻿using Microsoft.Toolkit.Uwp.Notifications;
 using NetMapper.Enums;
 using NetMapper.Models;
+using System;
+using Windows.UI.Notifications;
 
 namespace NetMapper.Services.Toasts;
 
-public class ToastDriveConnected : ToastBase<ToastActionsSimple>
+public class ToastDriveConnected : ToastBase
 {
     private const string TAG = "INFO";
-
-    public ToastDriveConnected(MapModel m, Action<MapModel, ToastActionsSimple> del) : base(m, del)
+    private string ToastMessage => $"{_mapModel.DriveLetterColon} [ {_mapModel.VolumeLabel} ] connected.";
+    public ToastDriveConnected(MapModel m, Action<MapModel, ToastActions> del) : base(m, del)
     {
         if (_previousMsg != null) // toast still visible, update
         {
@@ -24,11 +24,12 @@ public class ToastDriveConnected : ToastBase<ToastActionsSimple>
             {
                 Text = new BindableString(MSG_CONTENT) // bound to ToastMessage prop
             })
-            .AddArgument(TOAST_ACTION, ToastActionsSimple.ShowWindow)
+            .AddArgument(TOAST_ACTION, ToastActions.ShowWindow)
             .SetToastScenario(ToastScenario.Reminder);
 
         var notificationData = new NotificationData();
-        notificationData.Values[MSG_CONTENT] = _previousMsg = ToastMessage;
+        notificationData.Values[MSG_CONTENT] = ToastMessage;
+        _previousMsg = ToastMessage;
 
         //base
         _toastNotification = new ToastNotification(toastContent.GetXml())
@@ -38,5 +39,5 @@ public class ToastDriveConnected : ToastBase<ToastActionsSimple>
         };
     }
 
-    private string ToastMessage => $"{_mapModel.DriveLetterColon} [ {_mapModel.VolumeLabel} ] connected.";
+
 }

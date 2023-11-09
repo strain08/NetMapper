@@ -1,6 +1,7 @@
 ﻿using Avalonia;
 using NetMapper.Services.Helpers;
 using Serilog;
+using Splat;
 using System;
 using System.IO;
 using System.Threading;
@@ -17,7 +18,8 @@ internal class Program
     [STAThread]
     public static void Main(string[] args)
     {
-        if (!Mutex.WaitOne(TimeSpan.Zero, true)) return; // check if app aleady started
+        // check if app aleady started
+        if (!Mutex.WaitOne(TimeSpan.Zero, true)) return;
 
         var startupFolder = AppUtil.GetStartupFolder();
         var logFile = Path.Combine(startupFolder, AppUtil.GetAppName() + ".log");

@@ -1,6 +1,6 @@
 ﻿using NetMapper.Models;
 
-namespace NetMapper.Services.Interfaces;
+namespace NetMapper.Interfaces;
 
 public interface IUpdateModelState
 {

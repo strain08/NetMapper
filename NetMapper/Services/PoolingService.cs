@@ -1,7 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using NetMapper.Interfaces;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using NetMapper.Services.Interfaces;
 
 namespace NetMapper.Services;
 
@@ -12,11 +12,11 @@ public class PoolingService
     private readonly IUpdateModelState updateModelState;
     private readonly IUpdateSystemState updateSystemState;
 
-    //CTOR
-    public PoolingService()
-    {
-    }
-
+    
+#nullable disable
+    public PoolingService() { }
+#nullable restore
+    
     //CTOR
     public PoolingService(
         IDriveListService driveListService,

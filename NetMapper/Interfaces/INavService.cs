@@ -1,7 +1,7 @@
 ﻿using System;
 using NetMapper.ViewModels;
 
-namespace NetMapper.Services.Interfaces;
+namespace NetMapper.Interfaces;
 
 public interface INavService
 {

@@ -9,7 +9,8 @@ using System.Reflection;
 internal static class BootstrapperHelpers
 {
     /// <summary>
-    ///     Creates a new class, autoresolving it's constructor with Splat
+    ///     Creates a new ViewModel, auto-resolving it's services with Splat
+    ///     <br>Requires a constructor with attribute [ResolveThis]</br>
     /// </summary>
     /// <typeparam name="T"></typeparam>
     /// <param name="resolver"></param>
@@ -36,12 +37,12 @@ internal static class BootstrapperHelpers
         foreach (var constructor in constructors)
         {
             var customAttributes = constructor.CustomAttributes;
-            if (customAttributes.Any())
-                if (customAttributes.Where(a => a.AttributeType == typeof(ResolveThis)).FirstOrDefault() != null)
-                {
-                    resolveConstructor = constructor;
-                    break;
-                }
+
+            if (customAttributes.FirstOrDefault(a => a.AttributeType == typeof(ResolveThis)) != null)
+            {
+                resolveConstructor = constructor;
+                break;
+            }
         }
 
         if (resolveConstructor == null)
@@ -57,7 +58,7 @@ internal static class BootstrapperHelpers
             $"Unable to create required dependency of type {typeof(T).FullName}: Activator.CreateInstance() returned null");
     }
     /// <summary>
-    ///     Creates a control by autoresolving it's constructor with Splat.
+    ///     Creates a control by autoresolving it's services with Splat.
     ///     <br>Requires View Class with a ctor marked with [ResolveThis]</br>
     /// </summary>
     /// <param name="resolver">Splat immutable resolver</param>
@@ -91,11 +92,11 @@ internal static class BootstrapperHelpers
         {
             // if constructor has no params
             if (ctor.GetParameters().Any() == false)
-                ctorParamless = ctor;            
+                ctorParamless = ctor;
 
             // locate constructor with attribute [ResolveThis]
-            if (ctor.CustomAttributes.FirstOrDefault(a => a.AttributeType == typeof(ResolveThis)) != null)            
-                ctorWithAttr = ctor;            
+            if (ctor.CustomAttributes.FirstOrDefault(a => a.AttributeType == typeof(ResolveThis)) != null)
+                ctorWithAttr = ctor;
         }
 
         // if it has no [ResolveThis] ctor but has a parameterless ctor

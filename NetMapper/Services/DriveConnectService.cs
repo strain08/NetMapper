@@ -1,41 +1,44 @@
 ﻿using Avalonia.Threading;
 using NetMapper.Attributes;
 using NetMapper.Enums;
+using NetMapper.Interfaces;
 using NetMapper.Models;
 using NetMapper.Services.Helpers;
-using NetMapper.Services.Interfaces;
 using NetMapper.Services.Toasts;
 using NetMapper.ViewModels;
 using Serilog;
+using System;
+using System.Diagnostics;
 using System.Threading.Tasks;
 
 namespace NetMapper.Services;
 
-public class DriveConnectService : IDriveConnectService
+public class DriveConnectService : IConnectService
 {
     private readonly INavService nav;
-    //CTOR
 
     public DriveConnectService(INavService navService)
     {
         nav = navService;
     }
 
-    public async Task ConnectDrive(MapModel m)
+    public async Task Connect(MapModel m)
     {
         m.MappingStateProp = MappingState.Undefined;
 
         var result = await Interop.ConnectNetworkDriveAsync(m.DriveLetter, m.NetworkPath);
 
-        switch (result)
+       switch (result)
         {
             case ConnectResult.Success:
                 m.MappingStateProp = MappingState.Mapped;
                 _ = new ToastDriveConnected(m, ActionToastClicked).Show();
                 break;
+
             case ConnectResult.LoginFailure | ConnectResult.InvalidCredentials:
                 _ = new ToastLoginFailure(m, ActionToastClicked).Show();
                 break;
+
             default:
                 var errorDescription = result.GetAttributeOfType<DescriptionAttribute>()?.GetDescription();
                 Log.Error($"Error connecting to {m.NetworkPath}. Error code: {result}, {errorDescription} ");
@@ -43,7 +46,7 @@ public class DriveConnectService : IDriveConnectService
         }
     }
 
-    public async Task DisconnectDrive(MapModel m)
+    public async Task Disconnect(MapModel m)
     {
         m.MappingStateProp = MappingState.Undefined;
 
@@ -51,7 +54,7 @@ public class DriveConnectService : IDriveConnectService
         if (Interop.IsRegularDriveMapped(m.DriveLetter)) return;
 
         var result = await Interop.DisconnectNetworkDriveAsync(m.DriveLetter);
-
+        
         switch (result)
         {
             case DisconnectResult.DISCONNECT_SUCCESS:
@@ -65,15 +68,15 @@ public class DriveConnectService : IDriveConnectService
         }
     }
 
-    private void ActionDisconnect(MapModel m, ToastActionsDisconnect answer)
+    private void ActionDisconnect(MapModel m, ToastActions answer)
     {
         switch (answer)
         {
-            case ToastActionsDisconnect.Retry:
-                _ = DisconnectDrive(m);
+            case ToastActions.Retry:
+                _ = Disconnect(m);
                 break;
 
-            case ToastActionsDisconnect.Force:
+            case ToastActions.Force:
                 Task.Run(() =>
                 {
                     var error = Interop.DisconnectNetworkDrive(m.DriveLetter, true);
@@ -82,15 +85,20 @@ public class DriveConnectService : IDriveConnectService
                 });
                 break;
 
-            case ToastActionsDisconnect.ShowWindow:
+            case ToastActions.ShowWindow:
                 ShowMainWindow();
                 break;
         }
     }
 
-    private void ActionToastClicked(MapModel m, ToastActionsSimple answer)
+    private void ActionToastClicked(MapModel m, ToastActions answer)
     {
-        ShowMainWindow();
+        ProcessStartInfo psi = new()
+        {
+            UseShellExecute = true,
+            FileName = m.DriveLetterColon + "\\"
+        };
+        Process.Start(psi);
     }
 
     private void ShowMainWindow()

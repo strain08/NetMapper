@@ -4,10 +4,9 @@ namespace NetMapper.Messages;
 
 public class PropertyChangedMessage : ValueChangedMessage<string>
 {
+    public object PropertyValue { get; }
     public PropertyChangedMessage(string propertyName, object propertyValue) : base(propertyName)
     {
-        this.PropertyValue = propertyValue;
-    }
-
-    public object PropertyValue { get; }
+        PropertyValue = propertyValue;
+    }    
 }

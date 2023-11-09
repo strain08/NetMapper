@@ -9,25 +9,25 @@
 	<Design.DataContext>
 		<vm:DriveDetailViewModel/>
 	</Design.DataContext>
-    <UserControl.Styles>
-        <Style Selector="StackPanel.detail">
-            <Setter Property="Margin" Value="16,8,16,0" />
-        </Style>
-        <Style Selector="TextBox.detail">
-            <Setter Property="Margin" Value="4,2,0,0" />
-            <Setter Property="Height" Value="10" />
-        </Style>
-        <Style Selector="ComboBox.detail">
-            <Setter Property="Margin" Value="4,2,0,0" />
-        </Style>
-        <Style Selector="TextBlock.detail">
-            <Setter Property="Margin" Value="0,0,0,0" />
-        </Style>
-    </UserControl.Styles>
+	<UserControl.Styles>
+		<Style Selector="StackPanel.detail">
+			<Setter Property="Margin" Value="16,8,16,0" />
+		</Style>
+		<Style Selector="TextBox.detail">
+			<Setter Property="Margin" Value="4,2,0,0" />
+			<Setter Property="Height" Value="10" />
+		</Style>
+		<Style Selector="ComboBox.detail">
+			<Setter Property="Margin" Value="4,2,0,0" />
+		</Style>
+		<Style Selector="TextBlock.detail">
+			<Setter Property="Margin" Value="0,0,0,0" />
+		</Style>
+	</UserControl.Styles>
 
-    <DockPanel>
-        <!-- ACTION TITLE -->
-        <TextBlock
+	<DockPanel>
+		<!-- ACTION TITLE -->
+		<TextBlock
             DockPanel.Dock="Top"
             FontWeight="Normal"
             FontSize="18"
@@ -42,62 +42,59 @@
             HorizontalAlignment="Center"
             Orientation="Horizontal"
             Height="50">
-            <Button Classes="btnMain"
+			<Button Classes="btnMain"
                     Content="OK"
                     Width="80"
                     Command="{Binding Ok}" />
-            <Button Classes="btnMain"
+			<Button Classes="btnMain"
                     Width="80"
                     Content="Cancel"
                     Command="{Binding Cancel}" />
-        </StackPanel>
+		</StackPanel>
 
-        <StackPanel>
-            <!-- DRIVE LETTER -->
-            <StackPanel Classes="detail">
-                <TextBlock
-					Classes="detail" 
+		<StackPanel>
+			<!-- DRIVE LETTER -->
+			<StackPanel Classes="detail">
+				<TextBlock
+					Classes="detail"
 					Text="Drive letter" />
-                <ComboBox
+				<ComboBox
                     ItemsSource="{Binding DriveLettersList}"
                     SelectedItem="{Binding DriveLetter}"
                     Classes="detail">
-                    <ComboBox.ItemTemplate>
-                        <DataTemplate>
-                            <TextBlock Text="{Binding}" />
-                        </DataTemplate>
-                    </ComboBox.ItemTemplate>
-                </ComboBox>
-            </StackPanel>
+					<ComboBox.ItemTemplate>
+						<DataTemplate>
+							<TextBlock Text="{Binding}" />
+						</DataTemplate>
+					</ComboBox.ItemTemplate>
+				</ComboBox>
+			</StackPanel>
 
-            <!-- NETWORK PATH -->
-            <StackPanel Classes="detail">
-                <TextBlock
+			<!-- NETWORK PATH -->
+			<StackPanel Classes="detail">
+				<TextBlock
                     Classes="detail"
                     Text="Network path" />
-                <TextBox
+				<TextBox
                     Classes="detail"
                     Text="{Binding NetworkPath}"
                     VerticalAlignment="Center"
-                    Watermark="\\SERVER\share" 
-					
-					 />
-				
-            </StackPanel>
+                    Watermark="\\SERVER\share"/>
+			</StackPanel>
 
-            <!-- OPTIONS -->
-            <StackPanel Classes="detail">
-                <CheckBox
+			<!-- OPTIONS -->
+			<StackPanel Classes="detail">
+				<CheckBox
                     IsChecked="{Binding AutoConnect}"
                     Content="Auto-connect"
                     ToolTip.Tip="Connect when share is available." />
-            </StackPanel>
-            <StackPanel Classes="detail">
-                <CheckBox
+			</StackPanel>
+			<StackPanel Classes="detail">
+				<CheckBox
                     IsChecked="{Binding AutoDisconnect}"
                     Content="Auto-disconnect"
                     ToolTip.Tip="Remove drive mapping when connection down or share becomes unavailable." />
-            </StackPanel>
-        </StackPanel>
-    </DockPanel>
+			</StackPanel>
+		</StackPanel>
+	</DockPanel>
 </UserControl>

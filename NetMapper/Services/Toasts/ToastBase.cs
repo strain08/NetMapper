@@ -1,11 +1,13 @@
-﻿using System;
-using Windows.UI.Notifications;
-using Microsoft.Toolkit.Uwp.Notifications;
+﻿using Microsoft.Toolkit.Uwp.Notifications;
+using NetMapper.Enums;
 using NetMapper.Models;
+using System;
+using Windows.UI.Notifications;
 
 namespace NetMapper.Services.Toasts;
 
-public class ToastBase<TAnswer> : IDisposable where TAnswer : struct, Enum
+
+public class ToastBase : IDisposable
 {
     // toastData binding key
     protected const string MSG_CONTENT = "MESSAGE";
@@ -18,30 +20,15 @@ public class ToastBase<TAnswer> : IDisposable where TAnswer : struct, Enum
 
     protected ToastNotification? _toastNotification;
     private bool disposedValue;
-    protected Action<MapModel, TAnswer> toastAction;
+    protected Action<MapModel, ToastActions> toastAction;
 
-
-    public ToastBase(MapModel m, Action<MapModel, TAnswer> del)
+    public ToastBase(MapModel m, Action<MapModel, ToastActions> del)
     {
         toastAction = del;
         _mapModel = m;
     }
 
-    // // TODO: override finalizer only if 'Dispose(bool disposing)' has code to free unmanaged resources
-    // ~ToastBase()
-    // {
-    //     // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
-    //     Dispose(disposing: false);
-    // }
-
-    public void Dispose()
-    {
-        // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
-        Dispose(true);
-        GC.SuppressFinalize(this);
-    }
-
-    public ToastBase<TAnswer> Show()
+    public ToastBase Show()
     {
         if (_toastNotification == null)
             throw new ArgumentNullException(nameof(_toastNotification), "Toast notification not set.");
@@ -74,7 +61,7 @@ public class ToastBase<TAnswer> : IDisposable where TAnswer : struct, Enum
         var args = ToastArguments.Parse(eventArgs?.Arguments);
         try
         {
-            TAnswer answer = args.GetEnum<TAnswer>(TOAST_ACTION);
+            var answer = args.GetEnum<ToastActions>(TOAST_ACTION);
             toastAction.Invoke(_mapModel, answer);
         }
         catch { }
@@ -83,7 +70,12 @@ public class ToastBase<TAnswer> : IDisposable where TAnswer : struct, Enum
         _toastNotification.Activated -= Activated;
         _toastNotification.Dismissed -= Dismissed;
     }
-
+    public void Dispose()
+    {
+        // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
+        Dispose(true);
+        GC.SuppressFinalize(this);
+    }
     protected virtual void Dispose(bool disposing)
     {
         if (!disposedValue)

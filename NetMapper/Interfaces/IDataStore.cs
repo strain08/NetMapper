@@ -1,4 +1,4 @@
-﻿namespace NetMapper.Services.Stores;
+﻿namespace NetMapper.Interfaces;
 
 public interface IDataStore<TData> where TData : new()
 {

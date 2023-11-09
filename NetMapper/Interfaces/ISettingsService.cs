@@ -1,15 +1,13 @@
 ﻿using System;
 using NetMapper.Models;
-using NetMapper.Services.Interfaces;
 
-namespace NetMapper.Services;
+namespace NetMapper.Interfaces;
 
 public interface ISettingsService
 {
+    AppSettingsModel AppSettings { get; set; }
     void AddModule(ISettingModule settingModule);
-    void ApplyAll();
-    AppSettingsModel GetAppSettings();
     ISettingModule GetModule(Type settingType);
+    void ApplyAll();    
     void SaveAll();
-    void SetAppSettings(AppSettingsModel value);
 }

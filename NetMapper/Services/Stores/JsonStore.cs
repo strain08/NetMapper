@@ -1,8 +1,8 @@
 ﻿using System;
 using System.IO;
 using System.Text.Json;
+using NetMapper.Interfaces;
 using NetMapper.Services.Helpers;
-using NetMapper.Services.Stores;
 using Serilog;
 
 namespace NetMapper.Services;
@@ -60,7 +60,7 @@ public class JsonStore<T> : IDataStore<T> where T : new()
     {
         var jsonOptions = new JsonSerializerOptions
         {
-            WriteIndented = true
+            WriteIndented = true            
         };
         
         StoreData ??= new T(); // initialize if null

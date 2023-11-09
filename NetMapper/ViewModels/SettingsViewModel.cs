@@ -1,8 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using NetMapper.Attributes;
+using NetMapper.Interfaces;
 using NetMapper.Models;
-using NetMapper.Services;
-using NetMapper.Services.Interfaces;
 
 namespace NetMapper.ViewModels;
 
@@ -23,12 +22,12 @@ public partial class SettingsViewModel : ViewModelBase
     {
         nav = navService;
         settings = settingsService;
-        DisplaySettings = settingsService.GetAppSettings().Clone();
+        DisplaySettings = settingsService.AppSettings.Clone();
     }
 
     public void OkCommand()
     {
-        settings.SetAppSettings(DisplaySettings.Clone());
+        settings.        AppSettings = DisplaySettings.Clone();
         settings.ApplyAll();
         settings.SaveAll();
 

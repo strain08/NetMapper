@@ -1,8 +1,8 @@
 ﻿using System.IO;
 using NetMapper.Enums;
+using NetMapper.Interfaces;
 using NetMapper.Models;
 using NetMapper.Services.Helpers;
-using NetMapper.Services.Interfaces;
 
 namespace NetMapper.Services;
 

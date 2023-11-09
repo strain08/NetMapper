@@ -1,7 +1,7 @@
 ﻿using System.Collections.ObjectModel;
 using NetMapper.Models;
 
-namespace NetMapper.Services;
+namespace NetMapper.Interfaces;
 
 public interface IDriveListService
 {

@@ -1,6 +1,6 @@
 ﻿namespace ConsoleTest.Builder;
 
-public class ConcreteBuilder : IToastBuilder
+public class ConcreteBuilder<T> : IToastBuilder
 {
     private readonly Product _product = new();
     private Director _director => new(this);

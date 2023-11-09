@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Concurrent;
-using NetMapper.Services.Interfaces;
+using NetMapper.Interfaces;
 using NetMapper.ViewModels;
 using Splat;
 

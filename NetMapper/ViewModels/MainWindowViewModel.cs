@@ -1,7 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using NetMapper.Attributes;
+using NetMapper.Interfaces;
 using NetMapper.Services.Helpers;
-using NetMapper.Services.Interfaces;
 
 namespace NetMapper.ViewModels;
 

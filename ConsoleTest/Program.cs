@@ -17,7 +17,7 @@ internal class Program
     }
     static void ToastBuilder()
     {
-        IToastBuilder t = new ConcreteBuilder();
+        IToastBuilder t = new ConcreteBuilder<string>();        
         var d = t.GetDirector();
         d.ToastA();
     }

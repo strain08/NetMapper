@@ -1,18 +1,19 @@
 ﻿using System;
 using System.Diagnostics;
 using NetMapper.Attributes;
+using NetMapper.Interfaces;
 using NetMapper.Services.Helpers;
-using NetMapper.Services.Interfaces;
 
 namespace NetMapper.ViewModels;
 
 public partial class AboutViewModel : ViewModelBase
 {
     private readonly DateTime _buildTime;
-
     private readonly INavService _nav;
 
+#nullable disable
     public AboutViewModel() { }
+#nullable restore
 
     [ResolveThis]
     public AboutViewModel(INavService navService)

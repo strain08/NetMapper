@@ -1,17 +1,16 @@
 ﻿using Avalonia.Metadata;
 using CommunityToolkit.Mvvm.ComponentModel;
 using NetMapper.Attributes;
+using NetMapper.Interfaces;
 using NetMapper.Models;
-using NetMapper.Services;
 using NetMapper.Services.Helpers;
-using NetMapper.Services.Interfaces;
 using System.Collections.Generic;
 
 namespace NetMapper.ViewModels;
 
 public partial class DriveDetailViewModel : ViewModelBase
 {
-    private readonly IDriveConnectService driveConnectService;
+    private readonly IConnectService driveConnectService;
     private readonly IDriveListService driveListService;
     private readonly INavService nav;    
 
@@ -56,7 +55,7 @@ public partial class DriveDetailViewModel : ViewModelBase
     [ResolveThis]
     public DriveDetailViewModel(
         IDriveListService driveListService,
-        IDriveConnectService driveConnectService,
+        IConnectService driveConnectService,
         INavService nav)
     {
         this.driveListService = driveListService;
@@ -103,7 +102,7 @@ public partial class DriveDetailViewModel : ViewModelBase
         {
             // disconnect previous letter if changed
             if (SelectedItem.DriveLetter != editedItem.DriveLetter) 
-                driveConnectService.DisconnectDrive(SelectedItem); 
+                driveConnectService.Disconnect(SelectedItem); 
             
             driveListService.EditDrive(SelectedItem, editedItem);
         }
