@@ -11,7 +11,6 @@ public class ToastBase : IDisposable
 {
     // toastData binding key
     protected const string MSG_CONTENT = "MESSAGE";
-
     protected const string TOAST_ACTION = "A";
 
     // if not null, next toast should be merged with this message

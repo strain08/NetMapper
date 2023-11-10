@@ -4,7 +4,7 @@ using System;
 
 namespace NetMapper.Services
 {
-    public class test : IDriveResultAction
+    public class Test : IDriveResultAction
     {
         public void Connect(ConnectResult result)
         {

@@ -29,8 +29,8 @@ namespace ConsoleTest.AbstractFactory
 
 public interface IToastFactory
     {
-        ToastBase<ToastActionsSimple> CreateSimpleToast(MapModel m);
-        ToastBase<ToastActions> toastDisconnect { get; set; }
+        ToastBase SimpleToast(MapModel m, Action<MapModel,ToastActions> action);
+        ToastBase ToastDisconnect(MapModel m, Action<MapModel, ToastActions> action);
 
     }
 

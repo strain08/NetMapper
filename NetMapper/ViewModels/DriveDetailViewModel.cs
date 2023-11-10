@@ -3,7 +3,6 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using NetMapper.Attributes;
 using NetMapper.Interfaces;
 using NetMapper.Models;
-using NetMapper.Services.Helpers;
 using System.Collections.Generic;
 
 namespace NetMapper.ViewModels;
@@ -12,7 +11,8 @@ public partial class DriveDetailViewModel : ViewModelBase
 {
     private readonly IConnectService driveConnectService;
     private readonly IDriveListService driveListService;
-    private readonly INavService nav;    
+    private readonly INavService nav;
+    private readonly IInterop interop;
 
     [ObservableProperty]    
     bool isEditing = false;
@@ -56,11 +56,13 @@ public partial class DriveDetailViewModel : ViewModelBase
     public DriveDetailViewModel(
         IDriveListService driveListService,
         IConnectService driveConnectService,
-        INavService nav)
+        INavService nav,
+        IInterop interop)
     {
         this.driveListService = driveListService;
         this.driveConnectService = driveConnectService;
         this.nav = nav;
+        this.interop= interop;
 
         LoadDriveLettersList();
         OnIsEditingChanged(false);
@@ -138,7 +140,7 @@ public partial class DriveDetailViewModel : ViewModelBase
 
     private void LoadDriveLettersList()
     {
-        var cAvailableLeters = new List<char>(Interop.GetAvailableDriveLetters());
+        var cAvailableLeters = new List<char>(interop.GetAvailableDriveLetters());
 
         // remove unmapped managed drive letters
         foreach (var d in driveListService.DriveCollection)

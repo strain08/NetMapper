@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
-using NetMapper.Services.Helpers;
+using NetMapper.Interfaces;
+using Splat;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -74,7 +75,7 @@ public class ViewModelBase : ObservableObject, INotifyDataErrorInfo
         else RemoveErrorFromProperty(propertyName, maxLengthError);
         
         var netPathError = "Not a valid network path.";        
-        if (!Interop.IsNetworkPath(value))
+        if (!Locator.Current.GetRequiredService<IInterop>().IsNetworkPath(value))
         {
             AddError(propertyName, netPathError);
             return false;

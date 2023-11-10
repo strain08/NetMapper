@@ -1,13 +1,19 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using NetMapper.Enums;
 using NetMapper.Interfaces;
 using NetMapper.Models;
-using NetMapper.Services.Helpers;
 
 namespace NetMapper.Services;
 
 public class UpdateModelState : IUpdateModelState
-{
+{    
+    private readonly IInterop interop;    
+    public UpdateModelState(IInterop interop)
+    {
+        this.interop = interop;
+    }
+
     public void Update(MapModel m)
     {
         UpdateShareState(m);
@@ -29,15 +35,16 @@ public class UpdateModelState : IUpdateModelState
     /// <param name="m"></param>
     private void UpdateMappingState(MapModel m)
     {
+        
         // if a Network Drive is mapped to this path -> Mapped            
-        if (Interop.GetActualPathForLetter(m.DriveLetter) == m.NetworkPath)
+        if (interop.GetActualPathForLetter(m.DriveLetter) == m.NetworkPath)
         {
             m.MappingStateProp = MappingState.Mapped;
             return;
         }
 
         // if Letter Available -> drive is Unmapped
-        if (Interop.GetAvailableDriveLetters().Contains(m.DriveLetter))
+        if (interop.GetAvailableDriveLetters().Contains(m.DriveLetter))
             m.MappingStateProp = MappingState.Unmapped;
         else // Drive letter not available, is mapped to something else
             m.MappingStateProp = MappingState.LetterUnavailable;

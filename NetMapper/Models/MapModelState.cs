@@ -2,8 +2,9 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Messaging;
 using NetMapper.Enums;
+using NetMapper.Interfaces;
 using NetMapper.Messages;
-using NetMapper.Services.Helpers;
+using Splat;
 
 namespace NetMapper.Models;
 
@@ -47,7 +48,10 @@ public partial class MapModel
 
         if ((value == MappingState.Mapped) |
             (value == MappingState.LetterUnavailable))
-            VolumeLabel = Interop.GetVolumeLabel(this);
+        {
+            var interop = Locator.Current.GetRequiredService<IInterop>();
+            VolumeLabel = interop.GetVolumeLabel(this);
+        }
         if (value == MappingState.Unmapped) VolumeLabel = "";
     }
 }

@@ -1,6 +1,7 @@
 ﻿using NetMapper.Interfaces;
 using NetMapper.Models;
 using NetMapper.Services;
+using NetMapper.Services.Helpers;
 using Splat;
 
 namespace NetMapper;
@@ -10,6 +11,7 @@ public static class Bootstrapper
     public static void Register(IMutableDependencyResolver s, IReadonlyDependencyResolver r)
     {
 
+        s.RegisterConstant<IInterop>(new Interop());
         // Json Settings Store
         s.Register<IDataStore<AppSettingsModel>>(() => new JsonStore<AppSettingsModel>("NetMapperSettings.json"));
 
@@ -21,11 +23,12 @@ public static class Bootstrapper
             r.GetRequiredService<IDataStore<AppSettingsModel>>()));
 
         // Navigation service
-        s.RegisterConstant<INavService>(new NavService());
+        s.RegisterConstant<INavService>(new NavService(r));
 
         // Connect service
         s.RegisterLazySingleton<IConnectService>(() => new DriveConnectService(
-            r.GetRequiredService<INavService>()
+            r.GetRequiredService<INavService>(),
+            r.GetRequiredService<IInterop>()
         ));
 
         // Drive List CRUD
@@ -33,7 +36,7 @@ public static class Bootstrapper
             r.GetRequiredService<IDataStore<AppDataModel>>()));
 
         // Model state updater
-        s.Register<IUpdateModelState>(() => new UpdateModelState());
+        s.Register<IUpdateModelState>(() => new UpdateModelState(r.GetRequiredService<IInterop>()));
 
         // System state updater
         s.Register<IUpdateSystemState>(() => new UpdateSystemState(

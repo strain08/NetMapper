@@ -3,11 +3,9 @@ using NetMapper.Attributes;
 using NetMapper.Enums;
 using NetMapper.Interfaces;
 using NetMapper.Models;
-using NetMapper.Services.Helpers;
 using NetMapper.Services.Toasts;
 using NetMapper.ViewModels;
 using Serilog;
-using System;
 using System.Diagnostics;
 using System.Threading.Tasks;
 
@@ -16,19 +14,21 @@ namespace NetMapper.Services;
 public class DriveConnectService : IConnectService
 {
     private readonly INavService nav;
+    private readonly IInterop interop;
 
-    public DriveConnectService(INavService navService)
+    public DriveConnectService(INavService navService, IInterop interopService)
     {
         nav = navService;
+        interop = interopService;
     }
 
     public async Task Connect(MapModel m)
     {
         m.MappingStateProp = MappingState.Undefined;
 
-        var result = await Interop.ConnectNetworkDriveAsync(m.DriveLetter, m.NetworkPath);
+        var result = await interop.ConnectNetworkDriveAsync(m.DriveLetter, m.NetworkPath);
 
-       switch (result)
+        switch (result)
         {
             case ConnectResult.Success:
                 m.MappingStateProp = MappingState.Mapped;
@@ -51,10 +51,10 @@ public class DriveConnectService : IConnectService
         m.MappingStateProp = MappingState.Undefined;
 
         // not a network drive, do nothing
-        if (Interop.IsRegularDriveMapped(m.DriveLetter)) return;
+        if (interop.IsRegularDriveMapped(m.DriveLetter)) return;
 
-        var result = await Interop.DisconnectNetworkDriveAsync(m.DriveLetter);
-        
+        var result = await interop.DisconnectNetworkDriveAsync(m.DriveLetter);
+
         switch (result)
         {
             case DisconnectResult.DISCONNECT_SUCCESS:
@@ -79,7 +79,7 @@ public class DriveConnectService : IConnectService
             case ToastActions.Force:
                 Task.Run(() =>
                 {
-                    var error = Interop.DisconnectNetworkDrive(m.DriveLetter, true);
+                    var error = interop.DisconnectNetworkDrive(m.DriveLetter, true);
                     if (error == DisconnectResult.DISCONNECT_SUCCESS)
                         _ = new ToastDriveDisconnected(m, ActionToastClicked).Show();
                 });
@@ -105,7 +105,7 @@ public class DriveConnectService : IConnectService
     {
         Dispatcher.UIThread.Post(() =>
         {
-            nav.GetViewModel<ApplicationViewModel>()
+            nav.GetViewModel<ApplicationViewModel>(addToDict:false)
                 .ShowMainWindow();
         });
     }

@@ -10,14 +10,13 @@ internal class Program
     {
         //ToastTest.ToastTest1();
 
-        Console.WriteLine(Interop.IsNetworkPath(@"\\ddd"));
+        //Console.WriteLine(Interop.IsNetworkPath(@"\\ddd"));
         Console.ReadLine();
 
         
     }
-    static void ToastBuilder()
-    {
-        IToastBuilder t = new ConcreteBuilder<string>();        
+    static void ToastBuilder(IToastBuilder t)
+    {          
         var d = t.GetDirector();
         d.ToastA();
     }

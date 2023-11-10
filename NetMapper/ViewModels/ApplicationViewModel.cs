@@ -54,7 +54,7 @@ public partial class ApplicationViewModel : ViewModelBase, IRecipient<PropertyCh
 
         MainWindowView = new MainWindow
         {
-            DataContext = Locator.Current.CreateWithConstructorInjection<MainWindowViewModel>()
+            DataContext = nav.GetViewModel<MainWindowViewModel>(addToDict: true)
         };
         settings.AddModule(new SetMainWindow(MainWindowView));
 

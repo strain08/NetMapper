@@ -10,11 +10,11 @@ public partial class MainWindowViewModel : ViewModelBase
     private readonly INavService nav;
 
     [ObservableProperty] private ViewModelBase? content;
-
+#nullable disable
     public MainWindowViewModel()
     {
     }
-
+#nullable restore
     [ResolveThis]
     public MainWindowViewModel(INavService navService)
     {
