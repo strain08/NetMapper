@@ -20,13 +20,17 @@ public class Interop : IInterop
     }
 
     [DllImport("mpr.dll")]
-    private static extern int WNetAddConnection2
-    (ref NETRESOURCE oNetworkResource, string? sPassword,
-        string? sUserName, int iFlags);
+    private static extern int WNetAddConnection2(
+        ref NETRESOURCE oNetworkResource, 
+        string? sPassword,
+        string? sUserName, 
+        int iFlags);
 
     [DllImport("mpr.dll")]
-    private static extern int WNetCancelConnection2
-        (string sLocalName, uint iFlags, int iForce);
+    private static extern int WNetCancelConnection2(
+        string sLocalName, 
+        uint iFlags,
+        int iForce);
 
     public ConnectResult ConnectNetworkDrive(
         char cDriveLetter,
@@ -36,7 +40,6 @@ public class Interop : IInterop
     {
         //Checks if the last character is \ as this causes error on mapping a drive.
         if (sNetworkPath[^1..] == @"\")
-            // sNetworkPath.Substring(0, sNetworkPath.Length - 1);
             sNetworkPath = sNetworkPath[..^1];
 
         NETRESOURCE oNetworkResource = new()
@@ -102,7 +105,6 @@ public class Interop : IInterop
         DriveInfo drive = new(m.DriveLetterColon);
         return drive.IsReady ? drive.VolumeLabel : string.Empty;
     }
-
 
     public List<char> GetAvailableDriveLetters()
     {

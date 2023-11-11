@@ -1,17 +1,21 @@
 ﻿using System;
 using System.IO;
+using CommunityToolkit.Mvvm.Messaging;
 using NetMapper.Enums;
 using NetMapper.Interfaces;
+using NetMapper.Messages;
 using NetMapper.Models;
+using Splat;
 
 namespace NetMapper.Services;
 
-public class UpdateModelState : IUpdateModelState
+public class UpdateModelState : IUpdateModelState, IRecipient<PropChangedMessage>
 {    
     private readonly IInterop interop;    
     public UpdateModelState(IInterop interop)
     {
         this.interop = interop;
+        WeakReferenceMessenger.Default.Register(this);
     }
 
     public void Update(MapModel m)
@@ -48,5 +52,21 @@ public class UpdateModelState : IUpdateModelState
             m.MappingStateProp = MappingState.Unmapped;
         else // Drive letter not available, is mapped to something else
             m.MappingStateProp = MappingState.LetterUnavailable;
+    }
+
+    public void Receive(PropChangedMessage message)
+    {
+        var s = nameof(MapModel.MappingStateProp);       
+
+        if (message.PropertyName == s)
+        {
+            if ((message.Value.MappingStateProp == MappingState.Mapped) |
+            (message.Value.MappingStateProp == MappingState.LetterUnavailable))
+            {
+                var interop = Locator.Current.GetService<IInterop>();
+                message.Value.VolumeLabel = interop?.GetVolumeLabel(message.Value) ?? "volume label";
+            }
+            if (message.Value.MappingStateProp == MappingState.Unmapped) message.Value.VolumeLabel = "";
+        }
     }
 }

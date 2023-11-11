@@ -12,15 +12,24 @@ public class DesignDriveListViewModel : DriveListViewModel
         {
             new MapModel
             {
-                DriveLetter = 'X', NetworkPath = @"\\XOXO\mir1", ShareStateProp = ShareState.Available,
+                DriveLetter = 'X', 
+                NetworkPath = @"\\XOXO\mir1", 
+                ShareStateProp = ShareState.Available, 
+                VolumeLabel="Volume label",
                 MappingStateProp = MappingState.Mapped
             },
             new MapModel
             {
-                DriveLetter = 'Y', NetworkPath = @"\\XOXO\mir2", ShareStateProp = ShareState.Unavailable,
+                DriveLetter = 'Y', 
+                NetworkPath = @"\\XOXO\mir2", 
+                ShareStateProp = ShareState.Unavailable,
                 MappingStateProp = MappingState.Unmapped
             },
-            new MapModel { DriveLetter = 'Z', NetworkPath = @"\\XOXO\mir2\share" }
+            new MapModel 
+            { 
+                DriveLetter = 'Z', 
+                NetworkPath = @"\\XOXO\mir2\share" 
+            }
         };
     }
 }

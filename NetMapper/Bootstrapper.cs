@@ -3,6 +3,7 @@ using NetMapper.Models;
 using NetMapper.Services;
 using NetMapper.Services.Helpers;
 using Splat;
+using System.Net.NetworkInformation;
 
 namespace NetMapper;
 
@@ -10,6 +11,7 @@ public static class Bootstrapper
 {
     public static void Register(IMutableDependencyResolver s, IReadonlyDependencyResolver r)
     {
+        if (Avalonia.Controls.Design.IsDesignMode) return;
 
         s.RegisterConstant<IInterop>(new Interop());
         // Json Settings Store

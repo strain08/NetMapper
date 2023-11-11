@@ -1,12 +1,14 @@
 ﻿using CommunityToolkit.Mvvm.Messaging.Messages;
+using NetMapper.Models;
 
 namespace NetMapper.Messages;
 
-public class PropertyChangedMessage : ValueChangedMessage<string>
+
+public class PropChangedMessage : ValueChangedMessage<MapModel>
 {
-    public object PropertyValue { get; }
-    public PropertyChangedMessage(string propertyName, object propertyValue) : base(propertyName)
+    public string PropertyName { get; private set; }
+    public PropChangedMessage(MapModel value, string propertyName) : base(value)
     {
-        PropertyValue = propertyValue;
-    }    
+        PropertyName = propertyName;
+    }
 }

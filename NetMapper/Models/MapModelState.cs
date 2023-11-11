@@ -44,14 +44,6 @@ public partial class MapModel
 
     partial void OnMappingStatePropChanged(MappingState value)
     {
-        WeakReferenceMessenger.Default.Send(new PropertyChangedMessage(nameof(MappingStateProp), value));
-
-        if ((value == MappingState.Mapped) |
-            (value == MappingState.LetterUnavailable))
-        {
-            var interop = Locator.Current.GetRequiredService<IInterop>();
-            VolumeLabel = interop.GetVolumeLabel(this);
-        }
-        if (value == MappingState.Unmapped) VolumeLabel = "";
+        WeakReferenceMessenger.Default.Send(new PropChangedMessage(this,nameof(MappingStateProp)));        
     }
 }

@@ -105,7 +105,7 @@ public class DriveConnectService : IConnectService
     {
         Dispatcher.UIThread.Post(() =>
         {
-            nav.GetViewModel<ApplicationViewModel>(addToDict:false)
+            nav.GetViewModel<ApplicationViewModel>()
                 .ShowMainWindow();
         });
     }

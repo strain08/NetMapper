@@ -12,6 +12,9 @@
     <Design.DataContext>
         <vm:DesignDriveListViewModel />
     </Design.DataContext>
+	<UserControl.DataTemplates>
+		
+	</UserControl.DataTemplates>
 
     <UserControl.Resources>
         <converters:StateToColorConverter x:Key="StateToColorConverter" />
@@ -72,14 +75,14 @@
                             <Panel DockPanel.Dock="Right">
                                 <!-- Command parameter contains MappingModel-->
                                 <Button
-                                    Content="Detach"
+									Content="Detach"
                                     Command="{Binding $parent[ListBox].DataContext.DisconnectDriveCommand} "
                                     IsVisible="{Binding DisconnectCommandVisible}"
                                     CommandParameter="{Binding}"
                                     VerticalAlignment="Center"
                                     VerticalContentAlignment="Center" />
                                 <Button
-                                    Content="Attach"
+									Content="Attach"
                                     IsVisible="{Binding ConnectCommandVisible}"
                                     Command="{Binding $parent[ListBox].DataContext.ConnectDriveCommand}"
                                     CommandParameter="{Binding}"

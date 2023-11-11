@@ -11,7 +11,7 @@ using Splat;
 
 namespace NetMapper.ViewModels;
 
-public partial class ApplicationViewModel : ViewModelBase, IRecipient<PropertyChangedMessage>
+public partial class ApplicationViewModel : ViewModelBase, IRecipient<PropChangedMessage>
 {
     private readonly IDriveListService listService;
     private readonly INavService nav;
@@ -36,13 +36,14 @@ public partial class ApplicationViewModel : ViewModelBase, IRecipient<PropertyCh
         nav = navService;
         settings = settingsService;
         listService = driveListService;
-
+        
         InitializeApp();
     }
 
-    public void Receive(PropertyChangedMessage message)
+    public void Receive(PropChangedMessage message)
     {
         UpdateTooltip();
+        
     }
 
     private void InitializeApp()
