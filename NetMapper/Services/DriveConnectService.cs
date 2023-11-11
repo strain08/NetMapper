@@ -93,12 +93,19 @@ public class DriveConnectService : IConnectService
 
     private void ActionToastClicked(MapModel m, ToastActions answer)
     {
-        ProcessStartInfo psi = new()
+        if (m.MappingStateProp == MappingState.Mapped)
         {
-            UseShellExecute = true,
-            FileName = m.DriveLetterColon + "\\"
-        };
-        Process.Start(psi);
+            ProcessStartInfo psi = new()
+            {
+                UseShellExecute = true,
+                FileName = m.DriveLetterColon + "\\"
+            };
+            Process.Start(psi);
+        }
+        else
+        {
+            ShowMainWindow();
+        }
     }
 
     private void ShowMainWindow()

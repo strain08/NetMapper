@@ -107,5 +107,6 @@ public class ViewModelBase : ObservableObject, INotifyDataErrorInfo
 
         RemoveError(propertyName);
         return true;
+        
     }
 }

@@ -14,7 +14,7 @@ public partial class DriveDetailViewModel : ViewModelBase
     private readonly INavService nav;
     private readonly IInterop interop;
 
-    [ObservableProperty]    
+    [ObservableProperty]
     bool isEditing = false;
 
     partial void OnIsEditingChanged(bool value)
@@ -24,7 +24,7 @@ public partial class DriveDetailViewModel : ViewModelBase
     }
 
     public List<char> DriveLettersList { get; set; } = new();
-    
+
     [ObservableProperty]
     char driveLetter;
     partial void OnDriveLetterChanged(char value) => ValidateAll();
@@ -40,7 +40,7 @@ public partial class DriveDetailViewModel : ViewModelBase
     bool autoDisconnect;
 
     [ObservableProperty]
-    private string? operationTitle;    
+    private string? operationTitle;
 
     [ObservableProperty]
     private MapModel selectedItem = new();
@@ -62,7 +62,7 @@ public partial class DriveDetailViewModel : ViewModelBase
         this.driveListService = driveListService;
         this.driveConnectService = driveConnectService;
         this.nav = nav;
-        this.interop= interop;
+        this.interop = interop;
 
         LoadDriveLettersList();
         OnIsEditingChanged(false);
@@ -83,7 +83,6 @@ public partial class DriveDetailViewModel : ViewModelBase
         AutoConnect = SelectedItem.Settings.AutoConnect;
         AutoDisconnect = SelectedItem.Settings.AutoDisconnect;
 
-        //ValidateAll();
         return this;
     }
 
@@ -99,27 +98,22 @@ public partial class DriveDetailViewModel : ViewModelBase
                 AutoDisconnect = AutoDisconnect
             }
         };
-        
+
         if (IsEditing)
         {
             // disconnect previous letter if changed
-            if (SelectedItem.DriveLetter != editedItem.DriveLetter) 
-                driveConnectService.Disconnect(SelectedItem); 
-            
+            if (SelectedItem.DriveLetter != editedItem.DriveLetter)
+                driveConnectService.Disconnect(SelectedItem);
+
             driveListService.EditDrive(SelectedItem, editedItem);
         }
         else
-        {            
+        {
             driveListService.AddDrive(editedItem);
         }
 
         driveListService.SaveAll();
-        
-        nav.GoTo<DriveListViewModel>();
-    }
 
-    public void Cancel()
-    {
         nav.GoTo<DriveListViewModel>();
     }
 
@@ -127,6 +121,11 @@ public partial class DriveDetailViewModel : ViewModelBase
     bool CanOk(object param)
     {
         return IsUserInputValid;
+    }
+
+    public void Cancel()
+    {
+        nav.GoTo<DriveListViewModel>();
     }
 
     private bool ValidateAll()

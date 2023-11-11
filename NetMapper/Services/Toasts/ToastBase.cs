@@ -1,4 +1,5 @@
-﻿using Microsoft.Toolkit.Uwp.Notifications;
+﻿using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Microsoft.Toolkit.Uwp.Notifications;
 using NetMapper.Enums;
 using NetMapper.Models;
 using System;
@@ -55,15 +56,14 @@ public class ToastBase : IDisposable
 
     private void Activated(ToastNotification sender, object obj)
     {
+        
         _previousMsg = null;
         var eventArgs = obj as ToastActivatedEventArgs;
         var args = ToastArguments.Parse(eventArgs?.Arguments);
-        try
+        if (args.TryGetValue(TOAST_ACTION, out ToastActions answer))
         {
-            var answer = args.GetEnum<ToastActions>(TOAST_ACTION);
             toastAction.Invoke(_mapModel, answer);
-        }
-        catch { }
+        }        
 
         if (_toastNotification == null) return;
         _toastNotification.Activated -= Activated;
@@ -92,4 +92,5 @@ public class ToastBase : IDisposable
             disposedValue = true;
         }
     }
+    
 }
