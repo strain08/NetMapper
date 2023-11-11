@@ -24,14 +24,14 @@ public class DriveConnectService : IConnectService
 
     public async Task Connect(MapModel m)
     {
-        m.MappingStateProp = MappingState.Undefined;
+        m.MappingStateProp = MapState.Undefined;
 
         var result = await interop.ConnectNetworkDriveAsync(m.DriveLetter, m.NetworkPath);
 
         switch (result)
         {
             case ConnectResult.Success:
-                m.MappingStateProp = MappingState.Mapped;
+                m.MappingStateProp = MapState.Mapped;
                 _ = new ToastDriveConnected(m, ActionToastClicked).Show();
                 break;
 
@@ -48,8 +48,8 @@ public class DriveConnectService : IConnectService
 
     public async Task Disconnect(MapModel m)
     {
-        m.MappingStateProp = MappingState.Undefined;
-
+        m.MappingStateProp = MapState.Undefined;
+        
         // not a network drive, do nothing
         if (interop.IsRegularDriveMapped(m.DriveLetter)) return;
 
@@ -59,7 +59,7 @@ public class DriveConnectService : IConnectService
         {
             case DisconnectResult.DISCONNECT_SUCCESS:
                 _ = new ToastDriveDisconnected(m, ActionToastClicked).Show();
-                m.MappingStateProp = MappingState.Unmapped;
+                m.MappingStateProp = MapState.Unmapped;
                 break;
 
             default:
@@ -93,7 +93,7 @@ public class DriveConnectService : IConnectService
 
     private void ActionToastClicked(MapModel m, ToastActions answer)
     {
-        if (m.MappingStateProp == MappingState.Mapped)
+        if (m.MappingStateProp == MapState.Mapped)
         {
             ProcessStartInfo psi = new()
             {

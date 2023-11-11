@@ -16,14 +16,14 @@ public class DesignDriveListViewModel : DriveListViewModel
                 NetworkPath = @"\\XOXO\mir1", 
                 ShareStateProp = ShareState.Available, 
                 VolumeLabel="Volume label",
-                MappingStateProp = MappingState.Mapped
+                MappingStateProp = MapState.Mapped
             },
             new MapModel
             {
                 DriveLetter = 'Y', 
                 NetworkPath = @"\\XOXO\mir2", 
                 ShareStateProp = ShareState.Unavailable,
-                MappingStateProp = MappingState.Unmapped
+                MappingStateProp = MapState.Unmapped
             },
             new MapModel 
             { 

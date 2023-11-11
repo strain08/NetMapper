@@ -73,13 +73,13 @@ public partial class ApplicationViewModel : ViewModelBase, IRecipient<PropChange
             TooltipText += item.DriveLetterColon;
             switch (item.MappingStateProp)
             {
-                case MappingState.Mapped:
+                case MapState.Mapped:
                     TooltipText += " connected.";
                     break;
-                case MappingState.Unmapped:
+                case MapState.Unmapped:
                     TooltipText += " disconnected.";
                     break;
-                case MappingState.LetterUnavailable:
+                case MapState.LetterUnavailable:
                     TooltipText += " letter unavailable.";
                     break;
                 default:

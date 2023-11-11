@@ -7,7 +7,7 @@ public enum ShareState
     Unavailable
 }
 
-public enum MappingState
+public enum MapState
 {
     Undefined,
     Mapped,

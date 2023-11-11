@@ -26,7 +26,10 @@ public class ToastBase : IDisposable
     {
         toastAction = del;
         _mapModel = m;
+
     }
+
+
 
     public ToastBase Show()
     {

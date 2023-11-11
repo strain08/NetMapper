@@ -43,15 +43,15 @@ public class UpdateModelState : IUpdateModelState, IRecipient<PropChangedMessage
         // if a Network Drive is mapped to this path -> Mapped            
         if (interop.GetActualPathForLetter(m.DriveLetter) == m.NetworkPath)
         {
-            m.MappingStateProp = MappingState.Mapped;
+            m.MappingStateProp = MapState.Mapped;
             return;
         }
 
         // if Letter Available -> drive is Unmapped
         if (interop.GetAvailableDriveLetters().Contains(m.DriveLetter))
-            m.MappingStateProp = MappingState.Unmapped;
+            m.MappingStateProp = MapState.Unmapped;
         else // Drive letter not available, is mapped to something else
-            m.MappingStateProp = MappingState.LetterUnavailable;
+            m.MappingStateProp = MapState.LetterUnavailable;
     }
 
     public void Receive(PropChangedMessage message)
@@ -60,13 +60,12 @@ public class UpdateModelState : IUpdateModelState, IRecipient<PropChangedMessage
 
         if (message.PropertyName == s)
         {
-            if ((message.Value.MappingStateProp == MappingState.Mapped) |
-            (message.Value.MappingStateProp == MappingState.LetterUnavailable))
+            if (message.Value.MappingStateProp == MapState.Mapped ||
+            message.Value.MappingStateProp == MapState.LetterUnavailable)
             {
-                var interop = Locator.Current.GetService<IInterop>();
-                message.Value.VolumeLabel = interop?.GetVolumeLabel(message.Value) ?? "volume label";
+                message.Value.VolumeLabel = interop.GetVolumeLabel(message.Value) ?? "volume label";
             }
-            if (message.Value.MappingStateProp == MappingState.Unmapped) message.Value.VolumeLabel = "";
+            if (message.Value.MappingStateProp == MapState.Unmapped) message.Value.VolumeLabel = "";
         }
     }
 }

@@ -1,10 +1,8 @@
-﻿using System.Text.Json.Serialization;
-using CommunityToolkit.Mvvm.ComponentModel;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Messaging;
 using NetMapper.Enums;
-using NetMapper.Interfaces;
 using NetMapper.Messages;
-using Splat;
+using System.Text.Json.Serialization;
 
 namespace NetMapper.Models;
 
@@ -14,7 +12,7 @@ public partial class MapModel
     [property: JsonIgnore]
     [NotifyPropertyChangedFor(nameof(ConnectCommandVisible))]
     [NotifyPropertyChangedFor(nameof(DisconnectCommandVisible))]
-    private MappingState mappingStateProp = MappingState.Undefined;
+    private MapState mappingStateProp = MapState.Undefined;
 
     [ObservableProperty]
     [property: JsonIgnore]
@@ -22,28 +20,17 @@ public partial class MapModel
     [NotifyPropertyChangedFor(nameof(DisconnectCommandVisible))]
     private ShareState shareStateProp = ShareState.Undefined;
 
-    [JsonIgnore]
-    private bool CanConnect =>
-        ShareStateProp == ShareState.Available &&
-        MappingStateProp == MappingState.Unmapped;
-
-    [JsonIgnore]
-    private bool CanDisconnect =>
-        ShareStateProp == ShareState.Unavailable &&
-        MappingStateProp == MappingState.Mapped;
-
-    [JsonIgnore]
-    public bool CanAutoConnect =>
-        CanConnect &&
-        Settings.AutoConnect;
-
-    [JsonIgnore]
-    public bool CanAutoDisconnect =>
-        CanDisconnect &&
-        Settings.AutoDisconnect;
-
-    partial void OnMappingStatePropChanged(MappingState value)
+    partial void OnMappingStatePropChanged(MapState value)
     {
-        WeakReferenceMessenger.Default.Send(new PropChangedMessage(this,nameof(MappingStateProp)));        
+        WeakReferenceMessenger.Default.Send(new PropChangedMessage(this, nameof(MappingStateProp)));
     }
+
+    [JsonIgnore]
+    public bool ConnectCommandVisible =>
+       ShareStateProp == ShareState.Available &&
+       MappingStateProp == MapState.Unmapped;
+
+    [JsonIgnore]
+    public bool DisconnectCommandVisible =>
+        MappingStateProp == MapState.Mapped;
 }

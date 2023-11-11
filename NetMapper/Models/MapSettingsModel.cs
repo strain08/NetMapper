@@ -2,14 +2,14 @@
 
 namespace NetMapper.Models;
 
-public partial class MappingSettingsModel : ObservableObject
+public partial class MapSettingsModel : ObservableObject
 {
     [ObservableProperty]  bool autoConnect;
 
     [ObservableProperty] bool autoDisconnect;
 
-    public MappingSettingsModel Clone()
+    public MapSettingsModel Clone()
     {
-        return (MappingSettingsModel)MemberwiseClone();
+        return (MapSettingsModel)MemberwiseClone();
     }
 }

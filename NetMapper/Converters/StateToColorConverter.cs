@@ -18,12 +18,12 @@ public class StateToColorConverter : IValueConverter
                 ShareState.Unavailable => new SolidColorBrush { Color = Colors.Chocolate },
                 _ => new SolidColorBrush { Color = Colors.Chocolate }
             };
-        if (value is MappingState mappingState && targetType.IsAssignableTo(typeof(IBrush)))
+        if (value is MapState mappingState && targetType.IsAssignableTo(typeof(IBrush)))
             return mappingState switch
             {
-                MappingState.Mapped => new SolidColorBrush { Color = Colors.DarkGreen },
-                MappingState.Unmapped => new SolidColorBrush { Color = Colors.Chocolate },
-                MappingState.LetterUnavailable => new SolidColorBrush { Color = Colors.DarkRed },
+                MapState.Mapped => new SolidColorBrush { Color = Colors.DarkGreen },
+                MapState.Unmapped => new SolidColorBrush { Color = Colors.Chocolate },
+                MapState.LetterUnavailable => new SolidColorBrush { Color = Colors.DarkRed },
                 _ => new SolidColorBrush { Color = Colors.Chocolate }
             };
         return new BindingNotification(new InvalidCastException(), BindingErrorType.Error);

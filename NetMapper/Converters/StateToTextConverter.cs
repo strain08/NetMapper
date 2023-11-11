@@ -21,16 +21,16 @@ public class StateToTextConverter : IValueConverter
                     return "Updating..";
             }
 
-        if (value is MappingState mappingState && targetType.IsAssignableTo(typeof(string)))
+        if (value is MapState mappingState && targetType.IsAssignableTo(typeof(string)))
             switch (mappingState)
             {
-                case MappingState.Mapped:
+                case MapState.Mapped:
                     return "Mapped";
-                case MappingState.Unmapped:
+                case MapState.Unmapped:
                     return "Unmapped";
-                case MappingState.LetterUnavailable:
+                case MapState.LetterUnavailable:
                     return "Letter unavailable";
-                case MappingState.Undefined:
+                case MapState.Undefined:
                     return "Updating..";
             }
 

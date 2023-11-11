@@ -27,7 +27,7 @@ public partial class MapModel : ObservableObject
         set => networkPath = value.Trim();         
     }
 
-    public MappingSettingsModel Settings { get; set; } = new();
+    public MapSettingsModel Settings { get; set; } = new();
 
     public MapModel Clone()
     {
