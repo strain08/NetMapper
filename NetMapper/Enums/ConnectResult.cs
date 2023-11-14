@@ -7,13 +7,15 @@ public enum ConnectResult
     /// <summary>
     ///     The connection was successfully created.
     /// </summary>
-    [Description("ConnectResult_Success")] Success = 0,
+    [Description("ConnectResult_Success")]
+    Success = 0,
 
     /// <summary>
     ///     The connection was lost. This is not a system event number, but
     ///     set if a previously established connection was lost.
     /// </summary>
-    [Description("ConnectResult_Lost")] Lost = -1,
+    [Description("ConnectResult_Lost")]
+    Lost = -1,
 
     /// <summary>
     ///     An unexpected failure occurred - no enum constant was defined for

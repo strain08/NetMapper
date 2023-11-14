@@ -14,8 +14,6 @@ public static class Bootstrapper
     {
         if (Avalonia.Controls.Design.IsDesignMode) return;
 
-
-
         // Json Settings Store
         s.Register<IDataStore<AppSettingsModel>>(() =>
             new JsonStore<AppSettingsModel>(AppDataFiles.SettingsFile));

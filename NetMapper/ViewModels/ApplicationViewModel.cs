@@ -69,20 +69,20 @@ public partial class ApplicationViewModel : ViewModelBase, IRecipient<PropChange
 
         foreach (var item in listService.DriveCollection)
         {
-            TooltipText += item.DriveLetterColon;
+            TooltipText += item.DriveLetterColon + " ";
             switch (item.MappingStateProp)
             {
                 case MapState.Mapped:
-                    TooltipText += " connected.";
+                    TooltipText += "connected.";
                     break;
                 case MapState.Unmapped:
-                    TooltipText += " disconnected.";
+                    TooltipText += "disconnected.";
                     break;
                 case MapState.LetterUnavailable:
-                    TooltipText += " letter unavailable.";
+                    TooltipText += "letter unavailable.";
                     break;
                 default:
-                    TooltipText += " updating...";
+                    TooltipText += "updating...";
                     break;
             }
 

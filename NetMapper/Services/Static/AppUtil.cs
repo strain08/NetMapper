@@ -5,7 +5,7 @@ using System.IO;
 using System.Reflection;
 using Avalonia.Controls;
 
-namespace NetMapper.Services.Helpers;
+namespace NetMapper.Services.Static;
 
 public class AppUtil
 {

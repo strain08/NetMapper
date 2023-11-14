@@ -2,7 +2,7 @@
 using System.Diagnostics;
 using NetMapper.Attributes;
 using NetMapper.Interfaces;
-using NetMapper.Services.Helpers;
+using NetMapper.Services.Static;
 
 namespace NetMapper.ViewModels;
 

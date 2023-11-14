@@ -2,7 +2,7 @@
 using System.IO;
 using System.Text.Json;
 using NetMapper.Interfaces;
-using NetMapper.Services.Helpers;
+using NetMapper.Services.Static;
 using Serilog;
 
 namespace NetMapper.Services;

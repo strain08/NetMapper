@@ -1,18 +1,15 @@
-using System;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Data.Core.Plugins;
 using Avalonia.Markup.Xaml;
+using CommunityToolkit.Mvvm.DependencyInjection;
 using Microsoft.Toolkit.Uwp.Notifications;
 using NetMapper.Interfaces;
 using NetMapper.ViewModels;
 using Serilog;
 using Splat;
-using CommunityToolkit.Mvvm.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection;
-using NetMapper.Models;
-using NetMapper.Services;
+using System;
 
 namespace NetMapper;
 
@@ -36,14 +33,13 @@ public class App : Application
             // Line below is needed to remove Avalonia data validation.
             // Without this line you will get duplicate validations from both Avalonia and CT
             BindingPlugins.DataValidators.RemoveAt(0);
-            
+
             // Register services with Splat        
             Bootstrapper.Register(Locator.CurrentMutable, Locator.Current);
 
             desktop.ShutdownMode = ShutdownMode.OnExplicitShutdown;
             desktop.ShutdownRequested += Desktop_ShutdownRequested;
             desktop.Exit += Desktop_Exit;
-            var x= Ioc.Default.GetRequiredService<IDriveListService>();
         }
 
         if (Design.IsDesignMode)
@@ -61,7 +57,7 @@ public class App : Application
     private void Desktop_ShutdownRequested(object? sender, ShutdownRequestedEventArgs e)
     {
         AppShutdown();
-        
+
     }
 
     public void OnTrayClicked(object sender, EventArgs e)

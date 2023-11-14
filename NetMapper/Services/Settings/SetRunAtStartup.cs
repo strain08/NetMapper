@@ -1,6 +1,6 @@
 ﻿using System;
 using Microsoft.Win32;
-using NetMapper.Services.Helpers;
+using NetMapper.Services.Static;
 
 namespace NetMapper.Services.Settings;
 

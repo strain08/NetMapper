@@ -34,7 +34,7 @@ public class RetryForceToast : IToast
             .AddButton(new ToastButtonDismiss())
             .AddArgument(ToastArgs.TOAST_ACTION.ToString(), ToastActions.ToastClicked)
             .AddArgument(ToastArgs.TOAST_TYPE.ToString(), Arguments.ToastType)
-            .AddArgument(ToastArgs.MODEL_ID.ToString(), Arguments.model.DriveLetter)
+            .AddArgument(ToastArgs.MODEL_ID.ToString(), Arguments.model.ID)
             .SetToastScenario(ToastScenario.Reminder);
     }
 

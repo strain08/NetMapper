@@ -24,5 +24,10 @@ public class ToastFactory : IToastFactory
             _ => throw new KeyNotFoundException(),
         };
     }
-    
+    public IToast CreateToast(string tag, ToastType toastType, MapModel m, string Line1, string Line2)
+    {
+        var answerData = new ToastArgsRecord(toastType, m);
+        return new CustomToast(tag, answerData, Line1, Line2);
+
+    }
 }

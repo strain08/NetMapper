@@ -7,4 +7,5 @@ public interface IToastFactory
 {
     IToastPresenter CreateToastPresenter();    
     IToast CreateToast(string tag, ToastType toastType, MapModel m);
+    IToast CreateToast(string tag, ToastType toastType, MapModel m, string Line1, string Line2);
 }

@@ -14,37 +14,35 @@ public class ToastPresenter : IToastPresenter
 
     public void Show(IToast ToastData)
     {
-        if (CanUpdate(ToastData))
-        {
-            notificationData.SequenceNumber = 0;
+        notificationData.SequenceNumber = 0;
+        if (CanUpdate(ToastData) &&
             ToastNotificationManagerCompat
                   .CreateToastNotifier()
-                  .Update(notificationData, ToastData.Tag);
-        }
-        else
+                  .Update(notificationData, ToastData.Tag) == NotificationUpdateResult.Succeeded)
+            return;
+
+        notificationData.Values[ToastLines.LINE1.ToString()] = ToastData.TextLine1.Text;
+        notificationData.Values[ToastLines.LINE2.ToString()] = ToastData.TextLine2.Text;
+
+        if (ToastData.TextLine1.Update)
+            previousText1 = ToastData.TextLine1.Text;
+        if (ToastData.TextLine2.Update)
+            previousText2 = ToastData.TextLine2.Text;
+
+        var _xml = ToastData.GetToastContent().GetXml();
+        var _notification = new ToastNotification(_xml)
         {
-            notificationData.Values[ToastLines.LINE1.ToString()] = ToastData.TextLine1.Text;
-            notificationData.Values[ToastLines.LINE2.ToString()] = ToastData.TextLine2.Text;
+            Tag = ToastData.Tag,
+            Data = notificationData
+        };
 
-            if (ToastData.TextLine1.Update)
-                previousText1 = ToastData.TextLine1.Text;
-            if (ToastData.TextLine2.Update)
-                previousText2 = ToastData.TextLine2.Text;
+        _notification.Dismissed += _notification_Dismissed;
 
-            var _xml = ToastData.GetToastContent().GetXml();
-            var _notification = new ToastNotification(_xml)
-            {
-                Tag = ToastData.Tag,
-                Data = notificationData
-            };
+        toastQueue.Enqueue(_notification);
+        if (toastQueue.Count > 5)
+            toastQueue.Dequeue();
+        ToastNotificationManagerCompat.CreateToastNotifier().Show(_notification);
 
-            _notification.Dismissed += _notification_Dismissed;
-
-            toastQueue.Enqueue(_notification);
-            if (toastQueue.Count > 3)
-                toastQueue.Dequeue();
-            ToastNotificationManagerCompat.CreateToastNotifier().Show(_notification);
-        }
     }
 
     private bool CanUpdate(IToast ToastData)

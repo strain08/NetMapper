@@ -18,8 +18,6 @@ public class DriveConnectService : IConnectService
     private readonly IInterop interop;
     private readonly IToastFactory toastFactory;
     IToastPresenter toastPresenter;
-    IToast? toast;
-
 
     public DriveConnectService(INavService navService,
                                IInterop interopService,
@@ -33,6 +31,7 @@ public class DriveConnectService : IConnectService
 
     public async Task Connect(MapModel m)
     {
+        IToast toast;
         m.MappingStateProp = MapState.Undefined;
 
         var result = await interop.ConnectNetworkDriveAsync(m.DriveLetter, m.NetworkPath);
@@ -40,25 +39,28 @@ public class DriveConnectService : IConnectService
         switch (result)
         {
             case ConnectResult.Success:
-                m.MappingStateProp = MapState.Mapped;
-                //_ = new ToastDriveConnected(m, ActionToastClicked).Show();                
-                toast = toastFactory.CreateToast("TAG1", ToastType.INF_CONNECT, m);
-                toastPresenter.Show(toast);
+                m.MappingStateProp = MapState.Mapped;                  
+                toast = toastFactory.CreateToast("CONNECT", ToastType.INF_CONNECT, m);                
                 break;
 
             case ConnectResult.LoginFailure | ConnectResult.InvalidCredentials:
-                _ = new ToastLoginFailure(m, ActionToastClicked, "TAG1").Show();
+                toast = toastFactory.CreateToast("LOGIN_FAIL", ToastType.INF_LOGIN_FAILURE, m);                
                 break;
 
             default:
                 var errorDescription = result.GetAttributeOfType<DescriptionAttribute>()?.GetDescription();
-                Log.Error($"Error connecting to {m.NetworkPath}. Error code: {result}, {errorDescription} ");
+                var errorMessage = $"Error connecting to {m.NetworkPath}. Error code: {result}, {errorDescription} ";
+                toast = toastFactory.CreateToast("ERROR_CONNECT", ToastType.INF_CUSTOM, m, "Unknown error", errorMessage);
+                Log.Error(errorMessage);                
                 break;
         }
+
+        toastPresenter.Show(toast);
     }
 
     public async Task Disconnect(MapModel m, bool forceDisconnect = false)
     {
+        IToast toast;
         m.MappingStateProp = MapState.Undefined;
 
         // not a network drive, do nothing
@@ -68,58 +70,25 @@ public class DriveConnectService : IConnectService
 
         switch (result)
         {
-            case DisconnectResult.DISCONNECT_SUCCESS:
-                _ = new ToastDriveDisconnected(m, ActionToastClicked, "TAG1").Show();
+            case DisconnectResult.Success:
+                toast = toastFactory.CreateToast("DISCONNECT", ToastType.INF_DISCONNECT, m);
                 m.MappingStateProp = MapState.Unmapped;
                 break;
 
+            case DisconnectResult.OpenFiles:
+                toast = toastFactory.CreateToast("OPENFILES", ToastType.DLG_CAN_NOT_DISCONNECT, m);
+                break;
+
             default:
-                _ = new ToastCanNotRemoveDrive(m, ActionDisconnect, "TAG2").Show();
+                var errorDescription = result.GetAttributeOfType<DescriptionAttribute>()?.GetDescription();
+                var errorMessage = $"Error disconnecting {m.DriveLetterColon}. Error code: {result}, {errorDescription} ";
+                toast = toastFactory.CreateToast("ERROR_DISCONNECT", ToastType.INF_CUSTOM, m, "Unknown error", errorMessage);
+                Log.Error(errorMessage);
                 break;
         }
+
+        toastPresenter.Show(toast);
     }
 
-    private void ActionDisconnect(MapModel m, ToastActions answer)
-    {
-        switch (answer)
-        {
-            case ToastActions.Retry:
-                _ = Disconnect(m);
-                break;
 
-            case ToastActions.Force:
-                _ = Disconnect(m, forceDisconnect: true);
-                break;
-
-            case ToastActions.ToastClicked:
-                ShowMainWindow();
-                break;
-        }
-    }
-
-    private void ActionToastClicked(MapModel m, ToastActions answer)
-    {
-        if (m.MappingStateProp == MapState.Mapped)
-        {
-            ProcessStartInfo psi = new()
-            {
-                UseShellExecute = true,
-                FileName = m.DriveLetterColon + "\\"
-            };
-            Process.Start(psi);
-        }
-        else
-        {
-            ShowMainWindow();
-        }
-    }
-
-    private void ShowMainWindow()
-    {
-        Dispatcher.UIThread.Post(() =>
-        {
-            nav.GetViewModel<ApplicationViewModel>()
-                .ShowMainWindow();
-        });
-    }
 }

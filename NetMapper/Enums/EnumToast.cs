@@ -12,8 +12,8 @@ public enum ToastLines
 }
 public enum ToastArgs
 {
-    TOAST_TYPE,    
-    MODEL_ID,    
+    TOAST_TYPE,
+    MODEL_ID,
     TOAST_ACTION
 }
 public enum ToastActions
@@ -27,5 +27,6 @@ public enum ToastType
     INF_DISCONNECT,
     INF_CONNECT,
     DLG_CAN_NOT_DISCONNECT,
-    INF_LOGIN_FAILURE
+    INF_LOGIN_FAILURE,
+    INF_CUSTOM
 }
