@@ -44,13 +44,13 @@ public class DriveConnectService : IConnectService
                 break;
 
             case ConnectResult.LoginFailure | ConnectResult.InvalidCredentials:
-                toast = toastFactory.CreateToast("LOGIN_FAIL", ToastType.INF_LOGIN_FAILURE, m);                
+                toast = toastFactory.CreateToast("FAILURE", ToastType.INF_LOGIN_FAILURE, m);                
                 break;
 
             default:
                 var errorDescription = result.GetAttributeOfType<DescriptionAttribute>()?.GetDescription();
                 var errorMessage = $"Error connecting to {m.NetworkPath}. Error code: {result}, {errorDescription} ";
-                toast = toastFactory.CreateToast("ERROR_CONNECT", ToastType.INF_CUSTOM, m, "Unknown error", errorMessage);
+                toast = toastFactory.CreateToast(m.ID, ToastType.INF_CUSTOM, m, "Unknown error", errorMessage);
                 Log.Error(errorMessage);                
                 break;
         }
@@ -76,7 +76,7 @@ public class DriveConnectService : IConnectService
                 break;
 
             case DisconnectResult.OpenFiles:
-                toast = toastFactory.CreateToast("OPENFILES", ToastType.DLG_CAN_NOT_DISCONNECT, m);
+                toast = toastFactory.CreateToast("CAN_NOT_REMOVE", ToastType.DLG_CAN_NOT_DISCONNECT, m);
                 break;
 
             default:

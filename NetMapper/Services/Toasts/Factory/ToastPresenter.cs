@@ -14,7 +14,7 @@ public class ToastPresenter : IToastPresenter
 
     public void Show(IToast ToastData)
     {
-        notificationData.SequenceNumber = 0;
+        notificationData.SequenceNumber = 1;
         if (CanUpdate(ToastData) &&
             ToastNotificationManagerCompat
                   .CreateToastNotifier()
