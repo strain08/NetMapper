@@ -15,9 +15,7 @@ namespace NetMapper.Services.Helpers;
 
 public class Interop : IInterop
 {
-    public Interop()
-    {
-    }
+    public Interop() { }
 
     [DllImport("mpr.dll")]
     private static extern int WNetAddConnection2(
@@ -181,7 +179,7 @@ public class Interop : IInterop
         //// source: https://regexlib.com/REDetails.aspx?regexp_id=2285
         //var uncPattern =
         //    @"^((\\\\[a-zA - Z0 - 9 -]+\\[a-zA - Z0 - 9`~!@#$%^&(){}'._-]+([ ]+[a-zA-Z0-9`~!@#$%^&(){}'._-]+)*)|([a-zA-Z]:))(\\[^ \\/:*?""<>|]+([ ]+[^ \\/:*?""<>|]+)*)*\\?$";
-        Debug.WriteLine($"{path}");
+        if (path.Length < 2) return false;
         var pathSlash = path.Replace("\\", "/");
         var uncPattern = "^((\\/\\/[a-zA-Z0-9-]+\\/[a-zA-Z0-9`~!@#$%^&(){}'._-]+([ ]+[a-zA-Z0-9`~!@#$%^&(){}'._-]+)*)|([a-zA-Z]))(\\/[^ \\/:*?\"\"<>|]+([ ]+[^ \\/:*?\"\"<>|]+)*)*\\/?$";
         //var g = Regex.Match(pathSlash, uncPattern).Groups;

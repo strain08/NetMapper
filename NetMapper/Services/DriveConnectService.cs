@@ -4,6 +4,7 @@ using NetMapper.Enums;
 using NetMapper.Interfaces;
 using NetMapper.Models;
 using NetMapper.Services.Toasts;
+using NetMapper.Services.Toasts.Interfaces;
 using NetMapper.ViewModels;
 using Serilog;
 using System.Diagnostics;
@@ -15,11 +16,19 @@ public class DriveConnectService : IConnectService
 {
     private readonly INavService nav;
     private readonly IInterop interop;
+    private readonly IToastFactory toastFactory;
+    IToastPresenter toast;
+    IToastType toastType;
+    
 
-    public DriveConnectService(INavService navService, IInterop interopService)
+    public DriveConnectService(INavService navService,
+                               IInterop interopService,
+                               IToastFactory toastFactory)
     {
         nav = navService;
         interop = interopService;
+        this.toastFactory = toastFactory;
+        toast = toastFactory.CreateToast();
     }
 
     public async Task Connect(MapModel m)
@@ -32,7 +41,10 @@ public class DriveConnectService : IConnectService
         {
             case ConnectResult.Success:
                 m.MappingStateProp = MapState.Mapped;
-                _ = new ToastDriveConnected(m, ActionToastClicked).Show();
+                //_ = new ToastDriveConnected(m, ActionToastClicked).Show();
+               // var toastArgs = new ToastArgsRecord(T);
+                toastType = toastFactory.CreateToastType("TAG1",new(ToastType.INF_CONNECT, m));
+                toast.Show(toastType);
                 break;
 
             case ConnectResult.LoginFailure | ConnectResult.InvalidCredentials:
@@ -85,7 +97,7 @@ public class DriveConnectService : IConnectService
                 });
                 break;
 
-            case ToastActions.ShowWindow:
+            case ToastActions.ToastClicked:
                 ShowMainWindow();
                 break;
         }

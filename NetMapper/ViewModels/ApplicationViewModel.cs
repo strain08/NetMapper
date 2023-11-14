@@ -42,8 +42,7 @@ public partial class ApplicationViewModel : ViewModelBase, IRecipient<PropChange
 
     public void Receive(PropChangedMessage message)
     {
-        UpdateTooltip();
-        
+        UpdateTooltip();        
     }
 
     private void InitializeApp()

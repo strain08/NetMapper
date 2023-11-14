@@ -2,6 +2,8 @@
 using NetMapper.Models;
 using NetMapper.Services;
 using NetMapper.Services.Helpers;
+using NetMapper.Services.Toasts.Implementations;
+using NetMapper.Services.Toasts.Interfaces;
 using Splat;
 using System.Net.NetworkInformation;
 
@@ -30,15 +32,30 @@ public static class Bootstrapper
         // Connect service
         s.RegisterLazySingleton<IConnectService>(() => new DriveConnectService(
             r.GetRequiredService<INavService>(),
-            r.GetRequiredService<IInterop>()
+            r.GetRequiredService<IInterop>(), 
+            r.GetRequiredService<IToastFactory>()
         ));
 
         // Drive List CRUD
         s.RegisterLazySingleton<IDriveListService>(() => new DriveListService(
             r.GetRequiredService<IDataStore<AppDataModel>>()));
 
+        // Toast
+        s.Register<IToastFactory>(() => new ToastFactory());
+
+        s.RegisterConstant(new ToastActivatedReceiver(
+            r.GetRequiredService<IToastFactory>()));
+
+        s.RegisterConstant<IToastActivatedMessenger>(new ToastActivatedMessenger(
+            r.GetRequiredService<IDriveListService>()));
+
+        s.RegisterConstant(new ToastActivatedHandler(
+            r.GetRequiredService<IToastActivatedMessenger>()));
+
+
         // Model state updater
-        s.Register<IUpdateModelState>(() => new UpdateModelState(r.GetRequiredService<IInterop>()));
+        s.Register<IUpdateModelState>(() => new UpdateModelState(
+            r.GetRequiredService<IInterop>()));
 
         // System state updater
         s.Register<IUpdateSystemState>(() => new UpdateSystemState(

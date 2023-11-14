@@ -15,10 +15,4 @@ public enum MapState
     LetterUnavailable
 }
 
-public enum ToastActions
-{
-    Force,
-    Retry,
-    ShowWindow
-}
 

@@ -15,7 +15,7 @@ public class ToastLoginFailure : ToastBase
         var toastContent = new ToastContentBuilder()
             .AddText(msg_line1)
             .AddText(msg_line2)
-            .AddArgument(TOAST_ACTION, ToastActions.ShowWindow)
+            .AddArgument(TOAST_ACTION, ToastActions.ToastClicked)
             .SetToastScenario(ToastScenario.Reminder);
 
         // base

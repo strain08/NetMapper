@@ -22,7 +22,7 @@ public class ToastCanNotRemoveDrive : ToastBase
                 .SetContent("Force")
                 .AddArgument(TOAST_ACTION, ToastActions.Force))
             .AddButton(new ToastButtonDismiss())
-            .AddArgument(TOAST_ACTION, ToastActions.ShowWindow)
+            .AddArgument(TOAST_ACTION, ToastActions.ToastClicked)
             .SetToastScenario(ToastScenario.Reminder);
 
         // base

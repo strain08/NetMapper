@@ -56,16 +56,16 @@ public class UpdateModelState : IUpdateModelState, IRecipient<PropChangedMessage
 
     public void Receive(PropChangedMessage message)
     {
-        var s = nameof(MapModel.MappingStateProp);       
-
+        string s = nameof(MapModel.MappingStateProp);       
+        
         if (message.PropertyName == s)
         {
-            if (message.Value.MappingStateProp == MapState.Mapped ||
-            message.Value.MappingStateProp == MapState.LetterUnavailable)
+            if (message.m.MappingStateProp == MapState.Mapped ||
+            message.m.MappingStateProp == MapState.LetterUnavailable)
             {
-                message.Value.VolumeLabel = interop.GetVolumeLabel(message.Value) ?? "volume label";
+                message.m.VolumeLabel = interop.GetVolumeLabel(message.m) ?? "volume label";
             }
-            if (message.Value.MappingStateProp == MapState.Unmapped) message.Value.VolumeLabel = "";
+            if (message.m.MappingStateProp == MapState.Unmapped) message.m.VolumeLabel = "";
         }
     }
 }

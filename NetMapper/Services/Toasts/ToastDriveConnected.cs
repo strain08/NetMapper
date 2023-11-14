@@ -25,7 +25,7 @@ public class ToastDriveConnected : ToastBase
                 Text = new BindableString(MSG_CONTENT) // bound to ToastMessage prop
             })
             
-            .AddArgument(TOAST_ACTION, ToastActions.ShowWindow)
+            .AddArgument(TOAST_ACTION, ToastActions.ToastClicked)
             .SetToastScenario(ToastScenario.Reminder);
 
         var notificationData = new NotificationData();

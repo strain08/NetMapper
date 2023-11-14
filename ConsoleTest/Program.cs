@@ -1,18 +1,35 @@
 ﻿using System.Reflection;
 using ConsoleTest.Builder;
-using NetMapper.Services.Helpers;
+using NetMapper.Enums;
+using NetMapper.Services.Toasts;
+using NetMapper.Services.Toasts.Implementations;
+using NetMapper.Services.Toasts.Interfaces;
 
 namespace ConsoleTest;
 
 internal class Program
-{
+{    
     private static void Main(string[] args)
     {
-        //ToastTest.ToastTest1();
+        
+        ToastFactory tf = new();        
+        IToastPresenter toast = tf.CreateToast();
 
-        //Console.WriteLine(Interop.IsNetworkPath(@"\\ddd"));
-        Console.ReadLine();
+        var toastArgs = new ToastArgsRecord(
+            ToastType: ToastType.INF_CONNECT,
+            DriveLetter: "C:",
+            NetworkPath: @"\\sdfsdf\sdf\\");
 
+        IToastType tt = tf.CreateToastType<RetryForceToast>("TAG",toastArgs);
+        tt.SetTextLine1(new("Line1", false));
+        tt.TextLine2 = new("Line2", false);
+
+        while (true)
+        {
+            Console.ReadLine();
+            toast.Show(tt);
+            
+        }
         
     }
     static void ToastBuilder(IToastBuilder t)

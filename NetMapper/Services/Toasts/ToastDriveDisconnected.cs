@@ -20,7 +20,7 @@ public class ToastDriveDisconnected : ToastBase
         }
 
         var toastContent = new ToastContentBuilder()
-            .AddArgument(TOAST_ACTION, ToastActions.ShowWindow)
+            .AddArgument(TOAST_ACTION, ToastActions.ToastClicked)
             .AddVisualChild(new AdaptiveText
             {
                 Text = new BindableString(MSG_CONTENT) // bound to ToastMessage prop
