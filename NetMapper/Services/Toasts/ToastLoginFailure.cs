@@ -10,7 +10,7 @@ public class ToastLoginFailure : ToastBase
 {
     private string msg_line1 => $"Login failure connecting to {_mapModel.NetworkPath}.";
     private string msg_line2 => "Please connect the share in windows or delete the mapping.";
-    public ToastLoginFailure(MapModel m, Action<MapModel, ToastActions> del) : base(m, del)
+    public ToastLoginFailure(MapModel m, Action<MapModel, ToastActions> del, string Tag) : base(m, del, Tag)
     {
         var toastContent = new ToastContentBuilder()
             .AddText(msg_line1)

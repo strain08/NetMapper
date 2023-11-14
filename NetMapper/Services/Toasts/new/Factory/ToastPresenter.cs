@@ -12,7 +12,7 @@ public class ToastPresenter : IToastPresenter
     private Queue<ToastNotification> toastQueue = new();
     private NotificationData notificationData = new();
 
-    public void Show(IToastType ToastData)
+    public void Show(IToast ToastData)
     {
         if (CanUpdate(ToastData))
         {
@@ -47,7 +47,7 @@ public class ToastPresenter : IToastPresenter
         }
     }
 
-    private bool CanUpdate(IToastType ToastData)
+    private bool CanUpdate(IToast ToastData)
     {
         bool willUpdate = false;
         if (ToastData.TextLine1.Update && previousText1 is not null)

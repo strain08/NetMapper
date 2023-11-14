@@ -11,7 +11,7 @@ public class ToastDriveDisconnected : ToastBase
     private const string TAG = "INFO"; // toasts with same tag will be updated
 
     // CTOR
-    public ToastDriveDisconnected(MapModel m, Action<MapModel, ToastActions> del) : base(m, del)
+    public ToastDriveDisconnected(MapModel m, Action<MapModel, ToastActions> del, string Tag) : base(m, del, Tag)
     {
         if (_previousMsg != null) // there is a visible notification, update
         {

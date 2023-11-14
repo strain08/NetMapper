@@ -1,4 +1,5 @@
-﻿using Microsoft.CodeAnalysis.CSharp.Syntax;
+﻿using HarfBuzzSharp;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.Toolkit.Uwp.Notifications;
 using NetMapper.Enums;
 using NetMapper.Models;
@@ -21,12 +22,14 @@ public class ToastBase : IDisposable
     protected ToastNotification? _toastNotification;
     private bool disposedValue;
     protected Action<MapModel, ToastActions> toastAction;
+    private string _tag;
 
-    public ToastBase(MapModel m, Action<MapModel, ToastActions> del)
+    public ToastBase(MapModel m, Action<MapModel, ToastActions> del, string Tag)
     {
         toastAction = del;
         _mapModel = m;
-
+        _tag = Tag;
+        
     }
 
 

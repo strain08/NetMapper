@@ -4,7 +4,7 @@ using NetMapper.Services.Toasts.Interfaces;
 
 namespace NetMapper.Services.Toasts;
 
-public class InfoToast : IToastType
+public class InfoToast : IToast
 {
     public string Tag { get; init; }
     public ToastArgsRecord Arguments { get; init; }

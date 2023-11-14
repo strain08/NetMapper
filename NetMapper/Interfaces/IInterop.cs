@@ -18,5 +18,6 @@ namespace NetMapper.Interfaces
         bool IsNetworkDriveMapped(char cDriveLetter);
         bool IsNetworkPath(string path);
         bool IsRegularDriveMapped(char cDriveLetter);
+        void OpenFolderInExplorer(string path);
     }
 }

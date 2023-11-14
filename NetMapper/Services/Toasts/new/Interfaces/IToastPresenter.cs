@@ -2,5 +2,5 @@
 
 public interface IToastPresenter
 {
-    public void Show(IToastType ToastData);
+    public void Show(IToast ToastData);
 }

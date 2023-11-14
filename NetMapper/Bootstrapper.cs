@@ -44,7 +44,11 @@ public static class Bootstrapper
         s.Register<IToastFactory>(() => new ToastFactory());
 
         s.RegisterConstant(new ToastActivatedReceiver(
-            r.GetRequiredService<IToastFactory>()));
+            r.GetRequiredService<IToastFactory>(),
+            r.GetRequiredService<IDriveListService>(),
+            r.GetRequiredService<IConnectService>(),
+            r.GetRequiredService<INavService>(),
+            r.GetRequiredService<IInterop>()));
 
         s.RegisterConstant<IToastActivatedMessenger>(new ToastActivatedMessenger(
             r.GetRequiredService<IDriveListService>()));

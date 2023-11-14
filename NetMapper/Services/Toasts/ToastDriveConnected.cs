@@ -8,13 +8,12 @@ namespace NetMapper.Services.Toasts;
 
 public class ToastDriveConnected : ToastBase
 {
-    private const string TAG = "INFO";
     private string ToastMessage => $"{_mapModel.DriveLetterColon} [ {_mapModel.VolumeLabel} ] connected.";
-    public ToastDriveConnected(MapModel m, Action<MapModel, ToastActions> del) : base(m, del)
+    public ToastDriveConnected(MapModel m, Action<MapModel, ToastActions> del, string Tag) : base(m, del, Tag)
     {
         if (_previousMsg != null) // toast still visible, update
         {
-            Update(ToastMessage, TAG);
+            Update(ToastMessage, Tag);
             return;
         }
 
@@ -35,7 +34,7 @@ public class ToastDriveConnected : ToastBase
         //base
         _toastNotification = new ToastNotification(toastContent.GetXml())
         {
-            Tag = TAG,
+            Tag = Tag,
             Data = notificationData
         };
     }

@@ -4,15 +4,12 @@ using NetMapper.Services.Toasts.Interfaces;
 
 namespace NetMapper.Services.Toasts;
 
-public class RetryForceToast : IToastType
+public class RetryForceToast : IToast
 {
     public string Tag { get; init; }
-
     public ToastText TextLine1 { get; set; } = new();
-
     public ToastText TextLine2 { get; set; } = new();
     public ToastArgsRecord Arguments { get; init; }
-
     public RetryForceToast(string Tag, ToastArgsRecord args)
     {
         this.Tag = Tag; Arguments = args;
@@ -44,7 +41,6 @@ public class RetryForceToast : IToastType
 }
 public class CanNotDisconnect : RetryForceToast
 {
-
     public CanNotDisconnect(string Tag, ToastArgsRecord args) : base(Tag, args)
     {
         TextLine1 = new($"Cannot remove network drive {Arguments.model.DriveLetterColon}", false);

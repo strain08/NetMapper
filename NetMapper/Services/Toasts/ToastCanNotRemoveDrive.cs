@@ -10,7 +10,7 @@ public class ToastCanNotRemoveDrive : ToastBase
 {
     private string msg_line1 => $"Cannot remove network drive {_mapModel.DriveLetterColon}";
     private string msg_line2 => $"Close all files in use on drive {_mapModel.DriveLetterColon} and retry.";
-    public ToastCanNotRemoveDrive(MapModel m, Action<MapModel, ToastActions> del) : base(m, del)
+    public ToastCanNotRemoveDrive(MapModel m, Action<MapModel, ToastActions> del, string Tag) : base(m, del, Tag)
     {
         var toastContent = new ToastContentBuilder()
             .AddText(msg_line1)

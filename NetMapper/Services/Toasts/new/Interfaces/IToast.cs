@@ -4,7 +4,7 @@ using System.Management;
 
 namespace NetMapper.Services.Toasts.Interfaces;
 
-public interface IToastType
+public interface IToast
 {
     ToastText TextLine1 { get; set; }
     ToastText TextLine2 { get; set; }

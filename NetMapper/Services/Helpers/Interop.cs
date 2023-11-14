@@ -189,7 +189,15 @@ public class Interop : IInterop
 
 
     }
-
+    public void OpenFolderInExplorer(string path)
+    {
+        ProcessStartInfo psi = new()
+        {
+            UseShellExecute = true,
+            FileName = path + "\\"
+        };
+        Process.Start(psi);
+    }
     //public static void IsMachineOnline(string hostName)
     //{
     //    using Ping pingSender = new();

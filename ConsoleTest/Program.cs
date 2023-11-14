@@ -13,14 +13,14 @@ internal class Program
     {
         
         ToastFactory tf = new();        
-        IToastPresenter toast = tf.CreateToast();
+        IToastPresenter toast = tf.CreateToastPresenter();
 
         var toastArgs = new ToastArgsRecord(
             ToastType: ToastType.INF_CONNECT,
             DriveLetter: "C:",
             NetworkPath: @"\\sdfsdf\sdf\\");
 
-        IToastType tt = tf.CreateToastType<RetryForceToast>("TAG",toastArgs);
+        IToast tt = tf.CreateToast<RetryForceToast>("TAG",toastArgs);
         tt.SetTextLine1(new("Line1", false));
         tt.TextLine2 = new("Line2", false);
 

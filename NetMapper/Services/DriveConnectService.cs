@@ -17,9 +17,9 @@ public class DriveConnectService : IConnectService
     private readonly INavService nav;
     private readonly IInterop interop;
     private readonly IToastFactory toastFactory;
-    IToastPresenter toast;
-    IToastType toastType;
-    
+    IToastPresenter toastPresent;
+    IToast? toast;
+
 
     public DriveConnectService(INavService navService,
                                IInterop interopService,
@@ -28,7 +28,7 @@ public class DriveConnectService : IConnectService
         nav = navService;
         interop = interopService;
         this.toastFactory = toastFactory;
-        toast = toastFactory.CreateToast();
+        toastPresent = toastFactory.CreateToastPresenter();
     }
 
     public async Task Connect(MapModel m)
@@ -41,14 +41,13 @@ public class DriveConnectService : IConnectService
         {
             case ConnectResult.Success:
                 m.MappingStateProp = MapState.Mapped;
-                //_ = new ToastDriveConnected(m, ActionToastClicked).Show();
-               // var toastArgs = new ToastArgsRecord(T);
-                toastType = toastFactory.CreateToastType("TAG1",new(ToastType.INF_CONNECT, m));
-                toast.Show(toastType);
+                //_ = new ToastDriveConnected(m, ActionToastClicked).Show();                
+                toast = toastFactory.CreateToast("TAG1", ToastType.INF_CONNECT, m);
+                toastPresent.Show(toast);
                 break;
 
             case ConnectResult.LoginFailure | ConnectResult.InvalidCredentials:
-                _ = new ToastLoginFailure(m, ActionToastClicked).Show();
+                _ = new ToastLoginFailure(m, ActionToastClicked, "TAG1").Show();
                 break;
 
             default:
@@ -58,24 +57,24 @@ public class DriveConnectService : IConnectService
         }
     }
 
-    public async Task Disconnect(MapModel m)
+    public async Task Disconnect(MapModel m, bool forceDisconnect = false)
     {
         m.MappingStateProp = MapState.Undefined;
-        
+
         // not a network drive, do nothing
         if (interop.IsRegularDriveMapped(m.DriveLetter)) return;
 
-        var result = await interop.DisconnectNetworkDriveAsync(m.DriveLetter);
+        var result = await interop.DisconnectNetworkDriveAsync(m.DriveLetter, forceDisconnect);
 
         switch (result)
         {
             case DisconnectResult.DISCONNECT_SUCCESS:
-                _ = new ToastDriveDisconnected(m, ActionToastClicked).Show();
+                _ = new ToastDriveDisconnected(m, ActionToastClicked, "TAG1").Show();
                 m.MappingStateProp = MapState.Unmapped;
                 break;
 
             default:
-                _ = new ToastCanNotRemoveDrive(m, ActionDisconnect).Show();
+                _ = new ToastCanNotRemoveDrive(m, ActionDisconnect, "TAG2").Show();
                 break;
         }
     }
@@ -89,12 +88,7 @@ public class DriveConnectService : IConnectService
                 break;
 
             case ToastActions.Force:
-                Task.Run(() =>
-                {
-                    var error = interop.DisconnectNetworkDrive(m.DriveLetter, true);
-                    if (error == DisconnectResult.DISCONNECT_SUCCESS)
-                        _ = new ToastDriveDisconnected(m, ActionToastClicked).Show();
-                });
+                _ = Disconnect(m, forceDisconnect: true);
                 break;
 
             case ToastActions.ToastClicked:
