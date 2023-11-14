@@ -17,7 +17,7 @@ public class DriveConnectService : IConnectService
     private readonly INavService nav;
     private readonly IInterop interop;
     private readonly IToastFactory toastFactory;
-    IToastPresenter toastPresent;
+    IToastPresenter toastPresenter;
     IToast? toast;
 
 
@@ -28,7 +28,7 @@ public class DriveConnectService : IConnectService
         nav = navService;
         interop = interopService;
         this.toastFactory = toastFactory;
-        toastPresent = toastFactory.CreateToastPresenter();
+        toastPresenter = toastFactory.CreateToastPresenter();
     }
 
     public async Task Connect(MapModel m)
@@ -43,7 +43,7 @@ public class DriveConnectService : IConnectService
                 m.MappingStateProp = MapState.Mapped;
                 //_ = new ToastDriveConnected(m, ActionToastClicked).Show();                
                 toast = toastFactory.CreateToast("TAG1", ToastType.INF_CONNECT, m);
-                toastPresent.Show(toast);
+                toastPresenter.Show(toast);
                 break;
 
             case ConnectResult.LoginFailure | ConnectResult.InvalidCredentials:

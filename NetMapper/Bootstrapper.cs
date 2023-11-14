@@ -5,7 +5,6 @@ using NetMapper.Services.Helpers;
 using NetMapper.Services.Toasts.Implementations;
 using NetMapper.Services.Toasts.Interfaces;
 using Splat;
-using System.Net.NetworkInformation;
 
 namespace NetMapper;
 
@@ -15,13 +14,19 @@ public static class Bootstrapper
     {
         if (Avalonia.Controls.Design.IsDesignMode) return;
 
-        s.RegisterConstant<IInterop>(new Interop());
+
+
         // Json Settings Store
-        s.Register<IDataStore<AppSettingsModel>>(() => new JsonStore<AppSettingsModel>("NetMapperSettings.json"));
+        s.Register<IDataStore<AppSettingsModel>>(() =>
+            new JsonStore<AppSettingsModel>(AppDataFiles.SettingsFile));
 
         // Json Drive List Store
-        s.Register<IDataStore<AppDataModel>>(() => new JsonStore<AppDataModel>("NetMapperData.json"));
-
+        s.Register<IDataStore<AppDataModel>>(() =>
+            new JsonStore<AppDataModel>(AppDataFiles.MapDataFile));
+        
+        // Interop, system-related functions
+        s.RegisterConstant<IInterop>(new Interop());
+        
         // Settings
         s.RegisterConstant<ISettingsService>(new SettingsService(
             r.GetRequiredService<IDataStore<AppSettingsModel>>()));
@@ -32,9 +37,8 @@ public static class Bootstrapper
         // Connect service
         s.RegisterLazySingleton<IConnectService>(() => new DriveConnectService(
             r.GetRequiredService<INavService>(),
-            r.GetRequiredService<IInterop>(), 
-            r.GetRequiredService<IToastFactory>()
-        ));
+            r.GetRequiredService<IInterop>(),
+            r.GetRequiredService<IToastFactory>()));
 
         // Drive List CRUD
         s.RegisterLazySingleton<IDriveListService>(() => new DriveListService(
@@ -55,7 +59,6 @@ public static class Bootstrapper
 
         s.RegisterConstant(new ToastActivatedHandler(
             r.GetRequiredService<IToastActivatedMessenger>()));
-
 
         // Model state updater
         s.Register<IUpdateModelState>(() => new UpdateModelState(

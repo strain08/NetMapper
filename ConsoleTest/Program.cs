@@ -15,21 +15,21 @@ internal class Program
         ToastFactory tf = new();        
         IToastPresenter toast = tf.CreateToastPresenter();
 
-        var toastArgs = new ToastArgsRecord(
-            ToastType: ToastType.INF_CONNECT,
-            DriveLetter: "C:",
-            NetworkPath: @"\\sdfsdf\sdf\\");
+        //var toastArgs = new ToastArgsRecord(
+        //    ToastType: ToastType.INF_CONNECT,
+        //    DriveLetter: "C:",
+        //    NetworkPath: @"\\sdfsdf\sdf\\");
 
-        IToast tt = tf.CreateToast<RetryForceToast>("TAG",toastArgs);
-        tt.SetTextLine1(new("Line1", false));
-        tt.TextLine2 = new("Line2", false);
+        //IToast tt = tf.CreateToast<RetryForceToast>("TAG",toastArgs);
+        //tt.SetTextLine1(new("Line1", false));
+        //tt.TextLine2 = new("Line2", false);
 
-        while (true)
-        {
-            Console.ReadLine();
-            toast.Show(tt);
+        //while (true)
+        //{
+        //    Console.ReadLine();
+        //    toast.Show(tt);
             
-        }
+        //}
         
     }
     static void ToastBuilder(IToastBuilder t)

@@ -35,6 +35,7 @@ public partial class MapModel : ObservableObject
 
     public MapModel()
     {
+        
         ID = Guid.NewGuid().ToString();
     }
     public MapModel Clone()

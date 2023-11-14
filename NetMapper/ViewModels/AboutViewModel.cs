@@ -60,5 +60,6 @@ public partial class AboutViewModel : ViewModelBase
     public void OkCommand()
     {
         _nav.GoTo<DriveListViewModel>();
+        
     }
 }

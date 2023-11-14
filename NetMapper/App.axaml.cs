@@ -9,6 +9,10 @@ using NetMapper.Interfaces;
 using NetMapper.ViewModels;
 using Serilog;
 using Splat;
+using CommunityToolkit.Mvvm.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection;
+using NetMapper.Models;
+using NetMapper.Services;
 
 namespace NetMapper;
 
@@ -39,6 +43,7 @@ public class App : Application
             desktop.ShutdownMode = ShutdownMode.OnExplicitShutdown;
             desktop.ShutdownRequested += Desktop_ShutdownRequested;
             desktop.Exit += Desktop_Exit;
+            var x= Ioc.Default.GetRequiredService<IDriveListService>();
         }
 
         if (Design.IsDesignMode)
@@ -56,6 +61,7 @@ public class App : Application
     private void Desktop_ShutdownRequested(object? sender, ShutdownRequestedEventArgs e)
     {
         AppShutdown();
+        
     }
 
     public void OnTrayClicked(object sender, EventArgs e)
