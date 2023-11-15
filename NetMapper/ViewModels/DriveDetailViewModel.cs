@@ -65,7 +65,7 @@ public partial class DriveDetailViewModel : ViewModelBase
         this.interop = interop;
 
         LoadDriveLettersList();
-        //OnIsEditingChanged(false);
+        OnIsEditingChanged(false);
         ValidateAll();
     }
 

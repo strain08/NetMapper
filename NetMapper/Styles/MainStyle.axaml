@@ -1,86 +1,100 @@
 <Styles xmlns="https://github.com/avaloniaui"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
-    <Design.PreviewWith>
-        <Border Padding="20">
-            <!-- Add Controls for Previewer Here -->
-            <StackPanel>
-                <Button Height="20" Classes="btnMain" Margin="10" />
-                <Ellipse Height="40" Width="40" Classes="letter" Margin="10" />
-                <Panel>
-                    <Ellipse Height="40" Width="40" Classes="letterempty" Margin="10" />
-                    <Ellipse Height="30" Width="30" Fill="Black" />
-                </Panel>
-            </StackPanel>
-        </Border>
-    </Design.PreviewWith>
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+		xmlns:views="using:NetMapper.Views"
+		xmlns:vm="using:NetMapper.ViewModels">
+	<Design.PreviewWith>
+		<StackPanel>
+			<views:DriveListView Width="200" Height="400"/>
+			<views:SettingsView	Width="200"	Height="400"/>
+			<views:DriveDetailView	Width="200"	Height="400"/>
+		</StackPanel>
+	</Design.PreviewWith>
 
-    <!-- TEXTBLOCK -->
-    <Style Selector="TextBlock.textMain">
-        <Setter Property="FontSize" Value="16" />
-        <Setter Property="FontWeight" Value="Bold" />
-    </Style>
-    <Style Selector="TextBlock.letter">
-        <Setter Property="FontSize" Value="16" />
-        <Setter Property="FontWeight" Value="Bold" />
-        <Setter Property="HorizontalAlignment" Value="Left" />
-        <Setter Property="VerticalAlignment" Value="Center" />
-    </Style>
-    <Style Selector="TextBlock.detail">
-        <Setter Property="Foreground" Value="DarkGray" />
-        <Setter Property="FontSize" Value="14" />
-    </Style>
-    <!-- BUTTON -->
-    <Style Selector="Button.btnMain">
-        <Style.Resources>
-            <LinearGradientBrush x:Key="ButtonBrush" EndPoint="0%,0%" StartPoint="0%,100%">
-                <GradientStop Color="#202527" Offset="0" />
-                <GradientStop Color="#363e42" Offset="1" />
-            </LinearGradientBrush>
-        </Style.Resources>
-        <Setter Property="FontSize" Value="12" />
+	<Styles.Resources>
+		<ResourceDictionary>
+			<ResourceDictionary.MergedDictionaries>
+				<ResourceInclude Source="/Styles/ResourceDictionary.axaml"/>
+			</ResourceDictionary.MergedDictionaries>
+		</ResourceDictionary>
+	</Styles.Resources>
+	
+	<!-- TEXTBLOCK -->
 
-        <Setter Property="Width" Value="35" />
-        <Setter Property="HorizontalContentAlignment" Value="Center" />
-        <Setter Property="VerticalContentAlignment" Value="Center" />
-        <Setter Property="Background" Value="{DynamicResource ButtonBrush}" />
-    </Style>
+	<Style Selector="TextBlock.letter">
+		<Setter Property="FontSize" Value="18" />
+		<Setter Property="FontWeight" Value="Bold" />
+		<Setter Property="HorizontalAlignment" Value="Left" />
+		<Setter Property="VerticalAlignment" Value="Center" />
+	</Style>
+	<Style Selector="TextBlock.volumeLabel">
+		<Setter Property="FontSize" Value="16" />
+		<Setter Property="Foreground" Value="{DynamicResource GrayBrush}" />
+		<Setter Property="FontWeight" Value="Bold" />
+		<Setter Property="HorizontalAlignment" Value="Left" />
+		<Setter Property="VerticalAlignment" Value="Center" />
+	</Style>
+	<Style Selector="TextBlock.appAboutTitle">
+		<Setter Property="FontSize" Value="16" />
+		<Setter Property="Foreground" Value="{DynamicResource DarkGrayBrush}" />
+		<Setter Property="FontWeight" Value="Bold" />
+		<Setter Property="HorizontalAlignment" Value="Left" />
+		<Setter Property="VerticalAlignment" Value="Center" />
+	</Style>
+	<Style Selector="TextBlock.detail">
+		<Setter Property="Foreground" Value="{DynamicResource DarkGrayBrush}" />
+		<Setter Property="FontSize" Value="14" />
+	</Style>
+	<Style Selector="TextBlock.sectionTitle">
+		<Setter Property="Foreground" Value="{DynamicResource LightBlueBrush}" />
+		<Setter Property="FontSize" Value="18" />
+	</Style>	
+	<Style Selector="TextBlock.sectionDetail">
+		<Setter Property="Foreground" Value="{DynamicResource GrayBrush}" />		
+		<Setter Property="FontWeight" Value="Bold" />
+		<Setter Property="FontSize" Value="16" />
+	</Style>
+	<Style Selector="TextBlock.status">
+		<Setter Property="Foreground" Value="White" />
+		<Setter Property="FontSize" Value="14" />
+	</Style>
 
-    <!-- SHAPE -->
-    <Style Selector="Ellipse.letter">
-        <Style.Resources>
-            <LinearGradientBrush x:Key="ShapeBrush" EndPoint="0%,0%" StartPoint="0%,100%">
-                <!-- #981616 #be1b1b-->
-                <GradientStop Color="DarkGreen" Offset="0" />
-                <GradientStop Color="Green" Offset="1" />
-            </LinearGradientBrush>
-        </Style.Resources>
-        <Setter Property="Fill" Value="{DynamicResource ShapeBrush}" />
-    </Style>
-    <Style Selector="Ellipse.letterempty">
-        <Style.Resources>
-            <LinearGradientBrush x:Key="ShapeBrush" EndPoint="0%,0%" StartPoint="0%,100%">
-                <!-- #981616 #be1b1b-->
-                <GradientStop Color="DarkGreen" Offset="0" />
-                <GradientStop Color="Green" Offset="1" />
-            </LinearGradientBrush>
-        </Style.Resources>
-        <Setter Property="Fill" Value="{DynamicResource ShapeBrush}" />
-    </Style>
-
-    <Style Selector="Button.hyperlink">
-        <Setter Property="Template">
-            <ControlTemplate>
-                <TextBlock Text="{TemplateBinding Content}" Foreground="{StaticResource SystemAccentColor}"
+	<!-- BUTTON -->
+	<Style Selector="Button.main">
+		<Setter Property="FontSize" Value="12" />
+		<Setter Property="Width" Value="35" />
+		<Setter Property="HorizontalContentAlignment" Value="Center" />
+		<Setter Property="VerticalContentAlignment" Value="Center" />
+		<Setter Property="Background" Value="{DynamicResource ButtonBrush}" />
+	</Style>
+	<Style Selector="Button.hyperlink">
+		<Setter Property="Template">
+			<ControlTemplate>
+				<TextBlock Text="{TemplateBinding Content}" Foreground="{StaticResource SystemAccentColor}"
                            TextDecorations="Underline">
-                    <TextBlock.Styles>
-                        <Style Selector="TextBlock:pointerover">
-                            <Setter Property="Foreground" Value="{StaticResource SystemAccentColorLight1}" />
-                        </Style>
-                    </TextBlock.Styles>
-                </TextBlock>
-            </ControlTemplate>
-        </Setter>
-        <Setter Property="Background" Value="Transparent" />
-        <Setter Property="BorderThickness" Value="0" />
-    </Style>
+					<TextBlock.Styles>
+						<Style Selector="TextBlock:pointerover">
+							<Setter Property="Foreground" Value="{StaticResource SystemAccentColorLight1}" />
+						</Style>
+					</TextBlock.Styles>
+				</TextBlock>
+			</ControlTemplate>
+		</Setter>
+		<Setter Property="Background" Value="Transparent" />
+		<Setter Property="BorderThickness" Value="0" />
+	</Style>
+	<!-- ICONS -->
+
+	<Style Selector="Image.infoLight">
+		<Setter Property="Source" Value="{SvgImage /Assets/info-borderless-svgrepo-com-black.svg}"></Setter>
+	</Style>
+	<Style Selector="Image.infoDark">
+		<Setter Property="Source" Value="{SvgImage /Assets/info-borderless-svgrepo-com.svg}"></Setter>
+	</Style>
+	<Style Selector="Image.settingsLight">
+		<Setter Property="Source" Value="{SvgImage /Assets/settings-2-svgrepo-com-black.svg}"></Setter>
+	</Style>
+	<Style Selector="Image.settingsDark">
+		<Setter Property="Source" Value="{SvgImage /Assets/settings-2-svgrepo-com.svg}"></Setter>
+	</Style>
 </Styles>
+

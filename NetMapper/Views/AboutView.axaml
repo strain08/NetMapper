@@ -10,12 +10,11 @@
         <vm:AboutViewModel />
     </Design.DataContext>
     <DockPanel>
-        <TextBlock
+        <TextBlock Classes="sectionTitle"
             DockPanel.Dock="Top"
             FontWeight="Normal"
             FontSize="18"
             Margin="8,0,0,0"
-            Foreground="LightBlue"
             Text="About" />
         <!-- OK -->
         <StackPanel
@@ -31,11 +30,8 @@
         </StackPanel>
         <StackPanel>
             <!-- OPTIONS -->
-            <TextBlock
-                Margin="16,16,0,0"
-                FontSize="16"
-                FontWeight="Bold"
-                Foreground="DarkGray"
+            <TextBlock Classes="appAboutTitle"
+                Margin="16,16,0,0"                
                 Text="{Binding AppNameAndVersion}" />
             <TextBlock
                 Margin="18,0,0,0"

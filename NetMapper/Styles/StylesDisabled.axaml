@@ -1,0 +1,38 @@
+<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+  <Design.PreviewWith>
+    
+      <!-- Add Controls for Previewer Here -->
+	  <StackPanel>
+		  <Button Height="20" Classes="btnMain" Margin="10" />
+		  <Ellipse Height="40" Width="40" Classes="letter" Margin="10" />
+		  <Panel>
+			  <Ellipse Height="40" Width="40" Classes="letterempty" Margin="10" />
+			  <Ellipse Height="30" Width="30" Fill="Black" />
+		  </Panel>
+	  </StackPanel>
+    
+  </Design.PreviewWith>
+
+	<!-- SHAPE -->
+	<Style Selector="Ellipse.letter">
+		<Style.Resources>
+			<LinearGradientBrush x:Key="ShapeBrush" EndPoint="0%,0%" StartPoint="0%,100%">
+				<!-- #981616 #be1b1b-->
+				<GradientStop Color="DarkGreen" Offset="0" />
+				<GradientStop Color="Green" Offset="1" />
+			</LinearGradientBrush>
+		</Style.Resources>
+		<Setter Property="Fill" Value="{DynamicResource ShapeBrush}" />
+	</Style>
+	<Style Selector="Ellipse.letterempty">
+		<Style.Resources>
+			<LinearGradientBrush x:Key="ShapeBrush" EndPoint="0%,0%" StartPoint="0%,100%">
+				<!-- #981616 #be1b1b-->
+				<GradientStop Color="DarkGreen" Offset="0" />
+				<GradientStop Color="Green" Offset="1" />
+			</LinearGradientBrush>
+		</Style.Resources>
+		<Setter Property="Fill" Value="{DynamicResource ShapeBrush}" />
+	</Style>
+</Styles>

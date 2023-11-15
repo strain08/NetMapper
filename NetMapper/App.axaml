@@ -4,17 +4,31 @@
              xmlns:vm="using:NetMapper.ViewModels"
              x:DataType="vm:ApplicationViewModel"
              xmlns:local="using:NetMapper"
-             RequestedThemeVariant="Dark">
+             RequestedThemeVariant="Default">
     <!-- "Default" ThemeVariant follows system theme variant. "Dark" or "Light" are other available options. -->
 
     <Application.DataTemplates>
         <local:ViewLocator />
     </Application.DataTemplates>
-
+	
     <Application.Styles>
         <FluentTheme />
         <StyleInclude Source="/Styles/MainStyle.axaml" />
-		<StyleInclude Source="/Styles/DataValidation.axaml" />
+		<StyleInclude Source="/Styles/DataValidation.axaml" />		
+		<FluentTheme>
+			<FluentTheme.Palettes>
+				<!-- Palette for Light theme variant -->
+				<ColorPaletteResources 
+					x:Key="Light" 
+					RegionColor="White"
+					ErrorText="Red" />
+				<!-- Palette for Dark theme variant -->
+				<ColorPaletteResources 
+					x:Key="Dark" 
+					RegionColor="#1F1F1F" 
+					ErrorText="Red"  />
+			</FluentTheme.Palettes>
+		</FluentTheme>
     </Application.Styles>
 
     <TrayIcon.Icons>

@@ -27,12 +27,9 @@
 
 	<DockPanel>
 		<!-- ACTION TITLE -->
-		<TextBlock
-            DockPanel.Dock="Top"
-            FontWeight="Normal"
-            FontSize="18"
-            Margin="8,0,0,0"
-            Foreground="LightBlue"
+		<TextBlock Classes="sectionTitle"
+            DockPanel.Dock="Top"            
+            Margin="8,0,0,0"            
             Text="{Binding OperationTitle, FallbackValue='Operation title'}"
 			/>
 		<!-- BUTTONS -->
@@ -42,11 +39,11 @@
             HorizontalAlignment="Center"
             Orientation="Horizontal"
             Height="50">
-			<Button Classes="btnMain"
+			<Button Classes="main"
                     Content="OK"
                     Width="80"
                     Command="{Binding Ok}" />
-			<Button Classes="btnMain"
+			<Button Classes="main"
                     Width="80"
                     Content="Cancel"
                     Command="{Binding Cancel}" />

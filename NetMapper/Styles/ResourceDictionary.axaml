@@ -1,0 +1,37 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+					xmlns:views="using:NetMapper.Views">
+	<!-- Add Resources Here -->
+	<Design.PreviewWith>
+		<Button Classes="btnMain"
+			Height="40"
+			Width="60"/>
+	</Design.PreviewWith>
+	<ResourceDictionary.ThemeDictionaries>
+		
+		<ResourceDictionary x:Key='Light'>
+			<SolidColorBrush x:Key='LightBlueBrush'>DarkBlue</SolidColorBrush>			
+			<SolidColorBrush x:Key='DarkGrayBrush'>Black</SolidColorBrush>
+			<SolidColorBrush x:Key='GrayBrush'>Gray</SolidColorBrush>
+			<SolidColorBrush x:Key='WhiteBrush'>Black</SolidColorBrush>
+			<LinearGradientBrush x:Key="ButtonBrush" EndPoint="0%,0%" StartPoint="0%,100%">
+				<GradientStop Color="#68768A" Offset="0" />
+				<GradientStop Color="#CCCCCC" Offset="1" />
+			</LinearGradientBrush>
+			
+		</ResourceDictionary>
+		
+		<ResourceDictionary x:Key='Dark'>
+			<SolidColorBrush x:Key='LightBlueBrush'>LightBlue</SolidColorBrush>
+			<SolidColorBrush x:Key='DarkGrayBrush'>DarkGray</SolidColorBrush>
+			<SolidColorBrush x:Key='GrayBrush'>Gray</SolidColorBrush>
+			<SolidColorBrush x:Key='WhiteBrush'>White</SolidColorBrush>
+			<LinearGradientBrush x:Key="ButtonBrush" EndPoint="0%,0%" StartPoint="0%,100%">
+				<GradientStop Color="#202527" Offset="0" />
+				<GradientStop Color="#363e42" Offset="1" />
+			</LinearGradientBrush>
+			
+		</ResourceDictionary>
+		
+	</ResourceDictionary.ThemeDictionaries>
+</ResourceDictionary>

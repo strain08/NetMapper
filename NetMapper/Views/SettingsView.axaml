@@ -27,12 +27,10 @@
 
     <DockPanel>
         <!-- ACTION TITLE -->
-        <TextBlock
+        <TextBlock Classes="sectionTitle"
             DockPanel.Dock="Top"
             FontWeight="Normal"
-            FontSize="18"
             Margin="8,0,0,0"
-            Foreground="LightBlue"
             Text="Settings" />
         <!-- OK / CANCEL -->
         <StackPanel
@@ -41,22 +39,19 @@
             Orientation="Horizontal"
             Height="50"
             DockPanel.Dock="Bottom">
-            <Button Classes="btnMain"
+            <Button Classes="main"
                     Content="OK"
                     Width="80"
                     Command="{Binding OkCommand}" />
-            <Button Classes="btnMain"
+            <Button Classes="main"
                     Width="80"
                     Content="Cancel"
                     Command="{Binding CancelCommand}" />
         </StackPanel>
         <StackPanel>
             <!-- OPTIONS -->
-            <TextBlock
+            <TextBlock Classes="sectionDetail"
                 Margin="16,16,0,0"
-                FontSize="16"
-                FontWeight="Bold"
-                Foreground="Gray"
                 Text="General" />
             <StackPanel Classes="detail">
                 <CheckBox
