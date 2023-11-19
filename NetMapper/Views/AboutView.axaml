@@ -23,7 +23,7 @@
             Orientation="Horizontal"
             Height="50"
             DockPanel.Dock="Bottom">
-            <Button Classes="btnMain"
+            <Button Classes="main"
                     Content="OK"
                     Width="80"
                     Command="{Binding OkCommand}" />

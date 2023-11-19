@@ -1,13 +1,13 @@
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Markup.Xaml;
+using Avalonia.Styling;
 using NetMapper.Attributes;
 using NetMapper.Interfaces;
 using NetMapper.Models;
 using NetMapper.ViewModels;
 using System;
-using Svg.DataTypes;
-using System.Diagnostics;
+using System.Collections.Generic;
 
 namespace NetMapper.Views;
 
@@ -30,31 +30,23 @@ public partial class DriveListView : UserControl
 
     private void DriveListView_ActualThemeVariantChanged(object? sender, EventArgs e)
     {
-        
-        var imageSettingsLight = this.FindControl<Image>("SettingsLight");
-        
-        var imageSettingsDark = this.FindControl<Image>("SettingsDark");
-        var imageInfoDark = this.FindControl<Image>("InfoDark");
-        var imageInfoLight = this.FindControl<Image>("InfoLight");
-        var s = ActualThemeVariant.ToString();
-        switch (s)
+        List<Image?> lightImg = new();
+        List<Image?> darkImg = new();
+        lightImg.Add(this.FindControl<Image>("SettingsLight"));
+        lightImg.Add(this.FindControl<Image>("InfoLight"));
+        darkImg.Add(this.FindControl<Image>("SettingsDark"));
+        darkImg.Add(this.FindControl<Image>("InfoDark"));
+
+        ThemeVariant? s = ActualThemeVariant;
+
+        if (s != null)
         {
-            case "Dark":
-                imageInfoDark.IsVisible = true;
-                imageInfoLight.IsVisible = false;
-                imageSettingsDark.IsVisible = true;
-                imageSettingsLight.IsVisible = false;                
-                break;
-
-            case "Light":
-                imageInfoDark.IsVisible = false;
-                imageInfoLight.IsVisible = true;
-                imageSettingsDark.IsVisible = false;
-                imageSettingsLight.IsVisible = true;
-                
-                break;
+            bool showDark = (s.ToString() == "Dark");
+            foreach (var img in lightImg)
+                if (img != null) img.IsVisible = !showDark;
+            foreach (var img in darkImg)
+                if (img != null) img.IsVisible = showDark;
         }
-
     }
 
     // Dock doubleclick
