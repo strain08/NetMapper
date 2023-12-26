@@ -82,27 +82,31 @@
 					<DataTemplate>
 						<!--Should react only when doubleclick over an item-->
 						<DockPanel DoubleTapped="OnDoubleClick">
-							<Panel DockPanel.Dock="Right">
+							<Panel  DockPanel.Dock="Right">
 								<!-- Command parameter contains MappingModel-->
 								<Button
-									Content="Detach"
+									Content="Detach"									
                                     Command="{Binding $parent[ListBox].DataContext.DisconnectDriveCommand} "
                                     IsVisible="{Binding DisconnectCommandVisible}"
                                     CommandParameter="{Binding}"
-                                    VerticalAlignment="Center"
-                                    VerticalContentAlignment="Center" />
+                                    Margin="0,0,0,4"
+                                     />
 								<Button
 									Content="Attach"
                                     IsVisible="{Binding ConnectCommandVisible}"
                                     Command="{Binding $parent[ListBox].DataContext.ConnectDriveCommand}"
                                     CommandParameter="{Binding}"
-                                    VerticalAlignment="Center"
-                                    VerticalContentAlignment="Center" />
+                                    Margin="0,0,0,4" />
+								
 							</Panel>
+							
 							<StackPanel
                                 Background="Transparent"
                                 Orientation="Vertical"
-                                VerticalAlignment="Center">
+								ClipToBounds="True"
+                                VerticalAlignment="Center"
+								Margin="0,0,2,0"
+								>
 								<!-- Drive Letter-->
 								<StackPanel
 									Margin="1"
@@ -116,10 +120,20 @@
                                         Text="{Binding VolumeLabel}" />
 								</StackPanel>
 								<!-- Network path-->
+								<Panel>
 								<TextBlock
                                     Classes="detail"
                                     Margin="8,0,0,8"
-                                    Text="{Binding NetworkPath}" />
+                                    Text="{Binding NetworkPath}" >
+									<TextBlock.OpacityMask>										
+											<LinearGradientBrush StartPoint="100%,0%" EndPoint="90%,0%">
+												<GradientStop Color="Transparent" Offset="0"/>												
+												<GradientStop Color="#000000" Offset="1" />
+											</LinearGradientBrush>										
+									</TextBlock.OpacityMask>
+								</TextBlock>
+									
+								</Panel>
 								<!-- Statuses -->
 								<StackPanel Margin="4,0,0,0" Orientation="Horizontal">
 									<Border
