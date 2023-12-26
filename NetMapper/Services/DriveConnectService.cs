@@ -1,6 +1,7 @@
 ﻿using Avalonia.Threading;
 using NetMapper.Attributes;
 using NetMapper.Enums;
+using NetMapper.Extensions;
 using NetMapper.Interfaces;
 using NetMapper.Models;
 using NetMapper.Services.Toasts;

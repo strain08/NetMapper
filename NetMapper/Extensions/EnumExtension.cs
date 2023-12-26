@@ -1,8 +1,8 @@
 ﻿using System;
 
-namespace NetMapper.Enums;
+namespace NetMapper.Extensions;
 
-public static class EnumHelper
+public static class EnumExtension
 {
     /// <summary>
     ///     Gets an attribute on an enum field value

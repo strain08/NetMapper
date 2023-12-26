@@ -1,4 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
+using NetMapper.Extensions;
 using NetMapper.Interfaces;
 using Splat;
 using System;

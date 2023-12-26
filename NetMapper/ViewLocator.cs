@@ -1,5 +1,6 @@
 using Avalonia.Controls;
 using Avalonia.Controls.Templates;
+using NetMapper.Extensions;
 using NetMapper.ViewModels;
 using Splat;
 using System;

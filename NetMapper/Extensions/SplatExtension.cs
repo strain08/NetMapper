@@ -6,7 +6,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
-internal static class BootstrapperHelpers
+namespace NetMapper.Extensions;
+public static class SplatExtension
 {
     /// <summary>
     ///     Creates a new ViewModel, auto-resolving it's services with Splat
@@ -113,8 +114,8 @@ internal static class BootstrapperHelpers
                 $"{classType.FullName}: Can not find constructor with attribute [{typeof(ResolveThis).Name}]");
 
         // resolveConstructor not null
-        IEnumerable<Type> types = resolveConstructor.GetParameters().Select(p => p.ParameterType).ToArray();
-        if (Activator.CreateInstance(classType, types.Select(GetService).ToArray()) is Control c)
+        IEnumerable<Type> parameterTypes = resolveConstructor.GetParameters().Select(p => p.ParameterType).ToArray();
+        if (Activator.CreateInstance(classType, parameterTypes.Select(GetService).ToArray()) is Control c)
             return c;
 
         throw new InvalidOperationException(

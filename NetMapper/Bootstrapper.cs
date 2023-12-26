@@ -1,4 +1,5 @@
-﻿using NetMapper.Interfaces;
+﻿using NetMapper.Extensions;
+using NetMapper.Interfaces;
 using NetMapper.Models;
 using NetMapper.Services;
 using NetMapper.Services.Helpers;
