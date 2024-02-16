@@ -6,7 +6,7 @@ namespace NetMapper.Enums;
 //const int CONNECT_INTERACTIVE = 0x00000008;
 
 [StructLayout(LayoutKind.Sequential)]
-internal struct NETRESOURCE
+public struct NETRESOURCE
 {
     public ResourceScope oResourceScope;
     public ResourceType oResourceType;

@@ -7,6 +7,7 @@ namespace NetMapper.Interfaces
 {
     public interface IInterop
     {
+        GetConnectionStatus GetUncName(string driveLetter, out string uncName);
         ConnectResult ConnectNetworkDrive(char cDriveLetter, string sNetworkPath, string? sUser = null, string? sPassword = null);
         Task<ConnectResult> ConnectNetworkDriveAsync(char cDriveLetter, string sNetworkPath);
         DisconnectResult DisconnectNetworkDrive(char cDriveLetter, bool bForceDisconnect = false);

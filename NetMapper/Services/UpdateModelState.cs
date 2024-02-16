@@ -30,7 +30,7 @@ public class UpdateModelState : IUpdateModelState, IRecipient<PropChangedMessage
     /// <param name="m"></param>
     private void UpdateShareState(MapModel m)
     {
-        m.ShareStateProp = Directory.Exists(m.NetworkPath) ? ShareState.Available : ShareState.Unavailable;
+            m.ShareStateProp = Directory.Exists(m.NetworkPath) ? ShareState.Available : ShareState.Unavailable;
     }
 
     /// <summary>
@@ -39,13 +39,24 @@ public class UpdateModelState : IUpdateModelState, IRecipient<PropChangedMessage
     /// <param name="m"></param>
     private void UpdateMappingState(MapModel m)
     {
+        string uncName = "";
         
-        // if a Network Drive is mapped to this path -> Mapped            
+        // if a Network Drive is mapped to this path -> Mapped
+        GetConnectionStatus status = interop.GetUncName(m.DriveLetterColon, out uncName);
+        if (status == GetConnectionStatus.Success && uncName == m.NetworkPath)
+        {
+            m.MappingStateProp = MapState.Mapped;
+            return;
+        }
+                
+        /*
+         * Old method, uses too much cpu on server
         if (interop.GetActualPathForLetter(m.DriveLetter) == m.NetworkPath)
         {
             m.MappingStateProp = MapState.Mapped;
             return;
         }
+        */
 
         // if Letter Available -> drive is Unmapped
         if (interop.GetAvailableDriveLetters().Contains(m.DriveLetter))

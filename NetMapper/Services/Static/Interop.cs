@@ -7,29 +7,32 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Management;
-using System.Runtime.InteropServices;
+using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace NetMapper.Services.Helpers;
-
 public class Interop : IInterop
 {
     public Interop() { }
 
-    [DllImport("mpr.dll")]
-    private static extern int WNetAddConnection2(
-        ref NETRESOURCE oNetworkResource, 
-        string? sPassword,
-        string? sUserName, 
-        int iFlags);
+    public GetConnectionStatus GetUncName(string driveLetter, out string uncName)
+    {
+        int length = 255;
+        GetConnectionStatus status = GetConnectionStatus.MoreData;
+        uncName = String.Empty;
 
-    [DllImport("mpr.dll")]
-    private static extern int WNetCancelConnection2(
-        string sLocalName, 
-        uint iFlags,
-        int iForce);
+        //var driveLetter = configuration.DriveLetter.Value.ToDriveLetterString();
+        //just make a loop in order to requery if the buffer was too small
+        while (status == GetConnectionStatus.MoreData)
+        {
+            var sb = new StringBuilder(length);
+            status = (GetConnectionStatus)ComImports.WNetGetConnection(driveLetter, sb, ref length);
+            uncName = sb.ToString();
+        }
 
+        return status;
+    }
     public ConnectResult ConnectNetworkDrive(
         char cDriveLetter,
         string sNetworkPath,
@@ -46,7 +49,7 @@ public class Interop : IInterop
             sLocalName = cDriveLetter + ":",
             sRemoteName = sNetworkPath
         };
-        return (ConnectResult)WNetAddConnection2(ref oNetworkResource, sPassword, sUser, 0);
+        return (ConnectResult)ComImports.WNetAddConnection2(ref oNetworkResource, sPassword, sUser, 0);
     }
 
     public DisconnectResult DisconnectNetworkDrive(
@@ -54,8 +57,8 @@ public class Interop : IInterop
         bool bForceDisconnect = false)
     {
         if (bForceDisconnect)
-            return (DisconnectResult)WNetCancelConnection2(cDriveLetter + ":", 0, 1);
-        return (DisconnectResult)WNetCancelConnection2(cDriveLetter + ":", 0, 0);
+            return (DisconnectResult)ComImports.WNetCancelConnection2(cDriveLetter + ":", 0, 1);
+        return (DisconnectResult)ComImports.WNetCancelConnection2(cDriveLetter + ":", 0, 0);
     }
 
     public async Task<DisconnectResult> DisconnectNetworkDriveAsync(char cDriveLetter,
