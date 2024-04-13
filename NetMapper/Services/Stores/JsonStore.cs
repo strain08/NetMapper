@@ -1,9 +1,9 @@
-﻿using System;
-using System.IO;
-using System.Text.Json;
-using NetMapper.Interfaces;
+﻿using NetMapper.Interfaces;
 using NetMapper.Services.Static;
 using Serilog;
+using System;
+using System.IO;
+using System.Text.Json;
 
 namespace NetMapper.Services;
 
@@ -18,7 +18,7 @@ public class JsonStore<T> : IDataStore<T> where T : new()
         var strWorkPath = AppUtil.GetStartupFolder();
         jsonFile = Path.Combine(strWorkPath, jsonFileName);
     }
-    
+
     public T GetData()
     {
         if (StoreData != null) return StoreData;
@@ -30,8 +30,8 @@ public class JsonStore<T> : IDataStore<T> where T : new()
     {
         StoreData = updatedData;
         Save();
-    }    
-        
+    }
+
     private void Load()
     {
         // file does not exist, try create new one
@@ -55,17 +55,17 @@ public class JsonStore<T> : IDataStore<T> where T : new()
             Save();
         }
     }
-        
+
     private void Save()
     {
         var jsonOptions = new JsonSerializerOptions
         {
-            WriteIndented = true            
+            WriteIndented = true
         };
-        
+
         StoreData ??= new T(); // initialize if null
         try
-        {            
+        {
             var jsonString = JsonSerializer.Serialize(StoreData, StoreData.GetType(), jsonOptions);
             File.WriteAllText(jsonFile, jsonString);
         }

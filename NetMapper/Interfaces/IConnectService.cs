@@ -1,5 +1,5 @@
-﻿using System.Threading.Tasks;
-using NetMapper.Models;
+﻿using NetMapper.Models;
+using System.Threading.Tasks;
 
 namespace NetMapper.Interfaces;
 

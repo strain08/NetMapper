@@ -1,17 +1,16 @@
-﻿using System;
-using System.IO;
-using CommunityToolkit.Mvvm.Messaging;
+﻿using CommunityToolkit.Mvvm.Messaging;
 using NetMapper.Enums;
 using NetMapper.Interfaces;
 using NetMapper.Messages;
 using NetMapper.Models;
 using Splat;
+using System.IO;
 
 namespace NetMapper.Services;
 
 public class UpdateModelState : IUpdateModelState, IRecipient<PropChangedMessage>
-{    
-    private readonly IInterop interop;    
+{
+    private readonly IInterop interop;
     public UpdateModelState(IInterop interop)
     {
         this.interop = interop;
@@ -30,7 +29,7 @@ public class UpdateModelState : IUpdateModelState, IRecipient<PropChangedMessage
     /// <param name="m"></param>
     private void UpdateShareState(MapModel m)
     {
-            m.ShareStateProp = Directory.Exists(m.NetworkPath) ? ShareState.Available : ShareState.Unavailable;
+        m.ShareStateProp = Directory.Exists(m.NetworkPath) ? ShareState.Available : ShareState.Unavailable;
     }
 
     /// <summary>
@@ -40,7 +39,7 @@ public class UpdateModelState : IUpdateModelState, IRecipient<PropChangedMessage
     private void UpdateMappingState(MapModel m)
     {
         string uncName = "";
-        
+
         // if a Network Drive is mapped to this path -> Mapped
         GetConnectionStatus status = interop.GetUncName(m.DriveLetterColon, out uncName);
         if (status == GetConnectionStatus.Success && uncName == m.NetworkPath)
@@ -48,7 +47,7 @@ public class UpdateModelState : IUpdateModelState, IRecipient<PropChangedMessage
             m.MappingStateProp = MapState.Mapped;
             return;
         }
-                
+
         /*
          * Old method, uses too much cpu on server
         if (interop.GetActualPathForLetter(m.DriveLetter) == m.NetworkPath)
@@ -67,8 +66,8 @@ public class UpdateModelState : IUpdateModelState, IRecipient<PropChangedMessage
 
     public void Receive(PropChangedMessage message)
     {
-        string s = nameof(MapModel.MappingStateProp);       
-        
+        string s = nameof(MapModel.MappingStateProp);
+
         if (message.PropertyName == s)
         {
             if (message.m.MappingStateProp == MapState.Mapped ||

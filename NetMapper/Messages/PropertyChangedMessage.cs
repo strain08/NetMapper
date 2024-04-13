@@ -1,5 +1,4 @@
-﻿using CommunityToolkit.Mvvm.Messaging.Messages;
-using NetMapper.Models;
+﻿using NetMapper.Models;
 
 namespace NetMapper.Messages;
 public record PropChangedMessage(MapModel m, string PropertyName);

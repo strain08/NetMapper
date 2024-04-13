@@ -41,7 +41,7 @@ namespace NetMapper.Tests
             Assert.DoesNotContain(mapModel, _sut.DriveCollection);
             Assert.Empty(_sut.DriveCollection);
         }
-        
+
         [Fact]
         public void RemoveDrive_ShoulThrowRemovingNonexistingItem()
         {
@@ -50,12 +50,12 @@ namespace NetMapper.Tests
             _sut.DriveCollection.Clear();
 
             // Act & Assert
-            _ = Assert.Throws<KeyNotFoundException>(() => 
-            { 
-                _sut.RemoveDrive(newMapModel); 
+            _ = Assert.Throws<KeyNotFoundException>(() =>
+            {
+                _sut.RemoveDrive(newMapModel);
             });
         }
-        
+
         [Fact]
         public void EditDrive_ShouldReplaceOldItemWithNewItem()
         {
@@ -82,9 +82,9 @@ namespace NetMapper.Tests
             _sut.DriveCollection.Clear();
 
             // Act & Assert
-            Assert.Throws<KeyNotFoundException>(() => 
-            { 
-                _sut.EditDrive(oldMapModel, newMapModel); 
+            Assert.Throws<KeyNotFoundException>(() =>
+            {
+                _sut.EditDrive(oldMapModel, newMapModel);
             });
         }
         [Fact]

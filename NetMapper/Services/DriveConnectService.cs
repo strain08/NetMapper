@@ -1,14 +1,10 @@
-﻿using Avalonia.Threading;
-using NetMapper.Attributes;
+﻿using NetMapper.Attributes;
 using NetMapper.Enums;
 using NetMapper.Extensions;
 using NetMapper.Interfaces;
 using NetMapper.Models;
-using NetMapper.Services.Toasts;
 using NetMapper.Services.Toasts.Interfaces;
-using NetMapper.ViewModels;
 using Serilog;
-using System.Diagnostics;
 using System.Threading.Tasks;
 
 namespace NetMapper.Services;
@@ -40,19 +36,19 @@ public class DriveConnectService : IConnectService
         switch (result)
         {
             case ConnectResult.Success:
-                m.MappingStateProp = MapState.Mapped;                  
-                toast = toastFactory.CreateToast("INFO", ToastType.INF_CONNECT, m);                
+                m.MappingStateProp = MapState.Mapped;
+                toast = toastFactory.CreateToast("INFO", ToastType.INF_CONNECT, m);
                 break;
 
             case ConnectResult.LoginFailure | ConnectResult.InvalidCredentials:
-                toast = toastFactory.CreateToast("FAILURE", ToastType.INF_LOGIN_FAILURE, m);                
+                toast = toastFactory.CreateToast("FAILURE", ToastType.INF_LOGIN_FAILURE, m);
                 break;
 
             default:
                 var errorDescription = result.GetAttributeOfType<DescriptionAttribute>()?.GetDescription();
                 var errorMessage = $"Error connecting to {m.NetworkPath}. Error code: {result}, {errorDescription} ";
                 toast = toastFactory.CreateToast(m.ID, ToastType.INF_CUSTOM, m, "Unknown error", errorMessage);
-                Log.Error(errorMessage);                
+                Log.Error(errorMessage);
                 break;
         }
 

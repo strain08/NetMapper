@@ -41,15 +41,15 @@ public class NavService : INavService
             return viewModel as T ??
                    throw new ArgumentNullException(
                        $"{ToString}: Type mismatch: {viewModel.GetType()} should be {nameof(T)}.");
-        
+
         T t = r.CreateWithConstructorInjection<T>();
-        
+
         if (addToDict)
-        {            
+        {
             AddViewModel(t);
         }
-        
-        return t;       
+
+        return t;
     }
 
     public void GoTo<T>() where T : ViewModelBase

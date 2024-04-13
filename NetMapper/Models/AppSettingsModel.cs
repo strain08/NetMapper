@@ -1,5 +1,5 @@
-﻿using System.Text.Json.Serialization;
-using Avalonia;
+﻿using Avalonia;
+using System.Text.Json.Serialization;
 
 namespace NetMapper.Models;
 

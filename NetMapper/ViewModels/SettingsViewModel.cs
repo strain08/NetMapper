@@ -27,7 +27,7 @@ public partial class SettingsViewModel : ViewModelBase
 
     public void OkCommand()
     {
-        settings.        AppSettings = DisplaySettings.Clone();
+        settings.AppSettings = DisplaySettings.Clone();
         settings.ApplyAll();
         settings.SaveAll();
 

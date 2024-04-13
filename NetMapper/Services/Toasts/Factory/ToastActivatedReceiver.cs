@@ -2,11 +2,8 @@
 using CommunityToolkit.Mvvm.Messaging;
 using NetMapper.Enums;
 using NetMapper.Interfaces;
-using NetMapper.Models;
 using NetMapper.Services.Toasts.Interfaces;
 using NetMapper.ViewModels;
-using System;
-using System.Diagnostics;
 
 namespace NetMapper.Services.Toasts.Implementations
 {
@@ -86,7 +83,7 @@ namespace NetMapper.Services.Toasts.Implementations
                     interop.OpenFolderInExplorer(message.model.DriveLetterColon);
                     break;
             }
-        }        
+        }
 
         private void ShowMainWindow()
         {

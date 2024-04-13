@@ -16,7 +16,7 @@ public partial class DriveListViewModel : ViewModelBase
     [ObservableProperty]
     private MapModel? selectedItem;
     public ObservableCollection<MapModel> DriveList { get; set; }
-    
+
     // CTOR
     [ResolveThis]
     public DriveListViewModel(

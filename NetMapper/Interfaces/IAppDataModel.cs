@@ -1,5 +1,5 @@
-﻿using System.Collections.Generic;
-using NetMapper.Models;
+﻿using NetMapper.Models;
+using System.Collections.Generic;
 
 namespace NetMapper.Interfaces
 {

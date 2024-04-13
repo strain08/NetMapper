@@ -1,6 +1,6 @@
-﻿using System.Linq;
+﻿using NetMapper.Interfaces;
+using System.Linq;
 using System.Net.NetworkInformation;
-using NetMapper.Interfaces;
 
 namespace NetMapper.Services;
 

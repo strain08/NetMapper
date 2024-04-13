@@ -1,9 +1,9 @@
-﻿using System;
-using System.Globalization;
-using Avalonia.Data;
+﻿using Avalonia.Data;
 using Avalonia.Data.Converters;
 using Avalonia.Media;
 using NetMapper.Enums;
+using System;
+using System.Globalization;
 
 namespace NetMapper.Converters;
 

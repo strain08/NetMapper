@@ -1,7 +1,6 @@
 ﻿using NetMapper.Enums;
 using NetMapper.Interfaces;
 using NetMapper.Models;
-using System.Text.Json.Serialization;
 
 namespace NetMapper.Services;
 
@@ -16,10 +15,10 @@ public class UpdateSystemState : IUpdateSystemState
 
     public void Update(MapModel m)
     {
-        if (CanAutoConnect(m)) 
+        if (CanAutoConnect(m))
             connectService.Connect(m);
 
-        if (CanAutoDisconnect(m)) 
+        if (CanAutoDisconnect(m))
             connectService.Disconnect(m);
     }
     private bool CanAutoConnect(MapModel m)
@@ -35,10 +34,10 @@ public class UpdateSystemState : IUpdateSystemState
     {
         bool result = true;
         result &= m.MappingStateProp == MapState.Mapped;
-        result &= m.ShareStateProp == ShareState.Unavailable;        
+        result &= m.ShareStateProp == ShareState.Unavailable;
         result &= m.Settings.AutoDisconnect;
         return result;
 
     }
-   
+
 }

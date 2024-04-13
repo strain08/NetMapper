@@ -40,7 +40,7 @@ public class App : Application
             desktop.ShutdownMode = ShutdownMode.OnExplicitShutdown;
             desktop.ShutdownRequested += Desktop_ShutdownRequested;
             desktop.Exit += Desktop_Exit;
-            
+
         }
 
         if (Design.IsDesignMode)

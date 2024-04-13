@@ -19,7 +19,7 @@ public partial class ApplicationViewModel : ViewModelBase, IRecipient<PropChange
     private readonly ISettingsService settings;
     public MainWindow? MainWindowView;
 
-    [ObservableProperty] 
+    [ObservableProperty]
     private string tooltipText = string.Empty;
 
 #nullable disable
@@ -32,17 +32,17 @@ public partial class ApplicationViewModel : ViewModelBase, IRecipient<PropChange
         IDriveListService driveListService,
         INavService navService)
     {
-        
+
         nav = navService;
         settings = settingsService;
         listService = driveListService;
-        
+
         InitializeApp();
     }
 
     public void Receive(PropChangedMessage message)
     {
-        UpdateTooltip();        
+        UpdateTooltip();
     }
 
     private void InitializeApp()

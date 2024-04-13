@@ -74,8 +74,8 @@ public class ViewModelBase : ObservableObject, INotifyDataErrorInfo
             return false;
         }
         else RemoveErrorFromProperty(propertyName, maxLengthError);
-        
-        var netPathError = "Not a valid network path.";        
+
+        var netPathError = "Not a valid network path.";
         if (!Locator.Current.GetRequiredService<IInterop>().IsNetworkPath(value))
         {
             AddError(propertyName, netPathError);
@@ -108,6 +108,6 @@ public class ViewModelBase : ObservableObject, INotifyDataErrorInfo
 
         RemoveError(propertyName);
         return true;
-        
+
     }
 }

@@ -1,6 +1,6 @@
-﻿using System;
-using NetMapper.Interfaces;
+﻿using NetMapper.Interfaces;
 using NetMapper.Models;
+using System;
 
 namespace NetMapper.Services.Settings;
 

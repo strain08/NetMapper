@@ -22,10 +22,10 @@ public static class Bootstrapper
         // Json Drive List Store
         s.Register<IDataStore<AppDataModel>>(() =>
             new JsonStore<AppDataModel>(AppDataFiles.MapDataFile));
-        
+
         // Interop, system-related functions
         s.RegisterConstant<IInterop>(new Interop());
-        
+
         // Settings
         s.RegisterConstant<ISettingsService>(new SettingsService(
             r.GetRequiredService<IDataStore<AppSettingsModel>>()));

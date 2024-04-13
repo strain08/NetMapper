@@ -12,11 +12,11 @@ public class PoolingService
     private readonly IUpdateModelState updateModelState;
     private readonly IUpdateSystemState updateSystemState;
 
-    
+
 #nullable disable
     public PoolingService() { }
 #nullable restore
-    
+
     //CTOR
     public PoolingService(
         IDriveListService driveListService,

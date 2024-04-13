@@ -1,7 +1,7 @@
-﻿using System;
-using Avalonia;
+﻿using Avalonia;
 using Avalonia.Controls;
 using NetMapper.Views;
+using System;
 
 namespace NetMapper.Services.Settings;
 

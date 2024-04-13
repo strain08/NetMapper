@@ -1,5 +1,5 @@
-﻿using System;
-using NetMapper.ViewModels;
+﻿using NetMapper.ViewModels;
+using System;
 
 namespace NetMapper.Interfaces;
 

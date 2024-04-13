@@ -1,6 +1,5 @@
 ﻿using Microsoft.Toolkit.Uwp.Notifications;
 using NetMapper.Enums;
-using System.Management;
 
 namespace NetMapper.Services.Toasts.Interfaces;
 

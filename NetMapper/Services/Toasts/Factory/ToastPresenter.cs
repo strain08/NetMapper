@@ -1,9 +1,7 @@
 ﻿using Microsoft.Toolkit.Uwp.Notifications;
 using NetMapper.Enums;
-using NetMapper.Extensions;
 using NetMapper.Interfaces;
 using NetMapper.Services.Toasts.Interfaces;
-using Splat;
 using System.Collections.Generic;
 using Windows.UI.Notifications;
 

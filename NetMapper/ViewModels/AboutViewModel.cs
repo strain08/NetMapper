@@ -1,8 +1,8 @@
-﻿using System;
-using System.Diagnostics;
-using NetMapper.Attributes;
+﻿using NetMapper.Attributes;
 using NetMapper.Interfaces;
 using NetMapper.Services.Static;
+using System;
+using System.Diagnostics;
 
 namespace NetMapper.ViewModels;
 
@@ -60,6 +60,6 @@ public partial class AboutViewModel : ViewModelBase
     public void OkCommand()
     {
         _nav.GoTo<DriveListViewModel>();
-        
+
     }
 }

@@ -1,7 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using NetMapper.Interfaces;
+﻿using NetMapper.Interfaces;
 using NetMapper.Models;
+using System;
+using System.Collections.Generic;
 
 namespace NetMapper.Services;
 

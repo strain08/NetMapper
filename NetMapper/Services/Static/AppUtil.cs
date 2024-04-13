@@ -1,9 +1,9 @@
-﻿using System;
+﻿using Avalonia.Controls;
+using System;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Reflection;
-using Avalonia.Controls;
 
 namespace NetMapper.Services.Static;
 
