@@ -44,7 +44,7 @@ public static class Bootstrapper
             r.GetRequiredService<IDataStore<AppDataModel>>()));
 
         // Toast
-        s.Register<IToastFactory>(() => new ToastFactory());
+        s.Register<IToastFactory>(() => new ToastFactory(r.GetRequiredService<ISettingsService>()));
 
         s.RegisterConstant(new ToastActivatedReceiver(
             r.GetRequiredService<IToastFactory>(),

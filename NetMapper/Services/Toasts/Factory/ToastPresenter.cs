@@ -1,6 +1,9 @@
 ﻿using Microsoft.Toolkit.Uwp.Notifications;
 using NetMapper.Enums;
+using NetMapper.Extensions;
+using NetMapper.Interfaces;
 using NetMapper.Services.Toasts.Interfaces;
+using Splat;
 using System.Collections.Generic;
 using Windows.UI.Notifications;
 
@@ -11,9 +14,21 @@ public class ToastPresenter : IToastPresenter
     private static string? previousText1, previousText2;
     private Queue<ToastNotification> toastQueue = new();
     private NotificationData notificationData = new();
+    private ISettingsService settingsService;
+
+    public ToastPresenter(ISettingsService settingsService)
+    {
+        this.settingsService = settingsService;
+    }
 
     public void Show(IToast ToastData)
     {
+        // check if should show info notifications            
+        if (settingsService.AppSettings.SetInfoNotify == false)
+            if (ToastData.Arguments.ToastType == ToastType.INF_CONNECT ||
+                ToastData.Arguments.ToastType == ToastType.INF_DISCONNECT)
+                return;
+
         notificationData.SequenceNumber = 1;
         if (CanUpdate(ToastData) &&
             ToastNotificationManagerCompat

@@ -1,4 +1,5 @@
 ﻿using NetMapper.Enums;
+using NetMapper.Interfaces;
 using NetMapper.Models;
 using NetMapper.Services.Toasts.Interfaces;
 using System.Collections.Generic;
@@ -7,9 +8,16 @@ namespace NetMapper.Services.Toasts.Implementations;
 
 public class ToastFactory : IToastFactory
 {
+    private ISettingsService settingsService;
+
+    public ToastFactory(ISettingsService settingsService)
+    {
+        this.settingsService = settingsService;
+    }
+
     public IToastPresenter CreateToastPresenter()
     {
-        return new ToastPresenter();
+        return new ToastPresenter(settingsService);
     }
     public IToast CreateToast(string tag, ToastType toastType, MapModel m)
     {
