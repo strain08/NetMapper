@@ -41,7 +41,7 @@ public class DriveConnectService : IConnectService
         {
             case ConnectResult.Success:
                 m.MappingStateProp = MapState.Mapped;                  
-                toast = toastFactory.CreateToast("CONNECT", ToastType.INF_CONNECT, m);                
+                toast = toastFactory.CreateToast("INFO", ToastType.INF_CONNECT, m);                
                 break;
 
             case ConnectResult.LoginFailure | ConnectResult.InvalidCredentials:
@@ -72,7 +72,7 @@ public class DriveConnectService : IConnectService
         switch (result)
         {
             case DisconnectResult.Success:
-                toast = toastFactory.CreateToast("DISCONNECT", ToastType.INF_DISCONNECT, m);
+                toast = toastFactory.CreateToast("INFO", ToastType.INF_DISCONNECT, m);
                 m.MappingStateProp = MapState.Unmapped;
                 break;
 

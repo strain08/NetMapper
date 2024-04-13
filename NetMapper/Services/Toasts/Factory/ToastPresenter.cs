@@ -63,14 +63,14 @@ public class ToastPresenter : IToastPresenter
     private bool CanUpdate(IToast ToastData)
     {
         bool willUpdate = false;
-        if (ToastData.TextLine1.Update && previousText1 is not null)
+        if (ToastData.TextLine1.Update && (previousText1 != null))
         {
             previousText1 += "\n" + ToastData.TextLine1.Text;
             notificationData.Values[ToastLines.LINE1.ToString()] = previousText1;
             willUpdate |= true;
         }
 
-        if (ToastData.TextLine2.Update && previousText2 is not null)
+        if (ToastData.TextLine2.Update && (previousText2 != null))
         {
             previousText2 += "\n" + ToastData.TextLine2.Text;
             notificationData.Values[ToastLines.LINE2.ToString()] = previousText2;

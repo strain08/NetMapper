@@ -37,7 +37,7 @@ public class DriveConnected : InfoToast
 {
     public DriveConnected(string Tag, ToastArgsRecord args) : base(Tag, args)
     {
-        TextLine1 = new("New connection");
+        TextLine1 = new("Info");
         TextLine2 = new($"{args.model.DriveLetterColon} [ {args.model.VolumeLabel} ] connected.", true);
     }
 }
@@ -46,7 +46,7 @@ public class DriveDisconnected : InfoToast
 
     public DriveDisconnected(string Tag, ToastArgsRecord args) : base(Tag, args)
     {
-        TextLine1 = new("Drive disconnected");
+        TextLine1 = new("Info");
         TextLine2 = new($"{args.model.DriveLetterColon} [ {args.model.VolumeLabel} ] disconnected.", true);
     }
 }
