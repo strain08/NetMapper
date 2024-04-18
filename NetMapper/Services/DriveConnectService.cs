@@ -11,16 +11,13 @@ namespace NetMapper.Services;
 
 public class DriveConnectService : IConnectService
 {
-    private readonly INavService nav;
     private readonly IInterop interop;
     private readonly IToastFactory toastFactory;
     IToastPresenter toastPresenter;
 
-    public DriveConnectService(INavService navService,
-                               IInterop interopService,
+    public DriveConnectService(IInterop interopService,
                                IToastFactory toastFactory)
-    {
-        nav = navService;
+    {        
         interop = interopService;
         this.toastFactory = toastFactory;
         toastPresenter = toastFactory.CreateToastPresenter();

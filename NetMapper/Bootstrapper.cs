@@ -34,8 +34,7 @@ public static class Bootstrapper
         s.RegisterConstant<INavService>(new NavService(r));
 
         // Connect service
-        s.RegisterLazySingleton<IConnectService>(() => new DriveConnectService(
-            r.GetRequiredService<INavService>(),
+        s.RegisterLazySingleton<IConnectService>(() => new DriveConnectService(            
             r.GetRequiredService<IInterop>(),
             r.GetRequiredService<IToastFactory>()));
 
