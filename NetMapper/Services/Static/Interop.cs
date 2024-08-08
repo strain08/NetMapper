@@ -179,12 +179,45 @@ public class Interop : IInterop
 
     public bool IsNetworkPath(string path)
     {
+        Uri testUri;
+        bool isUnc;
+        try
+        {
+            testUri = new Uri(path, UriKind.Absolute);
+            isUnc = testUri.IsUnc;
+
+        }
+        catch
+        {
+            return false;
+        }
+
+
+        try
+        {
+            var pathSegment = testUri.Segments[1];
+        }
+        catch
+        {
+            return false;
+        }
+
+        if (isUnc)
+            return true;
+        else
+            return false;
+    }
+
+    /*
+    public bool IsNetworkPath(string path)
+    {
         //// source: https://regexlib.com/REDetails.aspx?regexp_id=2285
         //var uncPattern =
         //    @"^((\\\\[a-zA - Z0 - 9 -]+\\[a-zA - Z0 - 9`~!@#$%^&(){}'._-]+([ ]+[a-zA-Z0-9`~!@#$%^&(){}'._-]+)*)|([a-zA-Z]:))(\\[^ \\/:*?""<>|]+([ ]+[^ \\/:*?""<>|]+)*)*\\?$";
         if (path.Length < 2) return false;
         var pathSlash = path.Replace("\\", "/");
-        var uncPattern = "^((\\/\\/[a-zA-Z0-9-]+\\/[a-zA-Z0-9`~!@#$%^&(){}'._-]+([ ]+[a-zA-Z0-9`~!@#$%^&(){}'._-]+)*)|([a-zA-Z]))(\\/[^ \\/:*?\"\"<>|]+([ ]+[^ \\/:*?\"\"<>|]+)*)*\\/?$";
+        //var uncPattern = "^((\\/\\/[a-zA-Z0-9-]+\\/[a-zA-Z0-9`~!@#$%^&(){}'._-]+([ ]+[a-zA-Z0-9`~!@#$%^&(){}'._-]+)*)|([a-zA-Z]))(\\/[^ \\/:*?\"\"<>|]+([ ]+[^ \\/:*?\"\"<>|]+)*)*\\/?$";
+        var uncPattern = "^((\\/\\/[a-zA-Z0-9-.]+\\/[a-zA-Z0-9`~!@#$%^&(){}'._-]+([ ]+[a-zA-Z0-9`~!@#$%^&(){}'._-]+)*)|([a-zA-Z]))(\\/[^ \\/:*?\"\"<>|]+([ ]+[^ \\/:*?\"\"<>|]+)*)*\\/?$";
         //var g = Regex.Match(pathSlash, uncPattern).Groups;
         //Debug.WriteLine(g.Count);
         //Debug.WriteLine(Regex.Match(pathSlash, uncPattern).Success);
@@ -192,6 +225,7 @@ public class Interop : IInterop
 
 
     }
+    */
     public void OpenFolderInExplorer(string path)
     {
         ProcessStartInfo psi = new()
