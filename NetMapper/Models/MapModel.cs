@@ -14,8 +14,12 @@ public partial class MapModel : ObservableObject
     private char driveLetter;
 
     [ObservableProperty]
-    [property: JsonIgnore]
+    [field: JsonIgnore]
     private string? volumeLabel;
+
+    [ObservableProperty]
+    [field: JsonIgnore]
+    private bool disconnectDismissed = false;
 
     [JsonIgnore]
     public string DriveLetterColon

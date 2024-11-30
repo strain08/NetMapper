@@ -54,7 +54,7 @@ public class DriveConnectService : IConnectService
 
     public async Task Disconnect(MapModel m, bool forceDisconnect = false)
     {
-        IToast toast;
+        IToast? toast;
         m.MappingStateProp = MapState.Undefined;
 
         // not a network drive, do nothing
@@ -67,10 +67,16 @@ public class DriveConnectService : IConnectService
             case DisconnectResult.Success:
                 toast = toastFactory.CreateToast("INFO", ToastType.INF_DISCONNECT, m);
                 m.MappingStateProp = MapState.Unmapped;
+                m.DisconnectDismissed = false;
                 break;
 
             case DisconnectResult.OpenFiles:
-                toast = toastFactory.CreateToast("CAN_NOT_REMOVE", ToastType.DLG_CAN_NOT_DISCONNECT, m);
+                if (m.DisconnectDismissed == false)
+                {
+                    toast = toastFactory.CreateToast("CAN_NOT_REMOVE", ToastType.DLG_CAN_NOT_DISCONNECT, m);
+                }
+                else 
+                    toast = null;
                 break;
 
             default:
@@ -81,8 +87,10 @@ public class DriveConnectService : IConnectService
                 break;
         }
 
-        toastPresenter.Show(toast);
+        if (toast != null)
+        {
+            toastPresenter.Show(toast);
+        }
+        
     }
-
-
 }

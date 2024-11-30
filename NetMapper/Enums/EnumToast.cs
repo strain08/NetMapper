@@ -20,6 +20,7 @@ public enum ToastActions
 {
     Force,
     Retry,
+    dismiss,
     ToastClicked
 }
 public enum ToastType
