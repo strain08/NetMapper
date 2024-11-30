@@ -4,7 +4,7 @@ using NetMapper.Models;
 using NetMapper.Services.Toasts.Interfaces;
 using System.Collections.Generic;
 
-namespace NetMapper.Services.Toasts.Implementations;
+namespace NetMapper.Services.Toasts.Factory;
 
 public class ToastFactory : IToastFactory
 {

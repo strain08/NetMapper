@@ -7,7 +7,7 @@ using Serilog;
 using System;
 using System.Linq;
 
-namespace NetMapper.Services.Toasts.Implementations
+namespace NetMapper.Services.Toasts.Factory
 {
 
     public class ToastActivatedMessenger : IToastActivatedMessenger

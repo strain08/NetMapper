@@ -5,7 +5,7 @@ using NetMapper.Services.Toasts.Interfaces;
 using System.Collections.Generic;
 using Windows.UI.Notifications;
 
-namespace NetMapper.Services.Toasts.Implementations;
+namespace NetMapper.Services.Toasts.Factory;
 
 public class ToastPresenter : IToastPresenter
 {
@@ -61,14 +61,14 @@ public class ToastPresenter : IToastPresenter
     private bool CanUpdate(IToast ToastData)
     {
         bool willUpdate = false;
-        if (ToastData.TextLine1.Update && (previousText1 != null))
+        if (ToastData.TextLine1.Update && previousText1 != null)
         {
             previousText1 += "\n" + ToastData.TextLine1.Text;
             notificationData.Values[ToastLines.LINE1.ToString()] = previousText1;
             willUpdate |= true;
         }
 
-        if (ToastData.TextLine2.Update && (previousText2 != null))
+        if (ToastData.TextLine2.Update && previousText2 != null)
         {
             previousText2 += "\n" + ToastData.TextLine2.Text;
             notificationData.Values[ToastLines.LINE2.ToString()] = previousText2;
