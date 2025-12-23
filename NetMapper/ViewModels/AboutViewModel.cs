@@ -31,7 +31,7 @@ public partial class AboutViewModel : ViewModelBase
             var appName = fvi.ProductName ?? fvi.FileName;
             var versionMajor = fvi.FileMajorPart.ToString();
             var versionMinor = fvi.FileMinorPart.ToString();
-            var result = appName + " " + versionMajor + "." + versionMinor + "b";
+            var result = appName + " " + versionMajor + "." + versionMinor;
             return result;
         }
     }

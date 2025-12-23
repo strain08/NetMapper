@@ -33,7 +33,10 @@ public class App : Application
             // Line below is needed to remove Avalonia data validation.
             // Without this line you will get duplicate validations from both Avalonia and CT
             BindingPlugins.DataValidators.RemoveAt(0);
-
+            
+            // Enable efficiency mode
+            AppExtensions.EnableEfficiencyMode();
+            
             // Register services with Splat        
             Bootstrapper.Register(Locator.CurrentMutable, Locator.Current);
 
